@@ -1,0 +1,177 @@
+<?php $this->headLink()->appendAlternate(
+    $this->url(array('format' => 'rss'), 'posts'),
+    'application/rss+xml', 
+    'Sageweb ' . Sageweb_Model_Orm_Post::getCategoryLabel($this->category) . ' Posts'
+    ); ?>
+
+<div style="float:left; position:relative; width:180px">
+    <div class="block">
+        <div class="blockTitle"><span class="categories">Categories</span></div>
+        <div class="blockContent">
+            <?php if ($this->category == 'all'): ?>
+                <strong>All Categories</strong><br />
+            <?php else: ?>
+                <strong><a href="<?php echo $this->url(array('category' => 'all'), 'posts', true) ?>"
+                    >All Categories</a></strong><br />
+            <?php endif ?>
+
+            <?php foreach (Sageweb_Model_Orm_Post::getCategoryOptions() as $key => $value): ?>
+                <?php if ($key != $this->category): ?>
+                    <a href="<?php echo $this->url(array('category' => $key), 'posts', true) ?>"
+                        ><?php echo $value ?></a><br />
+                <?php else: ?>
+                    <?php echo $value ?><br />
+                <?php endif ?>
+            <?php endforeach ?>
+            <br />
+
+            <?php if ($this->category == 'link'): ?>
+                <strong>Link Categories</strong><br />
+            <?php else: ?>
+                <strong><a href="<?php echo $this->url(array('category' => 'link'), 'posts', true) ?>"
+                    >Link Categories</a></strong><br />
+            <?php endif ?>
+
+            <?php $categories = Sageweb_Model_Orm_Post::getLinkCategoryOptions() ?>
+            <?php foreach ($categories as $key => $value): ?>
+                <?php if ($key != $this->category): ?>
+                    <a href="<?php echo $this->url(array('category' => $key), 'posts', true) ?>"
+                        ><?php echo $value ?></a><br />
+                <?php else: ?>
+                    <?php echo $value ?><br />
+                <?php endif ?>
+            <?php endforeach ?>
+            <br />
+
+            <?php if ($this->category == 'media'): ?>
+                <strong>Media Categories</strong><br />
+            <?php else: ?>
+                <strong><a href="<?php echo $this->url(array('category' => 'media'), 'posts', true) ?>"
+                    >Media Categories</a></strong><br />
+            <?php endif ?>
+
+            <?php $categories = Sageweb_Model_Orm_Post::getMediaCategoryOptions() ?>
+            <?php foreach ($categories as $key => $value): ?>
+                <?php if ($key != $this->category): ?>
+                    <a href="<?php echo $this->url(array('category' => $key), 'posts', true) ?>"
+                        ><?php echo $value ?></a><br />
+                <?php else: ?>
+                    <?php echo $value ?><br />
+                <?php endif ?>
+            <?php endforeach ?>
+        </div>
+    </div>
+
+    <div class="block">
+        <div class="blockTitle"><span class="subscribe">Subscribe</span></div>
+        <div class="blockContent">
+            <a class="rss" href="<?php echo $this->url(array(
+                   'format' => 'rss'),
+                   'posts') ?>"
+               >RSS Feed</a><br />
+        </div>
+    </div>
+
+</div>
+
+<div class="main" style="float: left; margin-left:10px; width:740px; height:auto">
+    <div style="margin-bottom:1em;">
+        <div style="float:right">
+            <strong>Order:</strong>
+            <?php if ($this->orderBy == 'top-rated'): ?>
+                <a href="<?php echo $this->url(array(
+                    'category' => $this->category,
+                    'orderBy' => 'newest'
+                    ), 'posts', true) ?>"
+                   >Newest</a>
+                Best
+            <?php else: ?>
+                Newest
+                <a href="<?php echo $this->url(array(
+                    'category' => $this->category,
+                    'orderBy' => 'best'
+                    ), 'posts', true) ?>"
+                   >Best</a>
+            <?php endif ?>
+        </div>
+
+        <div class="breadcrum">
+            <?php if ($this->category == 'all'): ?>
+                All Categories
+            <?php else: ?>
+                <a href="<?php echo $this->url(array('category' => 'all'), 'posts', true) ?>"
+                   >All Categories</a>
+                &gt; <?php echo Sageweb_Model_Orm_Post::getCategoryLabel($this->category) ?>
+            <?php endif ?>
+        </div>
+        
+        <div class="clear"></div>
+        <div style="padding-top: 0.5em; border-bottom: 1px solid #ccc"></div>
+    </div>
+
+    <?php foreach ($this->posts as $post): ?>
+        <div class="postEntry">
+            <a href="">
+                <?php if ($post->hasIcon()): ?>
+
+                <?php else: ?>
+                    <?php if ($post->type == 'article'): ?>
+                        <div class="defaultIcon articleIcon"></div>
+                    <?php elseif ($post->type == 'link'): ?>
+                        <div class="defaultIcon linkIcon"></div>
+                    <?php elseif ($post->type == 'file'): ?>
+                        <div class="defaultIcon fileIcon"></div>
+                    <?php endif ?>
+                <?php endif ?>
+            </a>
+
+            <div style="margin-left: 165px">
+                <h2 style="margin:0; display:inline-block">
+                    <a href="<?php echo $this->url(array(
+                        'id' => $post->id,
+                        'slug' => $post->slug,
+                        ), 'post') ?>"
+                        ><?php echo $post->title ?></a>
+                </h2>
+                
+                <?php if ($post->isFeatured): ?>
+                    <span class="featured">Featured</span>
+                <?php endif ?>
+
+                <div>
+                    <?php echo $this->cleanHtmlSummary($post->summary) ?>
+                </div>
+
+                <div class="entryAuthor">
+                    Posted by
+                    <?php if ($post->entity->author->id == 0): ?>
+                        <?php echo $post->entity->author->username ?>
+                    <?php else: ?>
+                        <a href="<?php echo $this->url(array(
+                            'username' => $post->entity->author->username
+                            ), 'user') ?>"
+                            ><?php echo $this->escape($post->entity->author->displayName) ?></a>
+                    <?php endif ?>
+                    on <?php echo $this->formatDate($post->entity->createdAt) ?>
+
+                    <span class="postStats">
+                        <span class="rating"><?php echo $post->entity->rating ?></span>
+                        <span class="views"><?php echo $post->entity->viewsCount ?></span>
+                        <span class="comments"><?php echo $post->entity->commentsCount ?></span>
+                    </span>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    <?php endforeach ?>
+
+    <?php if (count($this->posts) < 1): ?>
+        <p>Ther are currently no posts in this category.</p>
+    <?php endif ?>
+
+    <?php if ($this->pager->haveToPaginate()): ?>
+        <div style="border-top: 1px solid #ccc; padding-top:0.5em">
+            <?php echo $this->partial('pagination.phtml', array('pager' => $this->pager)) ?>
+        </div>
+    <?php endif ?>
+</div>

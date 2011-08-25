@@ -1,0 +1,59 @@
+<?php $this->headTitle()->prepend($this->forum->title . ' Topics') ?>
+<div id="sidebar">
+    <?php echo $this->partial('discussion/_actionsBlock.phtml', array('isList' => true)) ?>
+    <?php echo $this->partial('discussion/_tagsBlock.phtml', array('tags' => $this->tags)) ?>
+</div>
+
+
+<div id="page">
+    <div class="main">
+        <h1><?php echo $this->escape($this->forum->title) ?> Topics</h1>
+
+        <?php if (count($this->pager) > 0): ?>
+            <table class="dataTable" style="width:100%; margin-bottom: 1em;">
+                <thead>
+                    <tr>
+                        <th colspan="2">Discussion Topics</th>
+                        <th style="width:5em; text-align:center">Views</th>
+                        <th style="width:5em; text-align:center">Replies</th>
+                    </tr>
+                </thead>
+                <?php foreach ($this->pager as $hit): ?>
+                    <?php $doc = $hit->getDocument() ?>
+                    <tr>
+                        <td style="width:1em">
+                            <img src="/images/forum/thread.gif" alt="" />
+                        </td>
+                        <td>
+                            <h2 style="margin:0">
+                                <a href="<?php echo $this->url(
+                                    array('id' => $doc->getFieldValue('slugId')), 'discussion', true)
+                                    ?>"><?php echo $this->escape($doc->getFieldValue('title')) ?></a>
+                            </h2>
+                            <div class="authorInfo">
+                                Posted
+                                <?php if ($doc->getFieldValue('authorId')): ?>
+                                    by <?php echo $this->userLink($doc->getFieldValue('authorId')) ?>
+                                <?php endif ?>
+                                on <?php echo $this->formatDate($doc->getFieldValue('createdAt')) ?>
+                            </div>
+                        </td>
+                        <td style="text-align:center">
+                            <?php echo $doc->getFieldValue('viewsCount') ?>
+                        </td>
+                        <td style="text-align:center">
+                            <?php echo $doc->getFieldValue('commentsCount')  ?>
+                        </td>
+                    </tr>
+                <?php endforeach ?>
+            </table>
+
+            <?php if ($this->pager->getTotalItemCount() > $this->pager->getItemCountPerPage()): ?>
+                <hr style="margin-top:2em;" />
+                <?php echo $this->partial('pagination.phtml', array('pager' => $this->pager)) ?>
+            <?php endif ?>
+        <?php else: ?>
+            <p>There are currently no posts in this category.</p>
+        <?php endif ?>
+    </div>
+</div>

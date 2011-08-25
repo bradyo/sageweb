@@ -1,0 +1,50 @@
+<?php $this->headTitle()->prepend('Events Calendar') ?>
+
+<?php $headLink = $this->headLink() ?>
+<?php $headLink->appendStylesheet('/library/jquery-ui/css/custom/jquery-ui-1.8.7.custom.css'); ?>
+<?php $headLink->appendStylesheet('/library/fullcalendar/fullcalendar.css'); ?>
+
+<?php $headScript = $this->headScript() ?>
+<?php $headScript->appendFile('/library/jquery-ui/js/jquery-ui-1.8.7.custom.min.js') ?>
+<?php $headScript->appendFile('/library/fullcalendar/fullcalendar.min.js') ?>
+
+
+<div id="leftSidebar">
+    <?php echo $this->partial('event/_sidebar.phtml', array('selectedTypes' => $this->selectedTypes)) ?>
+</div>
+
+<div id="rightContent">
+    <div class="main">
+        <div style="margin-bottom:1em; overflow:hidden">
+            <div style="float:right">
+                <strong>Calendar</strong>
+                <a href="<?php echo $this->url(
+                    array('action' => 'upcoming'), 'events', true) . '?type=' . $_GET['type']
+                    ?>">Upcoming</a>
+            </div>
+
+            <div class="type-keys">
+                <?php foreach ($this->selectedTypes as $type): ?>
+                    <a href="<?php echo $this->url(array('action' => 'calendar'), 'events', true)
+                            . '?type=' . $type ?>" class="type-key <?php echo $type . '-key' ?>"
+                       ><?php echo Sageweb_Cms_PostEvent::getTypeLabel($type) ?></a>
+                <?php endforeach ?>
+            </div>
+
+            <div style="padding-top: 0.5em; border-bottom: 1px solid #ccc"></div>
+        </div>
+
+        <div id="calendar"></div>
+        <script type='text/javascript'>
+            $(document).ready(function() {
+                $('#calendar').fullCalendar({
+                    header: { left: 'prev', center: 'title', right: 'next' },
+                    weekMode: 'variable',
+                    theme: true,
+                    firstDay: 1,
+                    events: <?php echo $this->eventsJson ?>
+                });
+            });
+        </script>
+    </div>
+</div>

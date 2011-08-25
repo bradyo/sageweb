@@ -1,0 +1,125 @@
+<?php $user = $this->user ?>
+<?php $this->headTitle()->prepend('Profile for ' . $user->getDisplayName()) ?>
+
+<div id="sidebar">
+    <?php echo $this->partial('profile/_sidebar.phtml',
+        array('user' => $user, 'menu' => $this->menu)) ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <?php if ($user->status == Sageweb_Cms_User::STATUS_ACTIVE): ?>
+            <?php $profile = $user->profile ?>
+            <div class="profileDiv">
+                <h1>Profile for <?php echo $user->getDisplayName() ?>:</h1>
+
+                <table class="fieldsTable">
+                    <tr>
+                        <th>Location:</th>
+                        <td><?php echo $this->escape($profile->location) ?></td>
+                    </tr>
+
+                    <tr>
+                        <th>Website:</th>
+                        <td>
+                            <?php if (!empty($profile->websiteUrl)): ?>
+                                <a href="<?php echo $this->formatUrl($profile->websiteUrl) ?>"
+                                   ><?php echo $this->escape($profile->websiteUrl) ?></a>
+                            <?php endif ?>
+                        </td>
+                    </tr>
+                    <?php if (!empty($profile->blogUrl)): ?>
+                        <tr>
+                            <th>Blog:</th>
+                            <td>
+                                <?php if (!empty($profile->blogUrl)): ?>
+                                    <a href="<?php echo $this->formatUrl($profile->blogUrl) ?>"
+                                       ><?php echo $this->escape($profile->blogUrl) ?></a>
+                                <?php endif ?>
+                            </td>
+                        </tr>
+                    <?php endif ?>
+
+                    <tr>
+                        <th>About Me:</th>
+                        <td><?php echo $this->cleanHtmlBody($profile->aboutBody) ?></td>
+                    </tr>
+                    <tr>
+                        <th>Interests:</th>
+                        <td><?php echo $this->cleanHtmlBody($profile->interestsBody) ?></td>
+                    </tr>
+
+                    <tr>
+                        <th>Joined:</th>
+                        <td><?php echo $this->formatDate($user->createdAt) ?></td>
+                    </tr>
+                    <tr>
+                        <th>Last Seen:</th>
+                        <td>
+                            <?php if ($user->seenAt !== null): ?>
+                                <?php echo $this->formatDate($user->seenAt, true) ?>
+                            <?php else: ?>
+                                Never
+                            <?php endif ?>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="contacts" style="margin-top:2em">
+                <h2>Contact Information:</h2>
+                <table class="fieldsTable">
+                    <tr>
+                        <th>E-mail:</th>
+                        <td><?php echo $this->escape($profile->email) ?></td>
+                    </tr>
+
+                    <tr>
+                        <th>LinkedIn:</th>
+                        <td>
+                            <?php if (!empty($profile->linkedInId)): ?>
+                                <?php $value = $this->escape($profile->linkedInId) ?>
+                                <a href="http://www.linkedin.com/profile/view?id=<?php echo $value ?>"><?php echo $value ?></a>
+                            <?php endif ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Facebook:</th>
+                        <td>
+                            <?php if (!empty($profile->facebookId)): ?>
+                                <?php $value = $this->escape($profile->facebookId) ?>
+                                <a href="http://facebook.com/<?php echo $value ?>"><?php echo $value ?></a>
+                            <?php endif ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Twitter:</th>
+                        <td>
+                            <?php if (!empty($profile->twitterId)): ?>
+                                <?php $value = $this->escape($profile->twitterId) ?>
+                                <a href="http://twitter.com/<?php echo $value ?>"><?php echo $value ?></a>
+                            <?php endif ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>AIM ID:</th>
+                        <td><?php echo $this->escape($profile->aimId) ?></td>
+                    </tr>
+                    <tr>
+                        <th>Yahoo! ID:</th>
+                        <td><?php echo $this->escape($profile->yahooId) ?></td>
+                    </tr>
+                    <tr>
+                        <th>MSN ID:</th>
+                        <td><?php echo $this->escape($profile->msnId) ?></td>
+                    </tr>
+                </table>
+            </div>
+        <?php elseif ($user->isBlocked()): ?>
+            <h1>This user is currently blocked.</h1>
+        <?php else: ?>
+            <h1>This user has been deleted.</h1>
+        <?php endif ?>
+    </div>
+</div>

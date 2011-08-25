@@ -1,0 +1,7 @@
+<?php if (!Zend_Auth::getInstance()->hasIdentity()): ?>
+    <div class="infoMessage">
+        <a href="<?php echo $this->loginUrl() ?>">Sign in</a> or
+        <a href="<?php echo $this->registerUrl() ?>">Register for an account</a>
+        to take credit for your post and build a reputation on Sageweb.
+    </div>
+<?php endif ?>

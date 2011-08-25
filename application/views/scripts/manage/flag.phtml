@@ -1,0 +1,47 @@
+<?php $this->headTitle()->prepend('Manage Flags') ?>
+
+<div id="sidebar">
+    <?php echo $this->partial('manage/_sidebar.phtml', array(
+        'adminMenu' => $this->adminMenu,
+        'moderatorMenu' => $this->moderatorMenu
+        )) ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>Manage Flags</h1>
+
+        <table class="fieldsTable">
+            <tr>
+                <th>Flag ID:</th>
+                <td><?php echo $this->flag->id ?></td>
+            </tr>
+            <tr>
+                <th>Type:</th>
+                <td><?php echo $this->flag->type ?></td>
+            </tr>
+            <tr>
+                <th>Created:</th>
+                <td>
+                    By <?php echo $this->userLink($this->flag->creatorId) ?>
+                    on <?php echo $this->formatDate($this->flag->createdAt, true) ?>
+                </td>
+            </tr>
+            <tr>
+                <th>Comment:</th>
+                <td><?php echo $this->escape($this->flag->comment) ?></td>
+            </tr>
+            <tr>
+                <th>Post:</th>
+                <td><a href="<?php echo $this->postEditUrl($this->post) ?>">View</a></td>
+            </tr>
+        </table>
+        <br />
+
+        <h2>Actions:</h2>
+
+        <form action="<?php echo $this->url() ?>" method="post">
+            <input type="submit" name="deleteSubmit" value="Delete Flag" />
+        </form>
+    </div>
+</div>

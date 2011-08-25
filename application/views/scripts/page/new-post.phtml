@@ -1,0 +1,73 @@
+<?php echo $this->headTitle()->prepend("Add a New Post") ?>
+
+<div class="main">
+
+    <a href="<?php echo $this->url(array(
+        'controller' => 'article',
+        'action' => 'new',
+        ), 'default', true) ?>"
+        >Post Article</a>
+    <br />
+
+    <a href="<?php echo $this->url(array(
+        'controller' => 'file',
+        'action' => 'new',
+        ), 'default', true) ?>"
+        >Post File</a>
+    <br />
+
+
+    <a href="<?php echo $this->url(array(
+        'controller' => 'article',
+        'action' => 'link',
+        ), 'default', true) ?>"
+        >Post Link</a>
+    <br />
+
+    <a href="<?php echo $this->url(array(
+        'controller' => 'event',
+        'action' => 'new',
+        ), 'default', true) ?>"
+        >Post Event</a>
+    <br />
+
+    <br />
+
+    <a href="<?php echo $this->url(array(
+        'controller' => 'question',
+        'action' => 'new',
+        ), 'default', true) ?>"
+        >Post Question</a>
+    <br />
+
+    <a href="<?php echo $this->url(array(
+        'controller' => 'topic',
+        'action' => 'new',
+        ), 'default', true) ?>"
+        >Post Discussin Topic</a>
+    <br />
+
+    <br />
+
+    <a href="<?php echo $this->url(array(
+        'controller' => 'job',
+        'action' => 'new',
+        ), 'default', true) ?>"
+        >Post Job</a>
+    <br />
+
+    <a href="<?php echo $this->url(array(
+        'controller' => 'funding',
+        'action' => 'new',
+        ), 'default', true) ?>"
+        >Post Funding Opportunity</a>
+    <br />
+
+    <a href="<?php echo $this->url(array(
+        'controller' => 'paper',
+        'action' => 'new',
+        ), 'default', true) ?>"
+        >Post PubMed Paper</a>
+    <br />
+
+</div>

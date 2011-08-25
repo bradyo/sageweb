@@ -1,0 +1,66 @@
+<div id="sidebar">
+    <div class="block">
+        <div class="blockTitle">Account Help</div>
+        <div class="blockContent">
+            <ul>
+                <li>
+                    <a href="<?php echo $this->url(
+                        array('controller' => 'user', 'action' => 'reset-password'),
+                        'default', true
+                        ) ?>">Lost your password?</a>
+                </li>
+                <li>
+                    <a href="<?php echo $this->url(
+                        array('controller' => 'user', 'action' => 'register'),
+                        'default', true
+                        ) ?>">Need an account?</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>Sign in to Sageweb.org:</h1>
+
+        <?php if (isset($this->message)): ?>
+            <div style="margin: 1em 0; color: red">
+                * <?php echo $this->message ?>
+            </div>
+        <?php endif ?>
+
+        <p style="margin: 1em 0">Enter your username name and password below.</p>
+
+        <?php $form = $this->form ?>
+        <form id="loginForm" name="loginForm" action="<?php echo $form->getAction() ?>"
+            method="<?php echo $form->getMethod() ?>">
+            <table class="formTable">
+                <tr>
+                    <th><strong><?php echo $form->username->getLabel() ?>:</strong></th>
+                    <td><?php echo $form->username->renderViewHelper() ?></td>
+                </tr>
+                <tr>
+                    <th><strong><?php echo $form->password->getLabel() ?>:</strong></th>
+                    <td><?php echo $form->password->renderViewHelper() ?></td>
+                </tr>
+                <tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <label for="<?php echo $form->remember->getName() ?>">
+                            <?php echo $form->remember->renderViewHelper() ?>
+                            <?php echo $form->remember->getLabel() ?>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="submit" value="Sign In" style="width:10em" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>

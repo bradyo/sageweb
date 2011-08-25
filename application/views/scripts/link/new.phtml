@@ -1,0 +1,10 @@
+<?php echo $this->headTitle()->prepend('New Link') ?>
+
+<div id="sidebar">
+    <?php echo $this->render('content/_actionsBlock.phtml') ?>
+</div>
+
+<div class="main" style="margin-right:190px;">
+    <h1>New Link</h1>
+    <?php echo $this->partial('link/_form.phtml', array('form' => $this->form)) ?>
+</div>

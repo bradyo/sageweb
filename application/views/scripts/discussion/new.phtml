@@ -1,0 +1,14 @@
+<?php echo $this->headTitle()->prepend('Add Discussion') ?>
+
+<div id="sidebar">   
+    <?php echo $this->render('discussion/_actionsBlock.phtml') ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <?php echo $this->render('post/_guestMessage.phtml') ?>
+
+        <h1>Add Discussion</h1>
+        <?php echo $this->partial('discussion/_form.phtml', array('form' => $this->form)) ?>
+    </div>
+</div>

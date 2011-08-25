@@ -1,0 +1,15 @@
+<div id="sidebar">
+    <?php echo $this->render('content/_actionsBlock.phtml') ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>
+            <a href="<?php echo $this->url(
+                array('action' => 'show', 'id' => $this->post->getSlugId()), 'file', true
+                ) ?>">File</a>
+            &gt; Edit
+        </h1>
+        <?php echo $this->partial('file/_form.phtml', array('form' => $this->form)) ?>
+    </div>
+</div>

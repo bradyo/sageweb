@@ -1,0 +1,44 @@
+<div class="block">
+    <div class="blockTitle">User Summary</div>
+    <div class="blockContent">
+        <?php echo $this->partial('user/_badge.phtml', array('user' => $this->user)) ?>
+        <div class="clear"></div>
+    </div>
+</div>
+
+<div class="blockContainer">
+    <ul class="menuList">
+        <?php foreach ($this->menu as $page): ?>
+            <li>
+                <?php if ($page->isActive()): ?>
+                    <span class="activeMenuItem"><?php echo $page->getLabel() ?></span>
+                <?php else: ?>
+                    <a class="menuItem" href="<?php echo $page->getHref()
+                        ?>"><?php echo $page->getLabel() ?></a>
+                <?php endif ?>
+            </li>
+        <?php endforeach ?>
+    </ul>
+</div>
+
+<?php if (Application_Registry::getUser()->isModerator()): ?>
+    <div class="blockContainer">
+        <ul class="menuList">
+            <li>
+                <a class="menuItem" href="<?php echo $this->url(array('action' => 'block'))
+                    ?>">Block User</a>
+            </li>
+            <li>
+                <a class="menuItem" href="<?php echo $this->url(array('action' => 'unblock'))
+                    ?>">Unblock User</a>
+            </li>
+
+            <?php if (Application_Registry::getUser()->isAdmin()): ?>
+                <li>
+                    <a class="menuItem" href="<?php echo $this->url(array('action' => 'role'))
+                        ?>">Change Role</a>
+                </li>
+            <?php endif ?>
+        </ul>
+    </div>
+<?php endif ?>

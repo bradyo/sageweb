@@ -1,0 +1,10 @@
+<div class="actionsBar">
+    Actions:
+    <a href="<?php echo $this->url(
+        array('action' => 'edit', 'id' => $this->post->entityId), $this->post->entity->type, true)
+        ?>">New Revision</a>
+
+    <a href="<?php echo $this->url(
+        array('action' => 'revisions', 'id' => $this->post->entityId), $this->post->entity->type, true)
+        ?>">Revisions</a>
+</div>

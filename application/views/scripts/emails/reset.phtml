@@ -1,0 +1,11 @@
+<?php echo $this->username ?>,<br />
+<br />
+A request to reset the password for your account has been made at sageweb.org.<br />
+<br />
+You may log in by clicking on this link or copying and pasting into your browser:<br />
+<?php $url = 'http://sageweb.org/user/login?key=' . $this->activationKey ?>
+<a href="<?php echo $url ?>"><?php echo $url ?></a><br />
+<br />
+This is a one-time login, so it can be used only once.<br />
+<br />
+-- The Sageweb Team

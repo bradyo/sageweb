@@ -1,0 +1,35 @@
+<?php
+/* @var $event Sageweb_Event_EventPost */
+$event = $this->event;
+/* @var $eventTypes Application_Model_Event_EventTypes */
+$eventTypes = $this->eventTypes;
+?>
+
+<div class="defaultIcon eventIcon">
+    <div class="eventIconOverlay">
+        <div>
+            <?php $class = 'type-key ' . $event->eventType . '-key' ?>
+            <span class="<?php echo $class 
+                ?>"><?php echo $eventTypes->getLabel($event->eventType) ?></span>
+        </div>
+    </div>
+</div>
+
+<div class="eventData">
+    <h2>
+        <?php $url = $this->url(array('id' => $event->post->getSlugId()), 'event', true) ?>
+        <a href="<?php echo $this->escape($url) 
+            ?>"><?php echo $this->escape($event->post->title) ?></a>
+    </h2>
+
+    <div class="eventDates">
+        <?php echo $this->formatDate($event->startDate) ?>
+        <?php if (!empty($event->endDate) && $event->endDate != $event->startDate): ?>
+            - <?php echo $this->formatDate($event->endDate) ?>
+        <?php endif ?>
+    </div>
+
+    <div>
+        <?php echo $this->cleanHtmlSummary($event->post->summary) ?>
+    </div>
+</div>

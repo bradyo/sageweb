@@ -1,0 +1,16 @@
+<?php
+$viewsMenu = new Application_Model_Event_EventViewsMenu();
+?>
+
+<div class="viewsPanel">
+    <?php foreach ($viewsMenu->getPages() as $page): ?>
+        <?php /* @var $page Zend_Navigation_Page */ ?>
+        <?php if ($page->isActive()): ?>
+            <?php echo $page->getLabel() ?>
+        <?php else: ?>
+            <a class="view" href="<?php echo $page->getHref() 
+                . $this->queryString(array('page' => null))
+                ?>"><?php echo $page->getLabel() ?></a>
+        <?php endif ?>
+    <?php endforeach ?>
+</div>

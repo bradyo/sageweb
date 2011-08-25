@@ -1,0 +1,122 @@
+<?php $commentsTree = Sageweb_Cms_Table_Comment::getNestedTree($this->post->entityId) ?>
+
+<div class="main comments">
+    <h2 style="margin-top:0">Comments:</h2>
+
+    <div class="commentsTree">
+        <?php if (count($commentsTree) > 0): ?>
+            <?php foreach ($commentsTree as $treeNode): ?>
+                <?php echo $this->partial('post/_commentsTree.phtml', array('tree' => $treeNode)) ?>
+            <?php endforeach ?>
+        <?php endif ?>
+    </div>
+
+    <?php if (Zend_Auth::getInstance()->hasIdentity()): ?>
+        <a id="addRootComment" href="#" onclick="return false;">Add a Comment</a>
+        <script type="text/javascript">
+            $("#addRootComment").click(function() {
+                $(this).hide();
+                $("#rootComment").fadeIn();
+            });
+        </script>
+
+        <div id="rootComment" class="comment" style="display:none; margin-bottom:1em">
+            <div class="commentAvatar">
+                <img src="<?php echo $this->escape(
+                    $this->gravatar(Application_Registry::getUser()->email, array('s'=> 50, 'd' => 'mm'))
+                    ) ?>" alt="" style="float:left" />
+            </div>
+
+            <div class="commentCallout">
+                <div class="calloutContent">
+                    <div class="commentMeta">
+                        <?php echo $this->userLink(Application_Registry::getUser()->id) ?>:
+                    </div>
+
+                    <div class="commentBody">
+                        <form id="commentForm" name="commentForm" action="" method="post">
+                            <input type="hidden" name="rootEntityId" value="<?php echo $this->post->entityId ?>" />
+                            <input type="hidden" name="parentEntityId" value="<?php echo $this->post->entityId ?>" />
+                            <textarea name="body" cols="60" rows="3"></textarea>
+                        </form>
+                    </div>
+
+                    <div>
+                        <button id="submitComment" onclick="return false;">Submit Comment</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $('#submitComment').click(function() {
+                $.post("<?php echo $this->url(
+                    array('controller' => 'api', 'action' => 'comment'), 'default', true
+                    ) ?>", $("#commentForm<?php echo $comment->entityId ?>").serialize(),
+                    function(data) {
+                        $(".comment:last").after(data);
+                        $("#rootComment").hide();
+                        $("#submitComment").show();
+                        $("#addRootComment").show();
+                        $("#rootComment textarea").val("");
+                    },
+                    "html"
+                );
+            })
+        </script>
+
+        <div id="flagDialog" title="Flag Content for Moderator">
+            <div style="padding:1em">
+                <p>To report this content to a moderator, fill out the form below:</p>
+                <form id="flagForm" action="<?php echo $this->url(
+                        array('controller' => 'api', 'action' => 'flag'),
+                        'default', true
+                        ) ?>" method="post">
+                    <div>
+                        <input type="hidden" id="flagEntityId" name="entityId" value="" />
+                        <?php $form = new Application_Form_Flag() ?>
+                        <label for="<?php echo $form->type->getId() ?>">Type:</label><br />
+                        <?php echo $form->type->renderViewHelper() ?>
+                        <br />
+                        <br />
+                        <label for="<?php echo $form->comment->getId() ?>">Comment:</label><br />
+                        <?php echo $form->comment->renderViewHelper() ?>
+                        <br />
+                        <button id="submitFlag" onclick="return false;">Submit Flag</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <script type="text/javascript">
+            $("#flagDialog").dialog({
+                autoOpen: false,
+                width: 400,
+                modal: true
+            });
+
+            $('.flagLink').click(function() {
+                var linkId = $(this).attr('id');
+                var matches = linkId.match(/^flag(\d+)$/);
+                $("#flagEntityId").val(matches[1]);
+				$("#flagDialog").dialog("open");
+			});
+
+            $('#submitFlag').click(function() {
+                $.post("<?php echo $this->url(
+                    array('controller' => 'api', 'action' => 'flag'), 'default', true
+                    ) ?>",
+                    $("#flagForm").serialize(),
+                    function(data) {
+                        $("#flagDialog").dialog("close");
+                    },
+                    "html"
+                );
+            })
+        </script>
+
+    <?php else: ?>
+        <a href="<?php echo $this->loginUrl() ?>">Sign in to comment</a>
+    <?php endif ?>
+    
+</div>

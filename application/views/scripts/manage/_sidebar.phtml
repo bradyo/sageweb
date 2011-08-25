@@ -1,0 +1,18 @@
+<div class="block">
+    <div class="blockTitle">Moderate</div>
+    <div class="blockContent">
+        <ul class="menuList">
+            <?php foreach ($this->moderatorMenu as $page): ?>
+                <li>
+                    <?php if ($page->isActive()): ?>
+                        <span class="activeMenuItem"><?php echo $page->getLabel() ?></span>
+                    <?php else: ?>
+                        <a class="menuItem" href="<?php echo $page->getHref()
+                            ?>"><?php echo $page->getLabel() ?></a>
+                    <?php endif ?>
+                </li>
+            <?php endforeach ?>
+        </ul>
+    </div>
+</div>
+

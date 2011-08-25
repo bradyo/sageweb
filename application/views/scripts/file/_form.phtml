@@ -1,0 +1,104 @@
+<?php $form = $this->form ?>
+
+<div id="formDiv" style="width:680px">
+<form id="fileForm" name="fileForm" action="" method="post" enctype="multipart/form-data">
+
+    <?php if (isset($form->id)): ?>
+        <?php echo $form->id->renderViewHelper() ?>
+    <?php endif ?>
+
+    <?php if ($form->isErrors()): ?>
+        <p style="color:red; margin-bottom: 1em;">
+            The form had some errors. Please correct them below.</p>
+    <?php endif ?>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->title->getLabel() ?></label>
+        <?php echo $form->title->renderViewHelper() ?>
+        <?php echo $form->title->renderErrors() ?>
+    </div>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->summary->getLabel() ?></label>
+        <p class="inputDetail">Enter a short summary (up to 1000 characters).</p>
+        <?php echo $form->summary->renderViewHelper() ?>
+        <?php echo $form->summary->renderErrors() ?>
+    </div>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->file->getLabel() ?></label><br />
+        <?php if ($form->hasUpload()): ?>
+            <div>
+                <?php $upload = $form->getUpload() ?>
+                Existing File: <a href="<?php echo $this->url(
+                    array('action' => 'download', 'filename' => $upload->getUri()),
+                    'uploads', true
+                    ) ?>" target="_blank"><?php echo $this->escape($upload->filename) ?></a>
+            </div>
+        <?php endif ?>
+        <?php echo $form->file->renderFile() ?>
+        <?php echo $form->file->renderErrors() ?>
+    </div>
+
+    <div  style="margin-bottom:2em">
+        <label><?php echo $form->categories->getLabel() ?></label>
+        <p class="inputDetail">Help us categorize our content by selecting some
+            categories for your post.</p>
+        <div class="categoryOptionsDiv">
+            <?php echo $form->categories->renderViewHelper() ?>
+            <?php echo $form->categories->renderErrors() ?>
+        </div>
+        <div class="clear"></div>
+    </div>
+
+    <div style="margin-bottom:2em">
+        <label><?php echo $form->tags->getLabel() ?></label>
+        <p class="inputDetail">Tag your post with relevant terms separated by a
+            comma. Example: C. elegans, Longevity, Progeria.</p>
+        <?php echo $form->tags->renderViewHelper() ?>
+        <?php echo $form->tags->renderErrors() ?>
+    </div>
+
+    <?php if ($form->showModerationFields()): ?>
+        <fieldset style="margin-top:1em">
+            <legend>Moderator Options</legend>
+
+            <div style="margin-bottom:1em">
+                <label><?php echo $form->status->getLabel() ?></label>
+                <?php echo $form->status->renderViewHelper() ?>
+                <?php echo $form->status->renderErrors() ?>
+            </div>
+
+            <div style="margin-bottom:1em">
+                <label><?php echo $form->author->getLabel() ?></label>
+                <?php echo $form->author->renderViewHelper() ?>
+                <?php echo $form->author->renderErrors() ?>
+                <script type="text/javascript">
+                    $('#<?php echo $form->author->getId() ?>').autocomplete({
+                        source: '<?php echo $this->url(array(
+                            'controller' => 'api',
+                            'action' => 'get-usernames'),
+                            'default', true) ?>',
+                        delay: 0
+                    });
+                </script>
+            </div>
+
+            <div>
+                <label for="<?php echo $form->isFeatured->getName() ?>">
+                    Featured:
+                    <?php echo $form->isFeatured->renderViewHelper() ?>
+                </label>
+            </div>
+        </fieldset>
+    <?php endif ?>
+
+    <?php if (!$form->showModerationFields()): ?>
+        <div style="margin-bottom:1em">
+            <?php echo $form->captcha ?>
+        </div>
+    <?php endif ?>
+
+    <?php echo $form->submit->renderViewHelper() ?>
+</form>
+</div>

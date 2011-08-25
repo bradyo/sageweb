@@ -1,0 +1,7 @@
+<?php foreach ($this->navigation->getPages() as $page): ?>
+    <?php if ($page->isActive()): ?>
+        <strong><?php echo $page->getLabel() ?></strong>
+    <?php else: ?>
+        <a href="<?php echo $page->getHref() ?>"><?php echo $page->getLabel() ?></a>
+    <?php endif ?>
+<?php endforeach ?>

@@ -1,0 +1,38 @@
+<div class="block">
+    <div class="blockTitle">My Account</div>
+    <div class="blockContent">
+        <ul class="menuList">
+            <?php foreach ($this->menu as $page): ?>
+                <li>
+                    <?php if ($page->isActive()): ?>
+                        <span class="activeMenuItem"><?php echo $page->getLabel() ?></span>
+                    <?php else: ?>
+                        <a class="menuItem" href="<?php echo $page->getHref()
+                            ?>"><?php echo $page->getLabel() ?></a>
+                    <?php endif ?>
+                </li>
+            <?php endforeach ?>
+        </ul>
+    </div>
+</div>
+
+<div class="block">
+    <div class="blockTitle">My Profile</div>
+    <div class="blockContent">
+        <ul class="menuList">
+            <li>
+                <a class="menuItem" href="<?php echo $this->url(
+                    array('username' => Application_Registry::getUser()->username, 'action' => 'show'),
+                    'profile', true)
+                    ?>">View Profile</a>
+            </li>
+            <li>
+                <a class="menuItem" href="<?php echo $this->url(
+                    array('username' => Application_Registry::getUser()->username, 'action' => 'edit'),
+                    'profile', true)
+                    ?>">Edit Profile</a>
+            </li>
+        </ul>
+    </div>
+</div>
+

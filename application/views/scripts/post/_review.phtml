@@ -1,0 +1,32 @@
+<div class="review" style="margin:0.5em 20px; height:40px; overflow: visible;">
+    <div style="float:left;">
+        <span style="font-weight:bold; margin-right:5px">Did you like this post?</span>
+        <?php if (!Application_Registry::getUser()->isGuest()): ?>
+            <a class="vote-up <?php echo ($this->voteValue == 1) ? 'vote-up-selected' : '' ?>"
+                href="#" onclick="return false;">Vote Up</a>
+            <a class="vote-down <?php echo ($this->voteValue == -1) ? 'vote-down-selected' : '' ?>"
+               href="#" onclick="return false;">Vote Down</a>
+            <?php echo $this->partial('post/_voteScript.phtml', array('post' => $this->post)) ?>
+        <?php else: ?>
+            <a href="<?php echo $this->url(array(), 'login', true) . '?dest=' . $this->url()
+                ?>">Sign in to vote</a>
+        <?php endif ?>
+    </div>
+
+    <?php if (APPLICATION_ENV !== 'development'): ?>
+        <div style="float:right">
+            <div class="addthis_toolbox addthis_default_style">
+                <a href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4cb6ad6325860a1e"
+                   class="addthis_button_compact"
+                   >Share</a>
+                <span class="addthis_separator">|</span>
+                <a class="addthis_button_facebook"></a>
+                <a class="addthis_button_twitter"></a>
+                <a class="addthis_button_delicious"></a>
+                <a class="addthis_button_digg"></a>
+                <a class="addthis_button_stumbleupon"></a>
+            </div>
+            <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4cb6ad6325860a1e"></script>
+        </div>
+    <?php endif ?>
+</div>

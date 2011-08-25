@@ -1,0 +1,13 @@
+<?php $this->headTitle()->prepend('Edit User') ?>
+
+<div style="float:left; position:relative; width:180px;">
+    <?php echo $this->partial('manage/_sidebar.phtml', array(
+        'adminMenu' => $this->adminMenu,
+        'moderatorMenu' => $this->moderatorMenu
+        )) ?>
+</div>
+
+<div class="main" style="margin-left:190px">
+    <h1>Edit User <?php echo $this->escape($this->user->username) ?></h1>
+    <?php echo $this->form ?>
+</div>

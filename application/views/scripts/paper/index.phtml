@@ -1,0 +1,44 @@
+<?php $this->headTitle()->prepend('Key Papers') ?>
+
+<div id="sidebar">
+    <?php echo $this->render('paper/_actionsBlock.phtml') ?>
+    <?php echo $this->render('paper/_filtersBlock.phtml') ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>Key Papers</h1>
+
+        <div style="position:absolute; right:10px; top:10px;">
+            Sort: <?php echo $this->partial('paper/_sortLinks.phtml',
+                array('navigation' => $this->sortNavigation)) ?>
+        </div>
+
+        <hr />
+
+        <?php if (count($this->pager) > 0): ?>
+            <?php foreach ($this->pager as $hit): ?>
+                <?php $doc = $hit->getDocument() ?>
+                <h2><a href="<?php echo $this->url(
+                    array('action' => 'show', 'id' => $doc->getFieldValue('id')), 'paper', true)
+                    ?>"><?php echo $this->escape($doc->getFieldValue('title')) ?></a></h2>
+                
+                <?php $abstract = $doc->getFieldValue('abstract'); ?>
+                <?php $abstract = (strlen($abstract) > 500) ? substr($abstract, 0, 500) . '...' : $abstract; ?>               
+                <p><?php echo $this->escape($abstract) ?></p>
+
+                <div>
+                    <?php echo $this->escape($doc->getFieldValue('source')) ?>.
+                    <?php echo $this->partial('post/_docStats.phtml', array('doc' => $doc)) ?>
+                </div>
+            <?php endforeach ?>
+
+            <?php if ($this->pager->getTotalItemCount() > $this->pager->getItemCountPerPage()): ?>
+                <hr style="margin-top:2em;" />
+                <?php echo $this->partial('pagination.phtml', array('pager' => $this->pager)) ?>
+            <?php endif ?>
+        <?php else: ?>
+            <p>There are currently no papers matching your criteria.</p>
+        <?php endif ?>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+<?php $this->headTitle()->prepend('Register Account') ?>
+
+<?php $this->headScript()->appendFile('/js/registerForm.js') ?>
+
+<div id="sidebar">
+    <div class="block">
+        <div class="blockTitle">
+            Legal Pages
+        </div>
+        <div class="blockContent">
+            <ul>
+                <li><a href="<?php echo $this->url(array('name' => 'terms-of-service'),
+                    'page', true
+                    ) ?>">Terms of Service</a></li>
+                <li><a href="<?php echo $this->url(array('name' => 'privacy-policy'),
+                    'page', true
+                    ) ?>">Privacy Policy</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>Register a New Account:</h1>
+
+        <?php $form = $this->form ?>
+        <form id="registerForm" name="registerForm" action="<?php echo $form->getAction() ?>"
+            method="<?php echo $form->getMethod() ?>">
+
+            <?php if ($form->isErrors()): ?>
+                <p style="color:red; margin-bottom: 1em;">
+                    The form had some errors. Please correct them below.</p>
+            <?php endif ?>
+
+            <strong><?php echo $form->username->getLabel() ?>:</strong>
+            <div>
+                <?php echo $form->username->renderViewHelper() ?>
+                <span id="usernameAvailabilty" style="margin-left:5px">
+                    <?php echo $form->username->renderErrors() ?>
+                </span>
+                <p class="inputDetail">Enter between 3 and 32 letters or numbers.</p>
+            </div>
+            <br />
+
+            <strong><?php echo $form->email->getLabel() ?>:</strong>
+            <div>
+                <?php echo $form->email->renderViewHelper() ?>
+                <span id="emailCheck">
+                    <?php echo $form->email->renderErrors() ?>
+                </span>
+                <p class="inputDetail">All e-mails from the system will be sent to
+                    this address. The e-mail address is not made public and will only be
+                    used if you wish to receive a new password or wish to receive certain
+                    news or notifications by e-mail.</p>
+            </div>
+
+            <div style="margin-top:1em">
+                <?php echo $form->captcha ?>
+            </div>
+
+            <input type="submit" value="Register Account" />
+        </form>
+    </div>
+</div>

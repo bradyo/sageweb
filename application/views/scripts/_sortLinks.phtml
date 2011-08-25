@@ -1,0 +1,10 @@
+<?php foreach ($this->navigation->getPages() as $page): ?>
+    <?php if ($page->isActive()): ?>
+        <strong><?php echo $page->getLabel() ?></strong>
+    <?php else: ?>
+        <a href="<?php echo $page->getHref() ?>"><?php echo $page->getLabel() ?></a>
+        <?php if ($page instanceof My_Navigation_Page_MvcCount): ?>
+            <span style="color:#aaa">(<?php echo $page->getCount() ?>)</span>
+        <?php endif ?>
+    <?php endif ?>
+<?php endforeach ?>

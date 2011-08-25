@@ -1,0 +1,112 @@
+<?php $headLink = $this->headLink() ?>
+<?php $headLink->appendStylesheet('/library/jquery-ui/css/custom/jquery-ui-1.8.7.custom.css'); ?>
+
+<?php $headScript = $this->headScript() ?>
+<?php $headScript->appendFile('/library/jquery-ui/js/jquery-ui-1.8.7.custom.min.js') ?>
+<?php $headScript->appendFile('/library/tiny_mce/tiny_mce.js') ?>
+
+<script type="text/javascript">
+    tinyMCE.init({
+        mode : "none",
+        theme : "advanced",
+        plugins : "style,inlinepopups,paste",
+        theme_advanced_buttons1 : "styleselect,|,bold,italic,underline,bullist,numlist,link,|,image",
+        theme_advanced_buttons2 : "",
+        theme_advanced_buttons3 : "",
+        theme_advanced_toolbar_location : "top",
+        theme_advanced_toolbar_align : "left",
+        theme_advanced_statusbar_location : "",
+        style_formats : [
+            {title: 'Header 2', block: 'h2'},
+            {title: 'Header 3', block: 'h3'},
+            {title : 'Image on left', selector : 'img', attributes : {'class' : 'floatLeft'}},
+            {title : 'Image on right', selector : 'img', attributes : {'class' : 'floatRight'}},
+            {title: 'Code', block: 'code'},
+            {title: 'Quote', block: 'blockquote'}
+        ],
+        relative_urls : false,
+        remove_script_host : true,
+        content_css : "/css/global.css",
+        height: "300px",
+        width: "100%"
+    });
+</script>
+
+<div id="formDiv" style="width:680px">
+    <?php $form = $this->form ?>
+    <form id="discussionForm" name="discussionForm" action="" method="post">
+        <?php if (isset($form->id)): ?>
+            <?php echo $form->id->renderViewHelper() ?>
+        <?php endif ?>
+
+        <?php if ($form->isErrors()): ?>
+            <p style="color:red; margin-bottom: 1em;">
+                The form had some errors. Please correct them below.</p>
+        <?php endif ?>
+
+        <div style="margin-bottom:1em">
+            <label><?php echo $form->forumId->getLabel() ?></label><br />
+            <?php echo $form->forumId->renderViewHelper() ?>
+            <?php echo $form->forumId->renderErrors() ?>
+        </div>
+
+        <div style="margin-bottom:1em">
+            <label><?php echo $form->title->getLabel() ?></label><br />
+            <?php echo $form->title->renderViewHelper() ?>
+            <?php echo $form->title->renderErrors() ?>
+        </div>
+
+        <div style="margin-bottom:2em">
+            <label><?php echo $form->body->getLabel() ?></label>
+            <?php echo $form->body->renderViewHelper() ?>
+            <?php echo $form->body->renderErrors() ?>
+            <script type="text/javascript">
+                tinyMCE.execCommand('mceAddControl', false,
+                '<?php echo $form->body->id ?>');
+            </script>
+        </div>
+
+        <div style="margin-bottom:2em">
+            <label><?php echo $form->tags->getLabel() ?></label>
+            <p class="inputDetail">Tag your post with relevant terms separated by a
+                comma. Example: C. elegans, Longevity, Progeria.</p>
+            <?php echo $form->tags->renderViewHelper() ?>
+            <?php echo $form->tags->renderErrors() ?>
+        </div>
+
+        <?php if ($form->showModerationFields()): ?>
+            <fieldset style="margin-top:1em">
+                <legend>Moderator Options</legend>
+
+                <div style="margin-bottom:1em">
+                    <label><?php echo $form->status->getLabel() ?></label>
+                    <?php echo $form->status->renderViewHelper() ?>
+                    <?php echo $form->status->renderErrors() ?>
+                </div>
+
+                <div style="margin-bottom:1em">
+                    <label><?php echo $form->author->getLabel() ?></label>
+                    <?php echo $form->author->renderViewHelper() ?>
+                    <?php echo $form->author->renderErrors() ?>
+                    <script type="text/javascript">
+                        $('#<?php echo $form->author->getId() ?>').autocomplete({
+                            source: '<?php echo $this->url(array(
+                                'controller' => 'api',
+                                'action' => 'get-usernames'),
+                                'default', true) ?>',
+                            delay: 0
+                        });
+                    </script>
+                </div>
+            </fieldset>
+        <?php endif ?>
+
+        <?php if (!$form->showModerationFields()): ?>
+            <div style="margin-bottom:1em">
+                <?php echo $form->captcha ?>
+            </div>
+        <?php endif ?>
+
+        <?php echo $form->submit->renderViewHelper() ?>
+    </form>
+</div>

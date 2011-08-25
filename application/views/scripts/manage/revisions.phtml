@@ -1,0 +1,85 @@
+<?php $this->headTitle()->prepend('Manage Revisions') ?>
+
+<div id="sidebar">
+    <?php echo $this->partial('manage/_sidebar.phtml', array(
+        'adminMenu' => $this->adminMenu,
+        'moderatorMenu' => $this->moderatorMenu
+        )) ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>Manage Revisions</h1>
+
+        <div style="overflow:auto; margin:5px 0">
+            <form action="<?php echo $this->url() ?>" method="get">
+                <div class="inline" style="float:left">
+                    <label for="type">Type:</label>
+                    <?php $typeSelect = new Zend_Form_Element_Select('type', array(
+                        'multiOptions' => array_merge(
+                            array('any' => 'Any'),
+                            Sageweb_Cms_Entity::getTypeOptions()
+                        ),
+                        'value' => $this->type
+                    )) ?>
+                    <?php echo $typeSelect->renderViewHelper() ?>
+                    
+                    <input type="submit" value="show" />
+                </div>
+
+                <div class="inline" style="float:right">
+                    <label for="sort">Sort By:</label>
+                    <?php $sortSelect = new Zend_Form_Element_Select('sort', array(
+                        'multiOptions' => array(
+                            'type' => 'Type',
+                            'status' => 'Status',
+                            'creator' => 'Creator',
+                            'createdAt' => 'Created At',
+                            'reviewer' => 'Reviewer',
+                            'reviewedAt' => 'ReviewedAt',
+                        ),
+                        'value' => $this->sort
+                    )) ?>
+                    <?php echo $sortSelect->renderViewHelper() ?>
+
+                    <?php $orderSelect = new Zend_Form_Element_Select('order', array(
+                        'multiOptions' => array(
+                            'asc' => 'Ascending',
+                            'desc' => 'Descending',
+                        ),
+                        'value' => $this->order
+                    )) ?>
+                    <?php echo $orderSelect->renderViewHelper() ?>
+
+                    <input type="submit" value="sort" />
+                </div>
+            </form>
+        </div>
+
+        <table class="dataTable" style="width:100%">
+            <thead>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th style="text-align:center">Action</th>
+            </thead>
+
+            <?php for ($iRow = 0; $iRow < count($this->revisions); $iRow++): ?>
+                <?php $revision = $this->revisions[$iRow] ?>
+                <tr class="<?php echo ($iRow % 2 != 0) ? 'alternate' : '' ?>">
+                    <td><?php echo $revision->entity->type ?></td>
+                    <td><?php echo $revision->status ?></td>
+                    <td>
+                        By <?php echo $this->userLink($revision->creatorId) ?>
+                        on <?php echo $this->formatDate($revision->createdAt, true) ?>
+                    </td>
+                    <td style="text-align:center">
+                        <a href="<?php echo $this->revisionUrl(
+                            $revision->entity, $revision->id
+                            ) ?>">View</a>
+                    </td>
+                </tr>
+            <?php endfor ?>
+        </table>
+    </div>
+</div>

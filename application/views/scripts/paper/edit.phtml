@@ -1,0 +1,12 @@
+<?php $this->headTitle()->prepend('Edit Paper') ?>
+
+<div id="sidebar">
+    <?php echo $this->render('paper/_actionsBlock.phtml') ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>Edit Paper</h1>
+        <?php echo $this->partial('paper/_form.phtml', array('form' => $this->form)) ?>
+    </div>
+</div>

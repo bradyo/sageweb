@@ -1,0 +1,62 @@
+<?php $posts = Sageweb_Cms_Table_Content::findSince($this->sinceDate, 10) ?>
+<?php if (count($content) > 0): ?>
+    <h2>Newly Added Content:</h2>
+    <ul>
+        <?php foreach ($posts as $content): ?>
+            <li>
+                <a href="http://sageweb.org<?php echo $this->url(array('id' => $content->getSlugId()), $content->entity_type, true)
+                    ?>"><?php echo $this->escape($content->title) ?></a>
+            </li>
+        <?php endforeach ?>
+    </ul>
+<?php endif ?>
+
+
+<?php $posts = Sageweb_Cms_Table_Paper::findSince($this->sinceDate, 10) ?>
+<?php if (count($posts) > 0): ?>    
+    <h2>Newly Added Papers:</h2>
+    <ul>
+        <?php foreach ($posts as $post): ?>
+            <li>
+                <a href="http://sageweb.org<?php echo $this->url(array('id' => $post->id), 'paper', true)
+                    ?>"><?php echo $this->escape($post->title) ?></a>
+            </li>
+        <?php endforeach ?>
+    </ul>
+<?php endif ?>
+
+<?php
+function formatDate($mysqlDatetime, $showTime = false) {
+        if (empty($mysqlDatetime)) {
+            return null;
+        }
+
+        // TODO: add localizaton support
+        $timestamp = strtotime($mysqlDatetime);
+
+        if ($showTime) {
+            return date('j F Y, g:ia', $timestamp);
+        } else {
+            return date('j F Y', $timestamp);
+        }
+    }
+?>
+
+<?php $posts = Sageweb_Cms_Table_Event::findSince($this->sinceDate, 10) ?>
+<?php if (count($posts) > 0): ?>
+    <h2>Newly Added Events:</h2>
+    <ul>
+        <?php foreach ($posts as $post): ?>
+            <li>
+                <span style="font-weight:bold"><?php echo formatDate($post->startsAt) ?></span>
+                -
+                <a href="http://sageweb.org<?php echo $this->url(array('id' => $post->id), 'event', true)
+                    ?>"><?php echo $this->escape($post->title) ?></a>
+            </li>
+        <?php endforeach ?>
+    </ul>
+<?php endif ?>
+    
+<p>Contribute to <a href="http://sageweb.org/">Sageweb.org</a> by posting some content.</p>
+
+<p>The Sageweb Team</p>

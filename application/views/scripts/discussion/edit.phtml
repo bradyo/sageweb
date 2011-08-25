@@ -1,0 +1,19 @@
+<?php $this->headTitle()->prepend('Edit Discussion') ?>
+
+<div id="sidebar">
+    <?php echo $this->render('discussion/_actionsBlock.phtml') ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>
+            <a href="<?php echo $this->url(
+                array('action' => 'show', 'id' => $this->post->getSlugId()),
+                'discussion', true
+                ) ?>">Discussion</a>
+            &gt; Edit
+        </h1>
+
+        <?php echo $this->partial('discussion/_form.phtml', array('form' => $this->form)) ?>
+    </div>
+</div>

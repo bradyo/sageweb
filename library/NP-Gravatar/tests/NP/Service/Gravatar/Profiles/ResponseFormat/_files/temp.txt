@@ -1,0 +1,55 @@
+a:1:{
+	s:5:"entry";a:1:{
+		i:0;a:17:{
+			s:2:"id";s:4:"1";
+			s:4:"hash";s:32:"11111111111111112222222222222222";
+			s:11:"requestHash";s:32:"11111111111111112222222222222222";
+			s:10:"profileUrl";s:23:"http://gravatar.com/foo";
+			s:17:"preferredUsername";s:3:"foo";
+			s:12:"thumbnailUrl";s:63:"http://www.gravatar.com/avatar/1111111111111111nnnnnnnnnnnnnnnn";
+			
+			s:6:"photos";a:3:{
+				i:0;a:2:{s:5:"value";s:63:"http://www.gravatar.com/avatar/1111111111111111nnnnnnnnnnnnnnnn";s:4:"type";s:9:"thumbnail";}
+				i:1;a:1:{s:5:"value";s:71:"http://www.gravatar.com/userimage/1/2222222222222222nnnnnnnnnnnnnnnn";}
+				i:2;a:1:{s:5:"value";s:71:"http://www.gravatar.com/userimage/1/3333333333333333nnnnnnnnnnnnnnnn";}
+			}
+			s:17:"profileBackground";a:4:{
+				s:5:"color";s:7:"#d1d1d1";
+				s:8:"position";s:4:"left";
+				s:6:"repeat";s:6:"repeat";
+				s:3:"url";s:64:"http://www.gravatar.com/bg/1/1111111111111111nnnnnnnnnnnnnnnn";
+			}
+			s:4:"name";a:3:{
+				s:9:"givenName";s:3:"Foo";
+				s:10:"familyName";s:3:"Bar";
+				s:9:"formatted";s:7:"Foo Bar";
+			}
+			s:11:"displayName";s:7:"Foo Bar";
+			s:7:"aboutMe";s:90:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce imperdiet egestas ultrices.";
+			s:15:"currentLocation";s:6:"FooBar";
+			s:12:"phoneNumbers";a:1:{
+				i:0;a:2:{s:4:"type";s:6:"mobile";s:5:"value";s:7:"1234567";}
+			}
+			s:6:"emails";a:1:{
+				i:0;a:2:{s:7:"primary";s:4:"true";s:5:"value";s:11:"foo@bar.com";}
+			}
+			s:3:"ims";a:4:{
+				i:0;a:2:{s:4:"type";s:3:"aim";s:5:"value";s:6:"foobar";}
+				i:1;a:2:{s:4:"type";s:3:"msn";s:5:"value";s:11:"foo@bar.com";}
+				i:2;a:2:{s:4:"type";s:5:"yahoo";s:5:"value";s:6:"foobar";}
+				i:3;a:2:{s:4:"type";s:5:"gtalk";s:5:"value";s:17:"foo.bar@gmail.com";}
+			}
+			s:8:"accounts";a:4:{
+				i:0;a:6:{s:6:"domain";s:11:"blogger.com";s:7:"display";s:11:"blogger.com";s:3:"url";s:51:"http://www.blogger.com/profile/11111111111111111111";s:6:"userid";s:20:"11111111111111111111";s:8:"verified";s:4:"true";s:9:"shortname";s:7:"blogger";}
+				i:1;a:6:{s:6:"domain";s:8:"digg.com";s:7:"display";s:6:"foobar";s:3:"url";s:28:"http://digg.com/users/foobar";s:8:"username";s:6:"foobar";s:8:"verified";s:4:"true";s:9:"shortname";s:4:"digg";}
+				i:2;a:6:{s:6:"domain";s:12:"facebook.com";s:7:"display";s:6:"foobar";s:3:"url";s:30:"http://www.facebook.com/foobar";s:8:"username";s:6:"foobar";s:8:"verified";s:4:"true";s:9:"shortname";s:8:"facebook";}
+				i:3;a:6:{s:6:"domain";s:11:"twitter.com";s:7:"display";s:7:"@foobar";s:3:"url";s:25:"http://twitter.com/foobar";s:8:"username";s:6:"foobar";s:8:"verified";s:4:"true";s:9:"shortname";s:7:"twitter";}
+			}
+			s:4:"urls";a:4:{
+				i:0;a:2:{s:5:"value";s:27:"http://dentedreality.com.au";s:5:"title";s:14:"Dented Reality";}
+				i:2;a:2:{s:5:"value";s:20:"http://wordpress.com";s:5:"title";s:13:"WordPress.com";}
+				i:3;a:2:{s:5:"value";s:19:"http://gravatar.com";s:5:"title";s:8:"Gravatar";}
+			}
+		}
+	}
+}

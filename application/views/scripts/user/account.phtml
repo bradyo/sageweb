@@ -1,0 +1,14 @@
+<?php $this->headTitle()->prepend('Edit Account') ?>
+
+<div id="sidebar">
+    <?php echo $this->partial('user/_sidebar.phtml', array('menu' => $this->menu)) ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <?php echo $this->partial('_messages.phtml') ?>
+
+        <h1>Edit Account</h1>
+        <?php echo $this->form ?>
+    </div>
+</div>

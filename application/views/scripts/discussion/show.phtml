@@ -1,0 +1,52 @@
+<?php $this->headTitle()->prepend($this->post->title) ?>
+
+<div id="sidebar">
+    <?php echo $this->render('discussion/_actionsBlock.phtml') ?>
+    
+    <?php if ($this->canEdit): ?>
+        <?php echo $this->partial('discussion/_editBlock.phtml', array(
+            'post' => $this->post,
+            'pendingRevisions' => $this->pendingRevisions
+            )) ?>
+    <?php endif ?>
+
+    <?php echo $this->partial('post/_badgeBlock.phtml',
+        array('title' => 'Posted By', 'user' => $this->post->author) ) ?>
+
+    <div class="blockContainer">
+        <?php echo $this->partial('post/_stats.phtml', array('post' => $this->post)) ?>
+    </div>
+
+    <?php if ($this->post->isPublic()): ?>
+        <?php echo $this->partial('discussion/_tagsBlock.phtml', array('tags' => $this->tags)) ?>
+    <?php endif ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <?php if ($this->post->isPublic()): ?>
+            <h1><?php echo $this->escape($this->post->title) ?></h1>
+
+            <div class="authorInfo">
+                <?php echo $this->partial('post/_meta.phtml', array('post' => $this->post)) ?>
+            </div>
+
+            <hr />
+
+            <?php echo $this->cleanHtmlBody($this->post->body) ?>
+
+        <?php elseif ($this->post->isHeld()): ?>
+            <h1>This content has been flagged for review.</h1>
+        <?php elseif ($this->post->isDeleted()): ?>
+            <h1>This content has been deleted.</h1>
+        <?php else: ?>
+            <h1>This content is pending moderator approval.</h1>
+        <?php endif ?>
+    </div>
+
+    <?php if ($this->post->isPublic()): ?>
+        <?php echo $this->partial('post/_review.phtml',
+            array('post' => $this->post, 'voteValue' => $this->voteValue) ) ?>
+        <?php echo $this->partial('post/_comments.phtml', array('post' => $this->post)) ?>
+    <?php endif ?>
+</div>

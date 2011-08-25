@@ -1,0 +1,99 @@
+<?php $this->headLink()->appendStylesheet('/library/jquery-ui/css/custom/jquery-ui-1.8.7.custom.css'); ?>
+<?php $this->headScript()->appendFile('/library/jquery-ui/js/jquery-ui-1.8.7.custom.min.js') ?>
+
+<?php $form = $this->form ?>
+<form id="personForm" name="personForm" action="" method="post">
+    
+    <?php if (isset($form->id)): ?>
+        <?php echo $form->id->renderViewHelper() ?>
+    <?php endif ?>
+
+    <?php if ($form->isErrors()): ?>
+        <p style="color:red; margin-bottom: 1em;">
+            The form had some errors. Please correct them below.
+        </p>
+    <?php endif ?>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->firstName->getLabel() ?></label><br />
+        <?php echo $form->firstName->renderViewHelper() ?>
+        <?php echo $form->firstName->renderErrors() ?>
+    </div>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->lastName->getLabel() ?></label><br />
+        <?php echo $form->lastName->renderViewHelper() ?>
+        <?php echo $form->lastName->renderErrors() ?>
+    </div>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->email->getLabel() ?></label><br />
+        <?php echo $form->email->renderViewHelper() ?>
+        <?php echo $form->email->renderErrors() ?>
+    </div>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->location->getLabel() ?></label><br />
+        <?php echo $form->location->renderViewHelper() ?>
+        <?php echo $form->location->renderErrors() ?>
+    </div>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->personalUrl->getLabel() ?></label><br />
+        <?php echo $form->personalUrl->renderViewHelper() ?>
+        <?php echo $form->personalUrl->renderErrors() ?>
+    </div>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->labName->getLabel() ?></label><br />
+        <?php echo $form->labName->renderViewHelper() ?>
+        <?php echo $form->labName->renderErrors() ?>
+    </div>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->labUrl->getLabel() ?></label><br />
+        <?php echo $form->labUrl->renderViewHelper() ?>
+        <?php echo $form->labUrl->renderErrors() ?>
+    </div>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->body->getLabel() ?></label><br />
+        <?php echo $form->body->renderViewHelper() ?>
+        <?php echo $form->body->renderErrors() ?>
+    </div>
+
+    <?php if ($form->showModerationFields()): ?>
+        <fieldset style="margin-top:1em">
+            <legend>Moderator Options</legend>
+
+            <div style="margin-bottom:1em">
+                <label><?php echo $form->status->getLabel() ?></label>
+                <?php echo $form->status->renderViewHelper() ?>
+                <?php echo $form->status->renderErrors() ?>
+            </div>
+
+            <div style="margin-bottom:1em">
+                <label><?php echo $form->author->getLabel() ?></label>
+                <?php echo $form->author->renderViewHelper() ?>
+                <?php echo $form->author->renderErrors() ?>
+                <script type="text/javascript">
+                    $('#<?php echo $form->author->getId() ?>').autocomplete({
+                        source: '<?php echo $this->url(array(
+                            'controller' => 'api',
+                            'action' => 'get-usernames'),
+                            'default', true) ?>',
+                        delay: 0
+                    });
+                </script>
+            </div>
+        </fieldset>
+    <?php endif ?>
+
+    <?php if (isset($form->captcha)): ?>
+        <div style="margin-bottom:1em">
+            <?php echo $form->captcha ?>
+        </div>
+    <?php endif ?>
+
+    <?php echo $form->submit->renderViewHelper() ?>
+</form>

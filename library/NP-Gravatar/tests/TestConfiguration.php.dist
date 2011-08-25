@@ -1,0 +1,22 @@
+<?php
+/**
+ * NP-Gravatar
+ *
+ * LICENSE
+ *
+ * This source file is subject to the new BSD license that is
+ * bundled with this package in the file LICENSE.txt.
+ */
+
+/**
+ * Defines configuration for running the unit tests for the 
+ * NP-Gravatar classes.
+ *
+ * @author Nikola Posa <posa.nikola@gmail.com>
+ * @license New BSD License
+ */
+
+define('ZEND_FRAMEWORK_PATH', 'path to ZF goes here');
+
+define('GRAVATAR_API_KEY', 'API key goes here');
+define('GRAVATAR_ACCOUNT_EMAIL', 'some gravatar email goes here');

@@ -1,0 +1,173 @@
+<?php $this->headTitle()->prepend('Event Revision') ?>
+
+<div class="main">
+    <h1>
+        <a href="<?php echo $this->url(
+            array('action' => 'show', 'id' => $this->post->getSlugId()), 'event', true
+            ) ?>">Event</a>
+        &gt;
+        <a href="<?php echo $this->url(
+            array('action' => 'revisions', 'id' => $this->post->id), 'event', true
+            ) ?>">Revisions</a>
+        &gt;
+        Revision
+    </h1>
+
+    <table class="fieldsTable">
+        <tr>
+            <th>Revision ID:</th>
+            <td><?php echo $this->revision->id ?></td>
+        </tr>
+        <tr>
+            <th>Status:</th>
+            <td><?php echo $this->revision->status ?></td>
+        </tr>
+        <tr>
+            <th>Created:</th>
+            <td>
+                By <?php echo $this->userLink($this->revision->creatorId) ?>
+                on <?php echo $this->formatDate($this->revision->createdAt, true) ?>
+            </td>
+        </tr>
+        <tr>
+            <th>Comment:</th>
+            <td><?php echo $this->escape($this->revision->creatorComment) ?></td>
+        </tr>
+        <?php if ($this->revision->status != Sageweb_Cms_EntityRevision::STATUS_PENDING): ?>
+            <tr>
+                <th>Reviewed:</th>
+                <td>
+                    By <?php echo $this->userLink($this->revision->reviewerId) ?>
+                    on <?php echo $this->formatDate($this->revision->reviewedAt, true) ?>
+                </td>
+            </tr>
+            <tr>
+                <th>Comment:</th>
+                <td><?php echo $this->escape($this->revision->reviewerComment) ?></td>
+            </tr>
+        <?php endif ?>
+    </table>
+
+    <h2>Changes:</h2>
+
+    <table class="fieldsTable revisionTable" style="width:100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th style="width:50%">Revision Data</th>
+                <th style="width:50%">Current Data</th>
+            </tr>
+        </thead>
+
+        <tr>
+            <th>Status:</th>
+            <td><?php echo $this->revisionData['status'] ?></td>
+            <?php if ($this->revisionData['status'] !== $this->currentData['status']): ?>
+                <td><?php echo $this->currentData['status'] ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+        <tr>
+            <th>Author:</th>
+            <td><?php echo $this->userLink($this->revisionData['authorId']) ?></td>
+            <?php if ($this->revisionData['authorId'] != $this->currentData['authorId']): ?>
+                <td><?php echo $this->userLink($this->currentData['authorId']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+
+        <tr>
+            <th>Title:</th>
+            <td><?php echo $this->escape($this->revisionData['title']) ?></td>
+            <?php if ($this->revisionData['title'] !== $this->currentData['title']): ?>
+                <td><?php echo $this->escape($this->currentData['title']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+        
+        <tr>
+            <th>Start Date:</th>
+            <td><?php echo $this->escape($this->revisionData['startsAt']) ?></td>
+            <?php if ($this->revisionData['startsAt'] !== $this->currentData['startsAt']): ?>
+                <td><?php echo $this->escape($this->currentData['startsAt']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+
+        <tr>
+            <th>End Date:</th>
+            <td><?php echo $this->escape($this->revisionData['endsAt']) ?></td>
+            <?php if ($this->revisionData['endsAt'] !== $this->currentData['endsAt']): ?>
+                <td><?php echo $this->escape($this->currentData['endsAt']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+        
+        <tr>
+            <th>Location:</th>
+            <td><?php echo $this->escape($this->revisionData['location']) ?></td>
+            <?php if ($this->revisionData['location'] !== $this->currentData['location']): ?>
+                <td><?php echo $this->escape($this->currentData['location']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+
+        <tr>
+            <th>Location:</th>
+            <td><?php echo $this->escape($this->revisionData['location']) ?></td>
+            <?php if ($this->revisionData['location'] !== $this->currentData['location']): ?>
+                <td><?php echo $this->escape($this->currentData['location']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+
+        <tr>
+            <th>URL:</th>
+            <td><?php echo $this->escape($this->revisionData['url']) ?></td>
+            <?php if ($this->revisionData['url'] !== $this->currentData['url']): ?>
+                <td><?php echo $this->escape($this->currentData['url']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+
+        <tr>
+            <th>Summary:</th>
+            <td><?php echo $this->cleanHtmlSummary($this->revisionData['summary']) ?></td>
+            <?php if ($this->revisionData['summary'] !== $this->currentData['summary']): ?>
+                <td><?php echo $this->cleanHtmlSummary($this->currentData['summary']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+
+        <tr>
+            <th>Featured:</th>
+            <td><?php echo $this->revisionData['isFeatured'] ?></td>
+            <?php if ($this->revisionData['isFeatured'] != $this->currentData['isFeatured']): ?>
+                <td><?php echo $this->currentData['isFeatured'] ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+
+        <tr>
+            <th>Tags:</th>
+            <td><?php echo $this->escape(join(', ', $this->revisionData['tags'])) ?></td>
+            <?php if ($this->revisionData['tags'] !== $this->currentData['tags']): ?>
+                <td><?php echo $this->escape(join(', ', $this->currentData['tags'])) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+    </table>
+
+    <?php echo $this->partial('post/_revisionForm.phtml', array('revision' => $this->revision)) ?>
+</div>

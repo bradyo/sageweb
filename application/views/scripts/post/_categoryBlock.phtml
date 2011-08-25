@@ -1,0 +1,18 @@
+<div class="block">
+    <div class="blockTitle">Categories</div>
+    <div class="blockContent">
+        <?php foreach ($this->post->categories as $category): ?>
+            <span class="category"><a href="<?php echo $this->url(
+                array('category' => $category['value']), 'content', true
+                ) ?>"><?php echo Sageweb_Cms_Table_Content::getCategoryLabel($category['value']) ?></a></span>
+            <br />
+        <?php endforeach ?>
+
+        <?php foreach ($this->post->tags as $tag): ?>
+            <span class="tag"><a href="<?php echo $this->url(
+                array('tag' => $tag['value']), 'content', true
+                ) ?>"><?php echo $this->escape($tag['value']) ?></a></span>
+            <br />
+        <?php endforeach ?>
+    </div>
+</div>

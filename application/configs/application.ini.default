@@ -1,0 +1,46 @@
+[production]
+
+    phpSettings.display_startup_errors = 1
+    phpSettings.display_errors = 1
+
+    bootstrap.path = APPLICATION_PATH "/Bootstrap.php"
+    bootstrap.class = "Bootstrap"
+    appnamespace = "Application"
+
+    resources.frontController.params.displayExceptions = 0
+    resources.frontController.baseUrl = ""
+
+    resources.db.adapter = PDO_MYSQL
+    resources.db.params.host = localhost
+    resources.db.params.dbname = cms
+    resources.db.params.username = changeme
+    resources.db.params.password = changeme
+    resources.db.params.charset = utf8
+    resources.db.default = true
+
+    resources.mail.transport.type = smtp
+    resources.mail.transport.auth = login    
+    resources.mail.transport.host = localhost
+    resources.mail.transport.username = changeme
+    resources.mail.transport.password = changeme
+
+    resources.mail.defaultFrom.email = support@localhost
+    resources.mail.defaultFrom.name = Support
+    resources.mail.defaultReplyTo.email = support@localhost
+    resources.mail.defaultReplyTo.name = Support
+
+
+[test : production ]
+
+    phpSettings.display_startup_errors = 1
+    phpSettings.display_errors = 1
+
+    resources.frontController.params.displayExceptions = 1
+
+
+[development : production]
+
+    phpSettings.display_startup_errors = 1
+    phpSettings.display_errors = 1
+
+    resources.frontController.params.displayExceptions = 1

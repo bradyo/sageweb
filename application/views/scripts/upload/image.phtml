@@ -1,0 +1,66 @@
+<html>
+<head>
+
+<style type="text/css">
+    table.formTable { }
+    table.formTable th { vertical-align: top; font-weight: bold; text-align: right; }
+</style>
+
+<?php if ($this->html): ?>
+    <script type="text/javascript">
+        var html = '<?php echo $this->html ?>';
+        var win = window.dialogArguments || opener || parent || top;
+        win.sendToEditor(html);
+    </script>
+<?php endif ?>
+</head>
+
+<body>
+    <form id="uploadForm" action="<?php echo $this->Url() ?>" method="post"
+          enctype="multipart/form-data" >
+        
+        <input type="file" name="file" />
+        <input type="submit" name="submitUpload" value="Upload" />
+
+        <?php if (isset($this->upload)): ?>
+            <div style="margin: 1em 0;">
+                <?php $imgSrc = $this->url(
+                    array('controller' => 'upload', 'action' => 'download',
+                        'filename' => $this->upload->getPublicFilename()),
+                    'default', true) ?>
+                <img id="image" src="<?php echo $imgSrc ?>" alt="" />
+                <input name="imageSrc" type="hidden" value="<?php echo $imgSrc ?>" />
+            </div>
+
+            <table class="formTable">
+                <tr>
+                    <th><label for="imageTitle">Title:</label></th>
+                    <td><input id="imageTitle" name="imageTitle" type="text" /></td>
+                </tr>
+                <tr>
+                    <th><label for="imageCaption">Caption:</label></th>
+                    <td><input id="imageCaption" name="imageCaption" type="text" /></td>
+                </tr>
+                <tr>
+                    <th>Position:</th>
+                    <td>
+                        <input type="radio" id="imageClassDefault" name="imageClass" checked="checked" value="" />
+                        <label for="imageClassDefault">Default</label>
+                        <br />
+
+                        <input type="radio" id="imageClassLeft" name="imageClass" value="imageLeft">
+                        <label for="imageClassLeft">Left</label>
+                        <br />
+
+                        <input type="radio" id="imageClassRight" name="imageClass" value="imageRight">
+                        <label for="imageClassRight">Right</label>
+                        <br />
+                    </td>
+                </tr>
+            </table>
+
+            <input type="submit" name="submitInsert" value="Insert Image" />
+        <?php endif ?>
+    </form>
+</body>
+</html>

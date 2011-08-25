@@ -1,0 +1,21 @@
+<div class="main">
+    <h1>Reset Password:</h1>
+
+    <?php $form = $this->form ?>
+    <form id="resetForm" name="resetForm" action="<?php echo $form->getAction() ?>"
+        method="<?php echo $form->getMethod() ?>">
+
+        <?php if ($form->isErrors()): ?>
+            <p style="color:red; margin-bottom: 1em;">
+                The form had some errors. Please correct them below.</p>
+        <?php endif ?>
+
+        <strong><?php echo $this->element->identity->getLabel() ?>:</strong>
+        <div>
+            <?php echo $this->element->identity->renderViewHelper() ?>
+            <?php echo $this->element->identity->renderErrors() ?>
+        </div>
+
+        <input type="submit" value="Reset Password" />
+    </form>
+</div>

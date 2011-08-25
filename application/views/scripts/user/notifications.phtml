@@ -1,0 +1,14 @@
+<?php $this->headTitle()->prepend('Edit E-mail Notifications') ?>
+
+<div id="sidebar">
+    <?php echo $this->partial('user/_sidebar.phtml', array('menu' => $this->menu)) ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <?php echo $this->partial('_messages.phtml') ?>
+
+        <h1>Edit E-mail Notifications</h1>
+        <?php echo $this->form ?>
+    </div>
+</div>

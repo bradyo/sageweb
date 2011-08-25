@@ -1,0 +1,40 @@
+<?php $user = $this->user ?>
+<?php $this->headTitle()->prepend('Commented on by ' . $user->getDisplayName()) ?>
+
+<div id="sidebar">
+    <?php echo $this->partial('profile/_sidebar.phtml',
+        array('user' => $user, 'menu' => $this->menu)) ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>Commentend on by <?php echo $this->escape($user->getDisplayName()) ?></h1>
+
+        <?php if (count($this->posts) > 0): ?>
+            <ul>
+                <?php foreach ($this->posts as $post): ?>
+                    <li>
+                        <a href="<?php echo $this->postUrl($post) 
+                            ?>"><?php echo $this->escape($post->title) ?></a>
+                        <ul>
+                            <?php foreach ($post->comments as $comment): ?>
+                                <li>
+                                    <div class="commentMeta">
+                                        <a href="<?php echo $this->postUrl($post) . '#comment-' . $comment->entityId
+                                            ?>">Comment</a>
+                                        on <?php echo $this->formatDate($comment->createdAt, true) ?>:
+                                    </div>
+                                    <div class="commentBody">
+                                        <?php echo $this->cleanCommentBody($comment->body) ?>
+                                    </div>
+                                </li>
+                            <?php endforeach ?>
+                        </ul>
+                    </li>
+                <?php endforeach ?>
+            </ul>
+        <?php else: ?>
+            No comments by this user.
+        <?php endif ?>
+    </div>
+</div>

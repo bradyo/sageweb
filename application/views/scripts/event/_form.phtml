@@ -1,0 +1,117 @@
+<?php $headLink = $this->headLink() ?>
+<?php $headLink->appendStylesheet('/library/jquery-ui/css/custom/jquery-ui-1.8.7.custom.css'); ?>
+
+<?php $headScript = $this->headScript() ?>
+<?php $headScript->appendFile('/library/jquery-ui/js/jquery-ui-1.8.7.custom.min.js') ?>
+<?php $headScript->appendFile('/library/tiny_mce/tiny_mce.js') ?>
+
+<?php $form = $this->form ?>
+
+<div id="formDiv" style="width:680px">
+<form id="eventForm" name="eventForm" action="" method="post">
+
+    <?php if (isset($form->id)): ?>
+        <?php echo $form->id->renderViewHelper() ?>
+    <?php endif ?>
+
+    <?php if ($form->isErrors()): ?>
+        <p style="color:red; margin-bottom: 1em;">
+            The form had some errors. Please correct them below.</p>
+    <?php endif ?>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->title->getLabel() ?></label>
+        <?php echo $form->title->renderViewHelper() ?>
+        <?php echo $form->title->renderErrors() ?>
+    </div>
+
+    <div style="margin-bottom:1em; overflow: auto;">
+        <label><?php echo $form->type->getLabel() ?></label><br />
+        <?php echo $form->type->renderViewHelper() ?>
+        <?php echo $form->type->renderErrors() ?>
+    </div>
+
+    <div style="margin-bottom:1em">
+        <label>Dates:</label><br />
+        <p class="inputDetail"><?php echo $form->startsAt->getDescription() ?></p>
+        From:
+        <?php echo $form->startsAt->renderViewHelper() ?>
+        <?php echo $form->startsAt->renderErrors() ?>
+        To:
+        <?php echo $form->endsAt->renderViewHelper() ?>
+        <?php echo $form->endsAt->renderErrors() ?>
+        (optional)
+        
+        <script type="text/javascript">
+            $("#<?php echo $form->startsAt->getName() ?>").datepicker({
+                dateFormat: 'yy-mm-dd'
+            });
+            $("#<?php echo $form->endsAt->getName() ?>").datepicker({
+                dateFormat: 'yy-mm-dd'
+            });
+        </script>
+    </div>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->location->getLabel() ?></label>
+        <p class="inputDetail"><?php echo $form->location->getDescription() ?></p>
+        <?php echo $form->location->renderViewHelper() ?>
+        <?php echo $form->location->renderErrors() ?>
+    </div>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->url->getLabel() ?></label><br />
+        <?php echo $form->url->renderViewHelper() ?>
+        <?php echo $form->url->renderErrors() ?>
+    </div>
+
+    <div style="margin-bottom:1em">
+        <label><?php echo $form->summary->getLabel() ?></label>
+        <p class="inputDetail">Enter a short summary (up to 500 characters).</p>
+        <?php echo $form->summary->renderViewHelper() ?>
+        <?php echo $form->summary->renderErrors() ?>
+    </div>
+
+    <?php if ($form->showModerationFields()): ?>
+        <fieldset style="margin-top:1em">
+            <legend>Moderator Options</legend>
+
+            <div style="margin-bottom:1em">
+                <label><?php echo $form->status->getLabel() ?></label>
+                <?php echo $form->status->renderViewHelper() ?>
+                <?php echo $form->status->renderErrors() ?>
+            </div>
+
+            <div style="margin-bottom:1em">
+                <label><?php echo $form->author->getLabel() ?></label>
+                <?php echo $form->author->renderViewHelper() ?>
+                <?php echo $form->author->renderErrors() ?>
+                <script type="text/javascript">
+                    $('#<?php echo $form->author->getId() ?>').autocomplete({
+                        source: '<?php echo $this->url(array(
+                            'controller' => 'api',
+                            'action' => 'get-usernames'),
+                            'default', true) ?>',
+                        delay: 0
+                    });
+                </script>
+            </div>
+
+            <div>
+                <label for="<?php echo $form->isFeatured->getName() ?>">
+                    Featured:
+                    <?php echo $form->isFeatured->renderViewHelper() ?>
+                </label>
+            </div>
+        </fieldset>
+    <?php endif ?>
+
+    <?php if (!$form->showModerationFields()): ?>
+        <div style="margin-bottom:1em">
+            <?php echo $form->captcha ?>
+        </div>
+    <?php endif ?>
+
+    <?php echo $form->submit->renderViewHelper() ?>
+</form>
+</div>

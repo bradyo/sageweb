@@ -1,0 +1,46 @@
+<?php $this->headTitle()->prepend($this->title) ?>
+
+<div id="sidebar">
+    <?php echo $this->render('lab/_actionsBlock.phtml') ?>
+    <?php echo $this->render('lab/_filtersBlock.phtml') ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>Labs in Gerontology</h1>
+
+        <div style="position:absolute; right:10px; top:10px;">
+            Last Name: 
+            <?php echo $this->partial('lab/_countLinks.phtml',
+                array('navigation' => $this->sortNavigation)) ?>
+        </div>
+
+        <hr />
+
+        <?php if (count($this->pager) > 0): ?>
+            <?php foreach ($this->pager as $hit): ?>
+                <?php $doc = $hit->getDocument() ?>
+                <h2><a href="<?php echo $this->url(
+                    array('action' => 'show', 'id' => $doc->getFieldValue('id')), 'lab', true)
+                    ?>"><?php echo $this->escape($doc->getFieldUtf8Value('name')) ?></a>
+
+                    <span style="color:#aaa">
+                        <?php echo $this->escape($doc->getFieldUtf8Value('type')) ?>
+                        
+                        <?php $location = $doc->getFieldUtf8Value('location') ?>
+                        <?php if (!empty($location)): ?>
+                            in <?php echo $this->escape($location) ?>
+                        <?php endif ?>
+                    </span>
+                </h2>
+            <?php endforeach ?>
+
+            <?php if ($this->pager->getTotalItemCount() > $this->pager->getItemCountPerPage()): ?>
+                <hr style="margin-top:2em;" />
+                <?php echo $this->partial('pagination.phtml', array('pager' => $this->pager)) ?>
+            <?php endif ?>
+        <?php else: ?>
+            <p>There are currently no labs matching your criteria.</p>
+        <?php endif ?>
+    </div>
+</div>

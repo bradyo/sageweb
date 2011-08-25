@@ -1,0 +1,31 @@
+<div class="postEvent">
+    <table class="formTable">
+        <tr>
+            <th>When:</th>
+            <td>
+                <?php echo $this->formatDate($this->event->startsAt) ?>
+                <?php if (!empty($this->event->endsAt)): ?>
+                    -
+                    <?php echo $this->formatDate($this->event->endsAt) ?>
+                <?php endif ?>
+            </td>
+        </tr>
+        
+        <?php if (!empty($this->event->location)): ?>
+            <tr>
+                <th>Where:</th>
+                <td><?php echo $this->escape($this->event->location) ?></td>
+            </tr>
+        <?php endif ?>
+
+        <?php if (!empty($this->event->url)): ?>
+            <tr>
+                <th>Url:</th>
+                <td>
+                    <a href="<?php echo $this->escape($this->event->url) ?>"
+                       ><?php echo $this->escape($this->event->url) ?></a>
+                </td>
+            </tr>
+        <?php endif ?>
+    </table>
+</div>

@@ -1,0 +1,18 @@
+<?php $user = $this->user ?>
+<?php $this->headTitle()->prepend('Profile for ' . $user->getDisplayName()) ?>
+
+<div id="sidebar">
+    <?php echo $this->partial('profile/_sidebar.phtml',
+        array('user' => $user, 'menu' => $this->menu)) ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>Block User</h1>
+        <p>Blocking this user will prevent them from logging in to Sageweb.</p>
+
+        <form action="<?php echo $this->url() ?>" method="post">
+            <input type="submit" value="Block User" />
+        </form>
+    </div>
+</div>

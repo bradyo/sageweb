@@ -1,0 +1,15 @@
+<?php
+/* @var $filter Sageweb_Event_EventFilter */
+$filter = $this->filter;
+?>
+
+<div class="sortPanel">
+    <strong>Sort:</strong>
+    <select name="sortBy">
+        <?php foreach ($filter->getSortByOptions() as $key => $value): ?>
+            <?php $selected = ($key == $filter->sortBy) ? 'selected="selected"' : '' ?>
+            <?php echo "<option value=\"$key\" $selected>$value</option>" ?>
+        <?php endforeach ?>
+    </select>
+    <input type="submit" value="Update" />
+</div>

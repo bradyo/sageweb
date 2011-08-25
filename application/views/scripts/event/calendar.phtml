@@ -1,0 +1,50 @@
+<?php
+/* @var $filter Sageweb_Event_EventFitler */
+$filter = $this->filter;
+/* @var $eventTypes Application_Model_Event_EventTypes */
+$eventTypes = $this->eventTypes;
+
+$viewsMenu = new Application_Model_Event_EventViewsMenu();
+
+$this->headTitle()->prepend($this->title);
+
+$headLink = $this->headLink();
+$headLink->appendStylesheet('/library/jquery-ui/css/custom/jquery-ui-1.8.7.custom.css');
+$headLink->appendStylesheet('/library/fullcalendar/fullcalendar.css');
+
+$headScript = $this->headScript();
+$headScript->appendFile('/library/jquery-ui/js/jquery-ui-1.8.7.custom.min.js');
+$headScript->appendFile('/library/fullcalendar/fullcalendar.min.js');
+?>
+
+<div id="sidebar">
+    <?php echo $this->render('event/_listActionsBlock.phtml') ?>
+    <?php echo $this->partial('event/_filtersBlock.phtml', array('filter' => $filter)) ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1><?php echo $this->title ?></h1>
+        
+        <form action="" method="get">
+            <div class="topPanel">
+                <?php echo $this->partial('event/_viewsPanel.phtml', array('viewsMenu' => $viewsMenu)) ?>
+                <?php echo $this->partial('event/_sortPanel.phtml', array('filter' => $filter)) ?>
+            </div>
+
+            <hr />
+            <div id="calendar"></div>
+            <script type='text/javascript'>
+                $(document).ready(function() {
+                    $('#calendar').fullCalendar({
+                        header: { left: 'prev', center: 'title', right: 'next' },
+                        weekMode: 'variable',
+                        theme: true,
+                        firstDay: 1,
+                        events: <?php echo $this->eventsJson ?>
+                    });
+                });
+            </script>
+        </form>
+    </div>
+</div>

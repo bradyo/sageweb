@@ -1,0 +1,14 @@
+<?php echo $this->headTitle()->prepend('Add Event') ?>
+
+<div id="sidebar">
+    <?php echo $this->render('event/_actionsBlock.phtml') ?>
+</div>
+
+<div id="page">
+    <?php echo $this->render('post/_guestMessage.phtml') ?>
+
+    <div class="main">
+        <h1>Add Event</h1>
+        <?php echo $this->partial('event/_form.phtml', array('form' => $this->form)) ?>
+    </div>
+</div>

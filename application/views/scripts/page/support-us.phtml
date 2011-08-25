@@ -1,0 +1,18 @@
+<?php echo $this->headTitle()->prepend("Support Us") ?>
+
+<div id="sidebar">
+    <?php echo $this->partial('page/_pagesBlock.phtml') ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>Supporting Sageweb.org</h1>
+        <p>We currently do not have a way to accept donations. Right now the best
+            way to support Sageweb is to
+            <a href="<?php echo $this->url(array(
+                'controller' => 'post',
+                'action' => 'new',
+                ), 'default') ?>">post new content</a>.
+        </p>
+    </div>
+</div>

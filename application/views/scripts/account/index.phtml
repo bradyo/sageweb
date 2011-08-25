@@ -1,0 +1,14 @@
+<?php $this->headTitle()->prepend('Your Account') ?>
+
+<div class="main" style="padding-right:220px">
+    <?php if (isset($this->message)): ?>
+        <div class="successMessage"><?php echo $this->message ?></div>
+    <?php endif ?>
+
+    <?php if ($this->resettingPassword): ?>
+        <p style="color:red; margin-bottom: 1em;">Please reset your password below.</p>
+    <?php endif ?>
+
+    <h1>Your Account</h1>
+    <?php echo $this->form ?>
+</div>

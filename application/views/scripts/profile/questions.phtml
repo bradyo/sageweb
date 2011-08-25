@@ -1,0 +1,25 @@
+<?php $user = $this->user ?>
+<?php $this->headTitle()->prepend('Content by ' . $user->username) ?>
+
+<div id="sidebar">
+    <?php echo $this->partial('profile/_sidebar.phtml',
+        array('user' => $user, 'menu' => $this->menu)) ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>Questions by <?php echo $user->username ?></h1>
+
+        <ul>
+            <?php foreach ($this->pager->getCurrentItems() as $question): ?>
+                <li><?php echo $this->escape($question->title) ?></li>
+            <?php endforeach ?>
+        </ul>
+
+        <?php if ($this->pager->count() > 0): ?>
+            <?php echo $this->partial('pagination.phtml', array('pager' => $this->pager)) ?>
+        <?php else: ?>
+            No questions by this user.
+        <?php endif ?>
+    </div>
+</div>

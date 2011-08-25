@@ -1,0 +1,106 @@
+<?php $this->headTitle()->prepend('Manage Users') ?>
+
+<div style="float:left; position:relative; width:180px;">
+    <?php echo $this->partial('manage/_sidebar.phtml', array(
+        'adminMenu' => $this->adminMenu,
+        'moderatorMenu' => $this->moderatorMenu
+        )) ?>
+</div>
+
+<div class="main" style="margin-left:190px">
+    <?php echo $this->partial('_flashMessages.phtml') ?>
+
+    <h1>Manage Users</h1>
+
+    <div style="position:relative; height:2em; margin:5px 0">
+        <form action="<?php echo $this->url() ?>" method="get">
+            <div class="inline" style="float:left">
+                <label for="role">Role:</label>
+                <?php $roleSelect = new Zend_Form_Element_Select('role', array(
+                    'multiOptions' => array(
+                        '' => 'Any',
+                        'member' => 'Member',
+                        'moderator' => 'Moderator',
+                        'admin' => 'Admin'
+                    ),
+                    'value' => $this->role
+                )) ?>
+                <?php echo $roleSelect->renderViewHelper() ?>
+
+                <label for="status">Status:</label>
+                <?php $statusSelect = new Zend_Form_Element_Select('status', array(
+                    'multiOptions' => array(
+                        '' => 'Any',
+                        'active' => 'Active',
+                        'blocked' => 'Blocked',
+                    ),
+                    'value' => $this->status
+                )) ?>
+                <?php echo $statusSelect->renderViewHelper() ?>
+                
+                <input type="submit" value="show" />
+            </div>
+
+            <div class="inline" style="float:right">
+                <label for="sort">Sort By:</label>
+                <?php $sortSelect = new Zend_Form_Element_Select('sort', array(
+                    'multiOptions' => array(
+                        'username' => 'Username',
+                        'displayName' => 'Display Name',
+                        'role' => 'Role',
+                        'status' => 'Status',
+                        'createdAt' => 'Created',
+                        'seenAt' => 'Last Seen',
+                    ),
+                    'value' => $this->sort
+                )) ?>
+                <?php echo $sortSelect->renderViewHelper() ?>
+
+                <?php $orderSelect = new Zend_Form_Element_Select('order', array(
+                    'multiOptions' => array(
+                        'asc' => 'Ascending',
+                        'desc' => 'Descending',
+                    ),
+                    'value' => $this->order
+                )) ?>
+                <?php echo $orderSelect->renderViewHelper() ?>
+                
+                <input type="submit" value="sort" />
+            </div>
+        </form>
+        <div class="clear"></div>
+    </div>
+
+    <table class="dataTable" style="width:100%">
+        <thead>
+            <th>Username (Display Name)</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Last Seen</th>
+            <th style="text-align:center">Action</th>
+        </thead>
+
+        <?php for ($iRow = 0; $iRow < count($this->users); $iRow++): ?>
+            <?php $user = $this->users[$iRow] ?>
+            <tr class="<?php echo ($iRow % 2 != 0) ? 'alternate' : '' ?>">
+                <td>
+                    <a href="<?php echo $this->url(
+                        array('username' => $user->username), 'profile', true)
+                        ?>"><?php echo $this->escape($user->username) ?>
+                        <?php if ($user->username != $user->displayName): ?>
+                            (<?php echo $this->escape($user->displayName) ?>)
+                        <?php endif ?>
+                    </a>
+                </td>
+                <td><?php echo $this->escape($user->role) ?></td>
+                <td><?php echo $this->escape($user->status) ?></td>
+                <td style="white-space:nowrap"><?php echo $this->formatDate($user->createdAt) ?></td>
+                <td style="white-space:nowrap"><?php echo $this->formatDate($user->seenAt) ?></td>
+                <td style="text-align:center"><a href="<?php echo $this->url(
+                    array('username' => $user->username), 'manageUser', true)
+                    ?>">edit</a></td>
+            </tr>
+        <?php endfor ?>
+    </table>
+</div>

@@ -1,0 +1,13 @@
+<?php $user = $this->user ?>
+<?php $this->headTitle()->prepend('Content by ' . $user->username) ?>
+
+<div id="sidebar">
+    <?php echo $this->partial('profile/_sidebar.phtml',
+        array('user' => $user, 'menu' => $this->menu)) ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>Content by <?php echo $this->escape($user->username) ?></h1>
+    </div>
+</div>

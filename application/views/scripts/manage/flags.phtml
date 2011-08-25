@@ -1,0 +1,44 @@
+<?php $this->headTitle()->prepend('Manage Flags') ?>
+
+<div id="sidebar">
+    <?php echo $this->partial('manage/_sidebar.phtml', array(
+        'adminMenu' => $this->adminMenu,
+        'moderatorMenu' => $this->moderatorMenu
+        )) ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>Manage Flags</h1>
+
+        <p>This post was flagged by a Sageweb user. Please review the post and
+            make any changes (including deleting the original post). When the
+            flagged post has been corrected or if this flag has been created by
+            mistake, you should delete it.</p>
+
+        <table class="dataTable" style="width:100%">
+            <thead>
+                <th>Type</th>
+                <th>Created</th>
+                <th style="text-align:center">Action</th>
+            </thead>
+
+            <?php for ($iRow = 0; $iRow < count($this->flags); $iRow++): ?>
+                <?php $flag = $this->flags[$iRow] ?>
+                <tr class="<?php echo ($iRow % 2 != 0) ? 'alternate' : '' ?>">
+                    <td><?php echo $flag->type ?></td>
+                    <td>
+                        By <?php echo $this->userLink($flag->creatorId) ?>
+                        on <?php echo $this->formatDate($flag->createdAt, true) ?>
+                    </td>
+                    <td style="text-align:center">
+                        <a href="<?php echo $this->url(
+                            array('controller' => 'manage', 'action' => 'flag', 'id' => $flag->id),
+                            'default', true
+                            ) ?>">View</a>
+                    </td>
+                </tr>
+            <?php endfor ?>
+        </table>
+    </div>
+</div>

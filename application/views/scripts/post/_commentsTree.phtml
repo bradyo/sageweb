@@ -1,0 +1,5 @@
+<?php echo $this->partial('post/_comment.phtml', array('comment' => $this->tree['comment'])) ?>
+
+<?php foreach ($this->tree['children'] as $subTree): ?>
+    <?php echo $this->partial('post/_commentsTree.phtml', array('tree' => $subTree)) ?>
+<?php endforeach ?>

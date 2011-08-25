@@ -1,0 +1,29 @@
+<div class="block">
+    <div class="blockTitle">Editing</div>
+    <div class="blockContent">
+        <?php if (count($this->pendingRevisions) > 0): ?>
+            <strong>Pending Revisions:</strong>
+            <ul>
+                <?php foreach ($this->pendingRevisions as $revision): ?>
+                    <li>
+                        <a href="<?php echo $this->url(
+                            array('id' => $this->post->id, 'revisionId' => $revision->id),
+                            'articleRevision', true)
+                            ?>"><?php echo $this->formatDate($revision->createdAt) ?></a>
+                    </li>
+                <?php endforeach ?>
+            </ul>
+            <hr />
+        <?php endif ?>
+
+        <a href="<?php echo $this->url(
+            array('action' => 'edit', 'id' => $this->post->id),
+            $this->post->entity->type, true
+            ) ?>">New Revision</a>
+        <br />
+        <a href="<?php echo $this->url(
+            array('action' => 'revisions', 'id' => $this->post->id),
+            $this->post->entity->type, true
+            ) ?>">Show Revisions</a>
+    </div>
+</div>

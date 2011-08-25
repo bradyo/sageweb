@@ -1,0 +1,38 @@
+<?php $this->headTitle()->append('Search Results') ?>
+
+<div class="main">
+    <h1>Search Site</h1>
+
+    <form action="<?php echo $this->url() ?>" method="get">
+        Search Terms:
+        <input type="text" name="q" value="<?php echo $this->escape($_GET['q']) ?>"
+               style="width:20em" />
+        <input type="submit" value="Search" />
+    </form>
+
+    <h2>Found <?php echo $this->pager->getTotalItemCount() ?> results:</h2>
+
+    <?php if (count($this->pager) > 0): ?>
+        <?php foreach ($this->pager as $hit): ?>
+            <?php $doc = $hit->getDocument() ?>
+            <h2>
+                <?php $label = '[' .  ucfirst($doc->getFieldValue('entityType'))
+                        . '] ' . $doc->getFieldValue('title') ?>
+                <a href="<?php echo $this->url(
+                    array('id' => $doc->getFieldValue('id')),
+                    $doc->getFieldValue('entityType'), true
+                    ) ?>"><?php echo $this->escape($label) ?></a>
+            </h2>
+            <div>
+                
+            </div>
+        <?php endforeach ?>
+
+        <?php if ($this->pager->getTotalItemCount() > $this->pager->getItemCountPerPage()): ?>
+            <hr style="margin-top:2em;" />
+            <?php echo $this->partial('pagination.phtml', array('pager' => $this->pager)) ?>
+        <?php endif ?>
+    <?php else: ?>
+        <p>Sorry, no results found for your search.</p>
+    <?php endif ?>
+</div>

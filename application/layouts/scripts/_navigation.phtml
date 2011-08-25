@@ -1,0 +1,83 @@
+<div id="topMenu">
+    <img src="/images/left-cap.png" alt="" style="float:left;" />
+    <ul>
+      <li class="first menuItem">
+         <a href="<?php echo $this->baseUrl('/') 
+             ?>"><span class="dropdown">Articles</span></a>
+      </li>
+
+      <li class="first menuItem">
+         <a href="<?php echo $this->baseUrl('/') 
+             ?>"><span class="dropdown">Media</span></a>
+      </li>
+
+      <li class="first menuItem">
+         <a href="<?php echo $this->baseUrl('/') 
+             ?>"><span class="dropdown">Documents</span></a>
+      </li>
+
+      <li class="first menuItem">
+         <a href="<?php echo $this->baseUrl('/') 
+             ?>"><span class="dropdown">Links</span></a>
+      </li>
+
+
+      <li class="menuItem">
+        <a href=""><span class="dropdown">Community</span></a>
+          <ul class="subMenuBlock">
+              <li>
+                  <a href="<?php echo $this->url(array(), 'profiles', true)
+                      ?>" style="font-weight:normal">User Profiles</a>
+              </li>
+              <li>
+                  <a href="<?php echo $this->url(array(), 'persons', true)
+                      ?>" style="font-weight:normal">People in Gerontology</a>
+              </li>
+              <li>
+                  <a href="<?php echo $this->url(array(), 'labs', true)
+                      ?>" style="font-weight:normal">Labs in Gerontology</a>
+              </li>
+              <li>
+                  <a href="<?php echo $this->url(
+                      array('controller' => 'blog-stream', 'action' => 'index'), 'default', true) ?>"
+                      style="font-weight:normal">Blog Stream</a>
+              </li>
+              <li>
+                  <a href="<?php echo $this->url(
+                      array('controller' => 'twitter-stream', 'action' => 'index'), 'default', true) ?>"
+                      style="font-weight:normal">Twitter Stream</a>
+              </li>
+          </ul>
+      </li>
+
+      <li class="menuItem">
+          <a href="<?php echo $this->url(array('action' => 'calendar'), 'events', true)
+              ?>">Events</a>
+      </li>
+
+      <li class="menuItem">
+          <a href="<?php echo $this->url(array(), 'discussions', true)
+              ?>">Discussions</a>
+      </li>
+
+      <li class="menuItem">
+          <a href="<?php echo $this->url(array(), 'papers', true)
+              ?>">Journal Club</a>
+      </li>
+    </ul>
+    <img src="/images/right-cap.png" alt="" style="float:left;" />
+</div>
+
+<div id="topSearch">
+    <img src="<?php echo $this->baseUrl() . '/images/left-cap.png' ?>" alt="" style="float:left;" />
+    <div style="float:left; background-color: #287BBF; padding: 4px 0 0px 0; height:28px">
+        <form id="searchForm" action="<?php echo $this->url(
+                array('controller' => 'search'), 'default', true) ?>"
+                method="get">
+            <input name="q" class="search-input" type="text" style="border:1px solid black; width:12em; padding:3px" />
+            <button style="border:1px solid black; padding:2px 3px"
+                type="submit">Search</button>
+        </form>
+    </div>
+    <img src="/images/right-cap.png" alt="" style="float:left;" />
+</div>

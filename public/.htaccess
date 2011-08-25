@@ -1,0 +1,10 @@
+
+# serve existing file requests
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+
+# route everthing else to front controller
+RewriteRule ^.*$ index.php [NC,L]

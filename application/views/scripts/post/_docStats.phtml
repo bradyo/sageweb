@@ -1,0 +1,7 @@
+<span class="post-stats">
+    <?php $doc = $this->doc ?>
+    <span class="up-votes" title="Up Votes"><?php echo $doc->getFieldValue('upVotesCount') ?></span>
+    <span class="down-votes" title="Down Votes"><?php echo $doc->getFieldValue('downVotesCount') ?></span>
+    <span class="views" title="Views"><?php echo $doc->getFieldValue('viewsCount') ?></span>
+    <span class="comments" title ="Comments"><?php echo $doc->getFieldValue('commentsCount') ?></span>
+</span>

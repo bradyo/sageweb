@@ -1,0 +1,54 @@
+<?php $this->headTitle()->prepend($this->title) ?>
+
+<div id="sidebar">
+    <?php echo $this->render('person/_actionsBlock.phtml') ?>
+    <?php if ($this->canEdit): ?>
+        <?php echo $this->partial('person/_editBlock.phtml', array(
+            'post' => $this->post,
+            'pendingRevisions' => $this->pendingRevisions
+            )) ?>
+    <?php endif ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <?php echo $this->render('_messages.phtml') ?>
+
+        <?php if ($this->post->isPublic()): ?>
+            <h1><?php echo $this->escape($this->title) ?></h1>
+            <hr />
+
+            <table class="fieldsTable" style="margin-bottom:1em;">
+                <tr>
+                    <th>Location:</th>
+                    <td><?php echo $this->escape($this->post->location) ?></td>
+                </tr>
+                <tr>
+                    <th>Website:</th>
+                    <td><a href="<?php echo $this->escape($this->post->personalUrl)
+                        ?>"><?php echo $this->escape($this->post->personalUrl) ?></a></td>
+                </tr>
+                <tr>
+                    <th>Lab Name:</th>
+                    <td><?php echo $this->escape($this->post->labName) ?></td>
+                </tr>
+                <tr>
+                    <th>Lab Website:</th>
+                    <td><a href="<?php echo $this->escape($this->post->labUrl)
+                        ?>"><?php echo $this->escape($this->post->labUrl) ?></a></td>
+                </tr>
+            </table>
+            
+            <p><?php echo $this->escape($this->post->body) ?></p>
+            
+        <?php else: ?>
+            <?php if ($this->post->isHeld()): ?>
+                <h1>This content has been flagged for review.</h1>
+            <?php elseif ($this->post->isDeleted()): ?>
+                <h1>This content has been deleted.</h1>
+            <?php else: ?>
+                <h1>This content is pending moderator approval.</h1>
+            <?php endif ?>
+        <?php endif ?>
+    </div>
+</div>

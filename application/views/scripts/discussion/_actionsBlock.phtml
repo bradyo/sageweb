@@ -1,0 +1,16 @@
+<div class="blockContainer">
+   <a class="browse" href="<?php echo $this->url(array(), 'discussions', true
+        ) ?>">Browse Forums</a>
+    <br />
+
+    <?php if ($this->isList): ?>
+        <?php $rssUrl = $this->url(array('action' => 'rss'), 'discussions') ?>
+        <?php $this->headLink()->appendAlternate($rssUrl, 'application/rss+xml', 'Sageweb Discussions') ?>
+        <a class="rss" href="<?php echo $rssUrl ?>">Subscribe</a>
+        <br />
+
+        <a class="add" href="<?php echo $this->url(
+            array('action' => 'new'), 'discussions', true
+            ) ?>">Add Discussion</a>
+    <?php endif ?>
+</div>

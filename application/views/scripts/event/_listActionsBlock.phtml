@@ -1,0 +1,10 @@
+<div class="block">
+    <div class="blockTitle">Actions</div>
+    <div class="blockContent">
+        <a class="add" href="<?php echo $this->url(array('action' => 'add'), 'events', true)
+            ?>">Add Event</a>
+        <br />
+        <a class="rss" href="<?php echo $this->url(array('action' => 'rss'), 'events', true)
+            . $this->queryString(array('sortBy' => null)) ?>">Subscribe</a>
+    </div>
+</div>

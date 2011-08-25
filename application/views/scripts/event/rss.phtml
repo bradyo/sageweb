@@ -1,0 +1,34 @@
+<?php
+// build rss feed
+$feed = new Zend_Feed_Writer_Feed;
+$title = 'Sageweb.org Events';
+
+$feed->setTitle($title);
+$feed->setDescription('Science of Aging Web');
+$feed->setLink('http://www.sageweb.org');
+$feed->setFeedLink('http://' . $_SERVER['SERVER_NAME'] . $this->url(), 'rss');
+$feed->addAuthor(array(
+    'name'  => 'Sageweb.org',
+    'email' => 'support@sageweb.org',
+    'uri'   => 'http://' . $_SERVER['SERVER_NAME'] . $this->url(),
+));
+$feed->setDateModified(time());
+$feed->setEncoding('utf-8');
+$feed->setLanguage('en');
+
+$entries = array();
+foreach ($this->events as $event) {
+    /* @var $event Sageweb_Event_EventPost */
+    $entry = $feed->createEntry();
+    $entry->setTitle($event->post->title);
+    $entry->setLink('http://' . $_SERVER['SERVER_NAME'] . $this->url(
+        array('id' => $event->post->getSlugId()), 'events', true)
+    );
+    if ($event->post->author) {
+        $entry->addAuthor($event->post->author->getDisplayName());
+    }
+    $entry->setDateCreated(strtotime($event->post->whenAt));
+    $entry->setDescription($event->post->summary . ' ');
+    $feed->addEntry($entry);
+}
+echo $feed->export('rss');

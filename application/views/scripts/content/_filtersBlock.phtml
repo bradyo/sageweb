@@ -1,0 +1,42 @@
+<div class="block">
+    <div class="blockTitle">Categories</div>
+    <div class="blockContent">
+        <?php if ($this->category == 'all'): ?>
+            <strong>All Categories</strong><br />
+        <?php else: ?>
+            <strong><a href="<?php echo $this->url(array('category' => 'all'), 'content') ?>"
+                >All Categories</a></strong><br />
+        <?php endif ?>
+
+        <?php foreach (Sageweb_Cms_Table_Content::getDefaultCategoryOptions() as $key => $value): ?>
+            <?php if ($key != $this->category): ?>
+                <a href="<?php echo $this->url(array('category' => $key), 'content') ?>"
+                    ><?php echo $value ?></a><br />
+            <?php else: ?>
+                <?php echo $value ?><br />
+            <?php endif ?>
+        <?php endforeach ?>
+        <hr />
+
+        <?php $categories = Sageweb_Cms_Table_Content::getLinkCategoryOptions() ?>
+        <?php foreach ($categories as $key => $value): ?>
+            <?php if ($key != $this->category): ?>
+                <a href="<?php echo $this->url(array('category' => $key), 'content') ?>"
+                    ><?php echo $value ?></a><br />
+            <?php else: ?>
+                <?php echo $value ?><br />
+            <?php endif ?>
+        <?php endforeach ?>
+        <hr />
+
+        <?php $categories = Sageweb_Cms_Table_Content::getMediaCategoryOptions() ?>
+        <?php foreach ($categories as $key => $value): ?>
+            <?php if ($key != $this->category): ?>
+                <a href="<?php echo $this->url(array('category' => $key), 'content') ?>"
+                    ><?php echo $value ?></a><br />
+            <?php else: ?>
+                <?php echo $value ?><br />
+            <?php endif ?>
+        <?php endforeach ?>
+    </div>
+</div>

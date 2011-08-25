@@ -1,0 +1,36 @@
+<html>
+<head>
+<?php if ($this->html): ?>
+    <script type="text/javascript">
+        var html = '<?php echo $this->html ?>';
+        var win = window.dialogArguments || opener || parent || top;
+        win.sendToEditor(html);
+    </script>
+<?php endif ?>
+</head>
+
+<body>
+    <form id="uploadForm" action="<?php echo $this->url() ?>" method="post"
+          enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <input type="submit" name="submitUpload" value="Upload" />
+
+        <?php if ($this->upload): ?>
+            <div style="margin-bottoM: 1em;">
+                <p>Filename: <?php echo $this->upload->getPublicFilename() ?></p>
+                <?php $href = $this->url(
+                    array('controller' => 'upload', 'action' => 'download',
+                    'filename' => $this->upload->getPublicFilename()),
+                    'default', true) ?>
+                <input name="fileHref" type="hidden" value="<?php echo $href ?>" />
+
+                <label for="fileTitle">Title:</label>
+                <input name="fileTitle" type="text"
+                       value="<?php echo $this->escape($this->upload->filename) ?>" />
+            </div>
+
+            <input type="submit" name="submitInsert" value="Insert Image" />
+        <?php endif ?>
+    </form>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<?php $viewingUser = Application_Registry::getUser() ?>
+
+<?php if ($viewingUser && $viewingUser->isModerator()): ?>
+    <?php if ($this->revision->status == Sageweb_Cms_EntityRevision::STATUS_PENDING): ?>
+        <h2>Manage Revision:</h2>
+        <form action="" method="post">
+            <table class="fieldsTable">
+                <tr>
+                    <th>Status:</th>
+                    <td>
+                        <select name="status">
+                            <option value="accepted">Accepted</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Comment:</th>
+                    <td><input type="text" size="32" name="reviewerComment" /></td>
+                </tr>
+            </table>
+            <input type="submit" value="Submit" />
+        </form>
+    <?php endif ?>
+<?php endif ?>

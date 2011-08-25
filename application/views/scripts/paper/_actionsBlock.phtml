@@ -1,0 +1,13 @@
+<div class="blockContainer">
+    <a class="browse" href="<?php echo $this->url(array(), 'papers', true)
+        ?>">Browse Papers</a>
+    <br />
+    
+    <?php $rssUrl = $this->url(array('action' => 'rss'), 'papers', true) ?>
+    <?php $this->headLink()->appendAlternate($rssUrl, 'application/rss+xml', 'Sageweb Papers') ?>
+    <a class="rss" href="<?php echo $rssUrl ?>">Subscribe</a>
+    <br />
+
+    <a class="add" href="<?php echo $this->url(array('action' => 'new'), 'papers', true)
+        ?>">Add Paper</a>
+</div>

@@ -1,0 +1,163 @@
+<?php echo $this->headTitle()->prepend('Article Revision') ?>
+
+<div class="main">
+    <h1>
+        <a href="<?php echo $this->url(
+            array('action' => 'show', 'id' => $this->article->getSlugId()), 'article', true
+            ) ?>">Article</a>
+        &gt;
+        <a href="<?php echo $this->url(
+            array('action' => 'revisions', 'id' => $this->article->id), 'article', true
+            ) ?>">Revisions</a>
+        &gt;
+        Revision
+    </h1>
+
+    <table class="fieldsTable">
+        <tr>
+            <th>Revision ID:</th>
+            <td><?php echo $this->revision->id ?></td>
+        </tr>
+        <tr>
+            <th>Status:</th>
+            <td><?php echo $this->revision->status ?></td>
+        </tr>
+        <tr>
+            <th>Created:</th>
+            <td>
+                By <?php echo $this->userLink($this->revision->creatorId) ?>
+                on <?php echo $this->formatDate($this->revision->createdAt, true) ?>
+            </td>
+        </tr>
+        <tr>
+            <th>Comment:</th>
+            <td><?php echo $this->escape($this->revision->creatorComment) ?></td>
+        </tr>
+        <?php if ($this->revision->status != Sageweb_Cms_EntityRevision::STATUS_PENDING): ?>
+            <tr>
+                <th>Reviewed:</th>
+                <td>
+                    By <?php echo $this->userLink($this->revision->reviewerId) ?>
+                    on <?php echo $this->formatDate($this->revision->reviewedAt, true) ?>
+                </td>
+            </tr>
+            <tr>
+                <th>Comment:</th>
+                <td><?php echo $this->escape($this->revision->reviewerComment) ?></td>
+            </tr>
+        <?php endif ?>
+    </table>
+
+    <h2>Changes:</h2>
+
+    <table class="fieldsTable revisionTable" style="width:100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th style="width:50%">Revision Data</th>
+                <th style="width:50%">Current Data</th>
+            </tr>
+        </thead>
+
+        <tr>
+            <th>Status:</th>
+            <td><?php echo $this->revisionData['status'] ?></td>
+            <?php if ($this->revisionData['status'] !== $this->currentData['status']): ?>
+                <td><?php echo $this->currentData['status'] ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+        <tr>
+            <th>Author:</th>
+            <td><?php echo $this->userLink($this->revisionData['authorId']) ?></td>
+            <?php if ($this->revisionData['authorId'] !== $this->currentData['authorId']): ?>
+                <td><?php echo $this->userLink($this->currentData['authorId']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+
+        <tr>
+            <th>Title:</th>
+            <td><?php echo $this->escape($this->revisionData['title']) ?></td>
+            <?php if ($this->revisionData['title'] !== $this->currentData['title']): ?>
+                <td><?php echo $this->escape($this->currentData['title']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+        <tr>
+            <th>Summary:</th>
+            <td><?php echo $this->cleanHtmlSummary($this->revisionData['summary']) ?></td>
+            <?php if ($this->revisionData['summary'] !== $this->currentData['summary']): ?>
+                <td><?php echo $this->cleanHtmlSummary($this->currentData['summary']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+        <tr>
+            <th>Body:</th>
+            <td><?php echo $this->cleanHtmlBody($this->revisionData['body']) ?></td>
+            <?php if ($this->revisionData['body'] !== $this->currentData['body']): ?>
+                <td><?php echo $this->cleanHtmlBody($this->currentData['body']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+        <tr>
+            <th>Featured:</th>
+            <td><?php echo $this->revisionData['isFeatured'] ?></td>
+            <?php if ($this->revisionData['isFeatured'] != $this->currentData['isFeatured']): ?>
+                <td><?php echo $this->currentData['isFeatured'] ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+        <tr>
+            <th>Categories:</th>
+            <td><?php echo $this->escape(join(', ', $this->revisionData['categories'])) ?></td>
+            <?php if ($this->revisionData['categories'] !== $this->currentData['categories']): ?>
+                <td><?php echo $this->escape(join(', ', $this->currentData['categories'])) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+        <tr>
+            <th>Tags:</th>
+            <td><?php echo $this->escape(join(', ', $this->revisionData['tags'])) ?></td>
+            <?php if ($this->revisionData['tags'] !== $this->currentData['tags']): ?>
+                <td><?php echo $this->escape(join(', ', $this->currentData['tags'])) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+    </table>
+
+    <?php $viewingUser = Application_Registry::getUser() ?>
+    <?php if ($viewingUser && $viewingUser->isModerator()): ?>
+        <?php if ($this->revision->status == Sageweb_Cms_EntityRevision::STATUS_PENDING): ?>
+            <h2>Manage Revision:</h2>
+            <form action="" method="post">
+                <table class="fieldsTable">
+                    <tr>
+                        <th>Status:</th>
+                        <td>
+                            <select name="status">
+                                <option value="accepted">Accepted</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Comment:</th>
+                        <td>
+                            <input type="text" size="32" name="reviewerComment" />
+                        </td>
+                    </tr>
+                </table>
+                <input type="submit" value="Submit" />
+            </form>
+        <?php endif ?>
+    <?php endif ?>
+</div>

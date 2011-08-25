@@ -1,0 +1,8 @@
+<?php $this->headTitle()->prepend('Edit Comment') ?>
+
+<div class="main">
+    <?php echo $this->render('_messages.phtml') ?>
+
+    <h1>Edit Comment</h1>
+    <?php echo $this->partial('comment/_form.phtml', array('form' => $this->form)) ?>
+</div>

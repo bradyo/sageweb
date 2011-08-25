@@ -1,0 +1,13 @@
+<div class="block">
+    <div class="blockTitle">Actions:</div>
+    <div class="blockContent">
+        <a href="<?php echo $this->url(
+            array('action' => 'edit', 'id' => $this->post->id), 'events', true
+            ) ?>">New Revision</a>
+        <br />
+
+        <a href="<?php echo $this->url(
+            array('action' => 'revisions', 'id' => $this->post->id), 'events', true
+            ) ?>">Show Revisions</a>
+    </div>
+</div>

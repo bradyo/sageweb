@@ -1,0 +1,69 @@
+<?php 
+/* @var $pager Application_Pager */
+$pager = $this->pager;
+?>
+
+<?php if ($pager->getPageCount() > 1): ?>
+    <div class="pagination">
+        <?php if ($pager->getCurrentPage() > 1): ?>
+            <a href="<?php echo $this->url(array(), 'events', false)
+                . $this->queryString(array('page' => $pager->getCurrentPage() - 1))
+                ?>">&lt;</a>
+        <?php endif ?>
+
+        <?php if ($pager->getPageCount() >= 1): ?>
+            <?php if ($pager->getCurrentPage() == 1): ?>
+                <span class="currentPage">1</span>
+            <?php else: ?>
+                <a href="<?php echo $this->url(array(), 'events', false) 
+                    . $this->queryString(array('page' => 1))
+                    ?>">1</a>
+           <?php endif ?>
+        <?php endif ?>
+
+        <?php if ($pager->getPageCount() >= 2): ?>
+            <?php if ($pager->getCurrentPage() == 2): ?>
+                <span class="currentPage">2</span>
+            <?php else: ?>
+                <a href="<?php echo $this->url(array(), 'events', false)
+                    . $this->queryString(array('page' => 2))
+                    ?>">2</a>
+            <?php endif ?>
+        <?php endif ?>
+
+        <?php if ($pager->getRangeStartPage() > 3): ?>
+            <span class="noBorder">...</span>
+        <?php endif ?>
+
+        <?php $iStart = max(3, $pager->getRangeStartPage()) ?>
+        <?php for ($iPage = $iStart; $iPage < $pager->getRangeEndPage(); $iPage++): ?>
+            <?php if ($pager->getCurrentPage() == $iPage): ?>
+                <span class="currentPage"><?php echo $iPage ?></span>
+            <?php else: ?>
+                <a href="<?php echo $this->url(array(), 'events', false) 
+                    . $this->queryString(array('page' => $iPage))
+                    ?>"><?php echo $iPage ?></a>
+            <?php endif ?>
+        <?php endfor ?>
+
+        <?php if ($pager->getCurrentPage() < $pager->getPageCount() - $pager->getPageRangeDelta()): ?>
+            <span class="noBorder">...</span>
+        <?php endif ?>
+
+        <?php if ($pager->getPageCount() > 2): ?>
+            <?php if ($pager->getCurrentPage() == $pager->getPageCount()): ?>
+                <span class="currentPage"><?php echo $pager->getPageCount() ?></span>
+            <?php else: ?>
+                <a href="<?php echo $this->url(array(), 'events', false)
+                    . $this->queryString(array('page' => $pager->getPageCount()))
+                    ?>"><?php echo $pager->getPageCount() ?></a>
+            <?php endif ?>
+        <?php endif ?>
+
+        <?php if ($pager->getCurrentPage() < $pager->getPageCount()): ?>
+            <a href="<?php echo $this->url(array(), 'events', false)
+                . $this->queryString(array('page' => $pager->getCurrentPage() + 1))
+                ?>">&gt;</a>
+        <?php endif ?>
+    </div>
+<?php endif ?>

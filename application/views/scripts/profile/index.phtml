@@ -1,0 +1,24 @@
+<?php $this->headTitle()->prepend('Sageweb Users') ?>
+
+<div class="main">
+    <h1>Sageweb Users</h1>
+
+    <hr />
+
+    <div style="overflow:auto">
+        <?php if (count($this->pager) > 0): ?>
+            <?php foreach ($this->pager as $user): ?>
+                <div style="float:left; width: 310px; margin-bottom:1em; overflow: hidden">
+                    <?php echo $this->partial('user/_badge.phtml', array('user' => $user)) ?>
+                </div>
+            <?php endforeach ?>
+            <div class="clear"></div>
+
+            <?php if ($this->pager->getTotalItemCount() > $this->pager->getItemCountPerPage()): ?>
+                <div style="border-top: 1px solid #ccc; padding-top:0.5em">
+                    <?php echo $this->partial('pagination.phtml', array('pager' => $this->pager)) ?>
+                </div>
+            <?php endif ?>
+         <?php endif ?>
+    </div>
+</div>

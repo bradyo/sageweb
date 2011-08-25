@@ -1,0 +1,144 @@
+<?php $this->headLink()->appendAlternate(
+    $this->url(array('category' => $this->category), 'categoryRss'),
+    'application/rss+xml', $this->category . ' Posts'
+    ); ?>
+
+
+<div style="float:left; position:relative; width:180px">
+    <div class="block">
+        <div class="blockTitle"><span class="categories">Link Categories</span></div>
+        <div class="blockContent">
+            <?php if (empty($this->category) || $this->category == 'all'): ?>
+                <strong>All Categories</strong><br />
+            <?php else: ?>
+                <a href="<?php echo $this->url(array('category' => 'all'),
+                    'links', true) ?>"
+                    >All Categories</a><br />
+            <?php endif ?>
+
+            <?php foreach ($this->categories as $key => $value): ?>
+                <?php if ($key != $this->category): ?>
+                    <a href="<?php echo $this->url(array('category' => $key), 'links', true) ?>"
+                        ><?php echo $value ?></a><br />
+                <?php else: ?>
+                    <strong><?php echo $value ?></strong><br />
+                <?php endif ?>
+            <?php endforeach ?>
+        </div>
+    </div>
+
+    <div class="block">
+        <div class="blockTitle"><span class="subscribe">Subscribe</span></div>
+        <div class="blockContent">
+            <a class="rss" href="<?php echo $this->url(array(
+                   'category' => $this->category),
+                   'links') ?>"
+               >RSS Feed</a><br />
+        </div>
+    </div>
+
+    <div class="blockContainer" style="font-weight:bold;">
+        <a class="add" href="">Add Link</a>
+    </div>
+</div>
+
+<div class="main" style="float: left; margin-left:10px; width:740px; height:auto">
+    <div style="margin-bottom:1em;">
+        <div style="float:right">
+            Sort By:
+            <?php if ($this->orderBy == 'top-rated'): ?>
+                <a href="<?php echo $this->url(array(
+                    'category' => $this->category,
+                    'order' => 'recent'
+                    ), 'links', true) ?>"
+                   >Newest</a>
+                <strong>Rating</strong>
+            <?php else: ?>
+                <strong>Newest</strong>
+                <a href="<?php echo $this->url(array(
+                    'category' => $this->category,
+                    'order' => 'best'
+                    ), 'links', true) ?>"
+                   >Rating</a>
+            <?php endif ?>
+        </div>
+
+        <div class="breadcrum">
+            <?php if ($this->category == 'all'): ?>
+                <strong>All Categories</strong>
+            <?php else: ?>
+                <a href="<?php echo $this->url(array('category' => 'all'), 'links') ?>"
+                   >All Categories</a>
+                &gt; <strong><?php echo Sageweb_Model_Orm_PostLink::getCategoryLabel($this->category) ?></strong>
+            <?php endif ?>
+        </div>
+        
+        <div class="clear"></div>
+        <div style="padding-top: 0.5em; border-bottom: 1px solid #ccc"></div>
+    </div>
+
+    <?php foreach ($this->posts as $post): ?>
+        <div class="postEntry">
+            <a href="">
+                <?php if ($post->hasIcon()): ?>
+
+                <?php else: ?>
+                    <?php if ($post->type == 'article'): ?>
+                        <div class="defaultIcon articleIcon"></div>
+                    <?php elseif ($post->type == 'link'): ?>
+                        <div class="defaultIcon linkIcon"></div>
+                    <?php elseif ($post->type == 'file'): ?>
+                        <div class="defaultIcon fileIcon"></div>
+                    <?php endif ?>
+                <?php endif ?>
+            </a>
+
+            <div style="margin-left: 165px">
+                <h2 style="margin:0; display:inline-block">
+                    <a href="<?php echo $this->url(array(
+                        'type' => $post->type,
+                        'postId' => $post->id,
+                        'slug' => $post->slug,
+                        ), 'content') ?>"
+                        ><?php echo $post->title ?></a>
+                </h2>
+                <?php if ($post->isFeatured): ?>
+                    <span class="featured">Featured</span>
+                <?php endif ?>
+
+                <div>
+                    <p><?php echo $this->cleanHtmlSummary($post->summary) ?></p>
+                </div>
+                
+                <div class="entryAuthor">
+                    Posted by
+                    <?php if ($post->entity->authorId == 0): ?>
+                        <?php echo $post->entity->author->username ?>
+                    <?php else: ?>
+                        <a href="<?php echo $this->url(array(
+                            'username' => $post->entity->author->username
+                            ), 'user') ?>"
+                            ><?php echo $this->escape($post->entity->author->displayName) ?></a>
+                    <?php endif ?>
+                    on <?php echo $this->formatDate($post->entity->createdAt) ?>
+
+                    <span class="postStats">
+                        <span class="rating"><?php echo $post->entity->rating ?></span>
+                        <span class="comments"><?php echo $post->entity->commentsCount ?></span>
+                    </span>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    <?php endforeach ?>
+
+    <?php if (count($this->posts) < 1): ?>
+        <p>Ther are currently no posts in this category.</p>
+    <?php endif ?>
+
+    <?php if ($this->pager->haveToPaginate()): ?>
+        <div style="border-top: 1px solid #ccc; padding-top:0.5em">
+            <?php echo $this->partial('pagination.phtml', array('pager' => $this->pager)) ?>
+        </div>
+    <?php endif ?>
+</div>

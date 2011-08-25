@@ -1,0 +1,45 @@
+<div class="profileBadge">
+    <?php if ($this->user !== null): ?>
+        <div style="width:80px; margin-right:10px;">
+
+            <img src="<?php echo $this->escape($this->gravatar(
+                $this->user->email, array('s'=> 80, 'd' => 'mm')
+                )) ?>"
+                alt="" style="float:left"
+                />
+
+            <div style="margin-left:90px">
+                <span style="color:gray">rep:</span><br />
+                <?php echo $this->user->profile->reputation ?><br />
+
+                <span style="color:gray">posts:</span><br />
+                <?php echo $this->user->profile->postsCount ?><br />
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div style="margin:5px 0">
+            <a href="<?php echo $this->url(array('username' => $this->user->username),
+                'profile', true) ?>"><?php echo $this->user->getDisplayName() ?></a>
+        </div>
+
+        <?php if ($this->showStatus == true): ?>
+            <div style="line-height:1em; vertical-align:middle">
+                <div style="float:left">
+                    <?php echo $this->user->getRoleLabel() ?>
+                </div>
+                <?php if ($this->user->isOnline()): ?>
+                    <img src="<?php echo $this->baseUrl() . '/images/user_online.gif' ?>"
+                        alt="Online Now" style="float:left; margin-left:10px"
+                        />
+                <?php endif ?>
+            </div>
+        <?php endif ?>
+
+    <?php else: ?>
+        <img src="<?php echo $this->baseUrl('images/user-anonymous.png') ?>"
+             alt="" style="float:left;" />
+    <?php endif ?>
+
+    <div class="clear"></div>
+</div>

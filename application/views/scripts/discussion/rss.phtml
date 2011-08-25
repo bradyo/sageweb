@@ -1,0 +1,47 @@
+<?php
+// build rss feed
+$feed = new Zend_Feed_Writer_Feed;
+$title = 'Sageweb.org ';
+$title .= 'Discussions';
+if ($this->tag) {
+    $title .= ' (Tagged: ' . $this->tag . ')';
+}
+$feed->setTitle($title);
+$feed->setDescription('Science of Aging Web');
+$feed->setLink('http://www.sageweb.org');
+$feed->setFeedLink('http://' . $_SERVER['SERVER_NAME'] . $this->url(), 'rss');
+$feed->addAuthor(array(
+    'name'  => 'Sageweb.org',
+    'email' => 'support@sageweb.org',
+    'uri'   => 'http://' . $_SERVER['SERVER_NAME'] . $this->url(),
+));
+$feed->setDateModified(time());
+$feed->setEncoding('utf-8');
+$feed->setLanguage('en');
+if ($this->tag) {
+    $feed->addCategory(array('term' => $this->tag));
+}
+
+$entries = array();
+foreach ($this->posts as $post) {
+    $entry = $feed->createEntry();
+    $entry->setTitle($post->title);
+    $entry->setLink('http://' . $_SERVER['SERVER_NAME'] . $this->url(
+        array('id' => $post->getSlugId()), 'discussion', true)
+    );
+    if ($post->author) {
+        $entry->addAuthor(array(
+            'name'  => $post->author->getDisplayName(),
+            'uri'   => 'http://www.sageweb.org',
+        ));
+        $entry->addAuthor($post->author->getDisplayName());
+    }
+    $entry->setDateCreated(strtotime($post->createdAt));
+    if ($post->updatedAt) {
+        $entry->setDateModified(strtotime($post->updatedAt));
+    }
+    $entry->setDescription($post->body . ' ');
+    $feed->addEntry($entry);
+}
+
+echo $feed->export('rss');

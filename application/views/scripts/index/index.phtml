@@ -1,0 +1,140 @@
+<div style="float:left; width: 980px; margin-bottom:1em; overflow:auto;">
+    <div style="float:left; width:370px; height:250px; overflow:hidden; margin-right:10px;">
+        <div class="main" style="padding: 10px 15px; height: 228px">
+            <h1>Welcome to Sageweb</h1>
+            <p>Sageweb is an internet-based resource center to aid biogerontologists
+            and enhance research into the basic biology of aging. This site reduces
+            the time and effort currently required to obtain information relevant
+            to aging-related science by efficiently distributing important resources
+            to the biogerontological community, and by facilitating interactions
+            and collaborative efforts amongst researchers.</p>
+        </div>
+    </div>
+
+    <div style="float:left; width:600px;">
+        <div id="prevSlide"></div>
+            <div style="width: 550px; height: 250px; overflow: hidden;" id="slider">
+                <ul style="width: 1650px; margin-left: 0px;">
+
+                    <li style="float:left;">
+                        <div style="padding: 15px;">
+                            <img src="<?php echo $this->baseUrl() ?>/images/intro1.png" alt="">
+                            <h2 style="margin-top:0">Discover Resources</h2>
+                            <p>Sageweb brings aging resources from the community and across the
+                                web and puts them at your fingertips.</p>
+                            <p>Browse resource <a href="<?php echo $this->url(array(), 'content', true)
+                                    ?>">categories</a>, jump to related items,
+                                or use the <a href="<?php echo $this->url(array('q' => 'aging'), 'search', true)
+                                        ?>">search</a> to find exactly what you're looking for!
+                            </p>
+                        </div>
+                    </li>
+
+                    <li style="float: left;">
+                        <div style="padding: 15px;">
+                            <img src="<?php echo $this->baseUrl() ?>/images/intro2.png" alt="">
+                            <h2 style="margin-top:0">Learn Something New</h2>
+                            <p>
+                                Sageweb provides
+                                <a href="<?php echo $this->url(
+                                        array('category' => 'tutorial'), 'content', true)
+                                        ?>">tutorials</a> and
+                                <a href="<?php echo $this->url(
+                                        array('category' => 'presentation'), 'content', true)
+                                        ?>">presentations</a>
+                                to help you accomplish your research goals.</p>
+                            <p>If you can't find what you're looking
+                                for, pop into the <a href="<?php echo $this->url( array(), 'discussions', true)
+                                        ?>">discussion</a> area and ask a question.
+                            </p>
+                        </div>
+                    </li>
+
+                    <li style="float: left;">
+                        <div style="padding: 15px;">
+                            <img src="<?php echo $this->baseUrl() ?>/images/intro3.png" alt="">
+                            <h2 style="margin-top:0">Contribute Content!</h2>
+                            <p>
+                                Sageweb is a community driven site. Users can easily contribute
+                                articles, scripts, datasets, videos, and links through our content
+                                creation forms.
+                            </p>
+                            <p>
+                                <a href="<?php echo $this->registerUrl() ?>">Register for an account</a>
+                                and begin contributing content!
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        <div id="nextSlide"></div>
+    </div>
+</div>
+
+<div style="float:left; width:980px; overflow:auto;">
+    <div class="block" style="float:left; width:320px; margin-right:10px">
+        <div class="blockTitle"><span class="announcement">Announcements</span></div>
+        <div class="blockContent" style="overflow:auto;">
+            <ul class="blockItems">
+                <li><strong><?php echo date('Y-m-d') ?></strong><br />
+                    new updates made to sageweb.org site</li>
+                <li><strong>2011-01-08</strong><br />
+                    new updates made to gene, compound, and search pages</li>
+                <li><strong>2010-06-08</strong><br />
+                    gene data from AGEID database imported</li>
+                <li><strong>2010-06-02</strong><br />
+                    database application launched on sageweb.org</li>
+               
+            </ul>
+        </div>
+    </div>
+
+    <div class="block" style="float:left; width:320px; margin-right:10px">
+        <div class="blockTitle"><span class="calendar">Upcoming Events</span></div>
+        <div class="blockContent" style="overflow:auto;">
+            <ul class="blockItems">
+                <?php foreach (Sageweb_Cms_Table_Event::findUpcoming(5) as $post): ?>
+                    <li>
+                        <strong><?php echo $this->formatDate($post->startsAt) ?></strong><br />
+                        <a href="<?php echo $this->url(array('id' => $post->getSlugId()), 'event', true)
+                            ?>"><?php echo $this->escape($post->title) ?></a>
+                    </li>
+                <?php endforeach ?>
+                <li><a href="<?php echo $this->url(array('action' => 'upcoming'), 'events', true)
+                     ?>">View More...</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="block" style="float:left; width:320px;">
+        <div class="blockTitle"><span class="categories">New Content</span></div>
+        <div class="blockContent" style="overflow:auto;">
+            <ul class="blockItems">
+                <?php foreach (Sageweb_Cms_Table_Content::findNewest(null, null, 5) as $post): ?>
+                    <li>
+                        <strong><?php echo $this->formatDate($post->createdAt) ?></strong><br />
+                        <a href="<?php echo $this->url(array('id' => $post->getSlugId()), $post->entity->type, true)
+                            ?>"><?php echo $this->escape($post->title) ?></a>
+                    </li>
+                <?php endforeach ?>
+                <li><a href="<?php echo $this->url(array(), 'content', true)
+                     ?>">View More...</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<?php $this->headScript()->appendFile('/library/easySlider1.7.js') ?>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#slider").easySlider({
+            auto: true,
+            continuous: true,
+            pause: 7000,
+            prevId: "prevSlide",
+            nextId: "nextSlide"
+        });
+    });
+</script>

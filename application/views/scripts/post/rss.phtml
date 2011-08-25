@@ -1,0 +1,35 @@
+<?php
+// build rss feed
+$feed = new Zend_Feed_Writer_Feed;
+$feed->setTitle('Sageweb.org '. Sageweb_Model_Orm_Post::getCategoryLabel($this->category) . ' Posts');
+$feed->setDescription('Science of Aging Web');
+$feed->setLink('http://www.sageweb.org');
+$feed->setFeedLink('http://' . $_SERVER['SERVER_NAME'] . $this->url(), 'rss');
+$feed->addAuthor(array(
+    'name'  => 'Sageweb.org',
+    'email' => 'support@sageweb.org',
+    'uri'   => 'http://' . $_SERVER['SERVER_NAME'] . $this->url(),
+));
+$feed->setDateModified(time());
+$feed->setEncoding('utf-8');
+$feed->setLanguage('en');
+$feed->addCategory(array('term' => $this->category));
+
+$entries = array();
+foreach ($this->posts as $post) {
+    $entry = $feed->createEntry();
+    $entry->setTitle($post->title);
+    $entry->setLink('http://sageweb.org/content/'
+        . $post->type . '/' . $post->id . '/' . $post->slug);
+    $entry->addAuthor(array(
+        'name'  => $post->entity->author->displayName,
+        'uri'   => 'http://www.sageweb.org',
+    ));
+    $entry->addAuthor($post->entity->author->displayName);
+    $entry->setDateCreated(strtotime($post->entity->createdAt));
+    $entry->setDateModified(strtotime($post->entity->updatedAt));
+    $entry->setDescription($post->summary . ' ');
+    $feed->addEntry($entry);
+}
+
+echo $feed->export('rss');

@@ -1,0 +1,38 @@
+<?php $this->headTitle()->prepend('Link Revisions') ?>
+
+<div class="main">
+    <h1>
+        <a href="<?php echo $this->url(
+            array('action' => 'show', 'id' => $this->post->getSlugId()), 'link')
+            ?>">Link</a>
+        &gt; Revisions
+    </h1>
+
+    <table class="dataTable" style="width:100%">
+        <thead>
+            <th>Status</th>
+            <th>Creator</th>
+            <th>Comment</th>
+            <th style="text-align:center">Action</th>
+        </thead>
+
+        <?php $iRow = 0 ?>
+        <?php foreach ($this->revisions as $revision): ?>
+            <tr class="<?php echo ($iRow % 2 != 0) ? 'alternate' : '' ?>">
+                <td><?php echo $revision->status ?></td>
+                <td>
+                    <?php echo $this->userLink($revision->creatorId) ?>
+                    on <?php echo $this->formatDate($revision->createdAt, true) ?>
+                </td>
+                <td><?php echo $this->escape($revision->creatorComment) ?></td>
+                <td style="text-align:center">
+                    <a href="<?php echo $this->url(
+                        array('id' => $this->post->id, 'revisionId' => $revision->id),
+                        'linkRevision', true
+                        ) ?>">View</a>
+                </td>
+            </tr>
+            <?php $iRow++ ?>
+        <?php endforeach ?>
+    </table>
+</div>

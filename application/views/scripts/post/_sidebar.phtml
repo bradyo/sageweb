@@ -1,0 +1,13 @@
+<div class="block">
+    <div class="blockTitleLight">Post Author</div>
+    <div class="blockContent">
+        <?php echo $this->partial('profile/_badge.phtml', array('user' => $this->post->getAuthor())) ?>
+    </div>
+</div>
+
+<div class="block">
+    <div class="blockTitleLight">Post History</div>
+    <div class="blockContent">
+        <?php echo $this->partial('post/_info.phtml', array('post' => $this->post)) ?>
+    </div>
+</div>

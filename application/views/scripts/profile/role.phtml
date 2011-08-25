@@ -1,0 +1,33 @@
+<?php $user = $this->user ?>
+<?php $this->headTitle()->prepend('Profile for ' . $user->getDisplayName()) ?>
+
+<div id="sidebar">
+    <?php echo $this->partial('profile/_sidebar.phtml',
+        array('user' => $user, 'menu' => $this->menu)) ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <h1>Update User's Role</h1>
+        <ul>
+            <li><strong>Member</strong> users can post content, but must wait
+                for a moderator to review.</li>
+            <li><strong>Moderator</strong> users can approve revisions and new posts,
+                as well as block or unblock users</li>
+            <li><strong>Admin</strong> users can do everything a moderator can do as
+                well manage the site itself.</li>
+        </ul>
+
+        <form action="<?php echo $this->url() ?>" method="post">
+            Role:
+            <select name="role">
+                <?php foreach (Sageweb_Cms_User::getRoleChoices() as $key => $label): ?>
+                    <?php $selected = ($this->user->role == $key) ? 'selected="selected"' : '' ?>
+                    <option value="<?php echo $key ?>" <?php echo $selected ?>><?php echo $label ?></option>
+                <?php endforeach ?>
+            </select>
+            
+            <input type="submit" value="Update Role" />
+        </form>
+    </div>
+</div>

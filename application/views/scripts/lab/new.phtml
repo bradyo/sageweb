@@ -1,0 +1,15 @@
+<?php echo $this->headTitle()->prepend($this->title) ?>
+
+<div id="sidebar">
+    <?php echo $this->render('lab/_actionsBlock.phtml') ?>
+    <?php echo $this->render('lab/_filtersBlock.phtml') ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <?php echo $this->render('post/_guestMessage.phtml') ?>
+
+        <h1><?php echo $this->title ?></h1>
+        <?php echo $this->partial('lab/_form.phtml', array('form' => $this->form)) ?>
+    </div>
+</div>

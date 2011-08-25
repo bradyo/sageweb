@@ -1,0 +1,11 @@
+<div class="block">
+    <div class="blockTitle"><span class="types">User Filters</span></div>
+    <div class="blockContent">
+        <form action="<?php echo $this->url(array(), 'papers', true) ?>" method="get">
+            <label for="search">Search:</label><br />
+            <input type="text" name="search"
+                   value="<?php echo $this->escape($_GET['search']) ?>" style="width:140px" />
+            <input type="submit" value="Submit" />
+        </form>
+    </div>
+</div>

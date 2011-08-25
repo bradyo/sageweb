@@ -1,0 +1,64 @@
+<?php $this->headTitle()->prepend($this->post->title) ?>
+
+<div id="sidebar">
+    <?php echo $this->render('paper/_actionsBlock.phtml') ?>
+
+    <?php if ($this->canEdit): ?>
+        <?php echo $this->partial('paper/_editBlock.phtml', array(
+            'post' => $this->post,
+            'pendingRevisions' => $this->pendingRevisions
+            )) ?>
+    <?php endif ?>
+
+    <?php echo $this->partial('post/_badgeBlock.phtml',
+        array('title' => 'Posted By', 'user' => $this->post->author)) ?>
+
+    <?php if ($this->post->isPublic()): ?>
+        <?php echo $this->partial('post/_statsBlock.phtml', array('post' => $this->post)) ?>
+    <?php endif ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <?php if ($this->post->isPublic()): ?>
+            <h1><?php echo $this->escape($this->post->title) ?></h1>
+            <hr />
+
+            <table class="fieldsTable" style="margin-bottom:1em;">
+                <tr>
+                    <th>URL:</th>
+                    <td><a href="<?php echo $this->escape($this->post->url)
+                        ?>" target="_blank"><?php echo $this->escape($this->post->url) ?></a></td>
+                </tr>
+                <tr>
+                    <th>Published:</th>
+                    <td><?php echo $this->formatDate($this->post->publishDate) ?></td>
+                </tr>
+            </table>
+
+            <h2>Importance to the Community:</h2>
+            <p><?php echo $this->cleanHtmlBasic($this->post->summary) ?></p>
+
+            <h2>Authors:</h2>
+            <p><?php echo $this->escape($this->post->authors) ?></p>
+
+            <h2>Abstract:</h2>
+            <p><?php echo $this->escape($this->post->abstract) ?></p>
+
+        <?php else: ?>
+            <?php if ($this->post->isHeld()): ?>
+                <h1>This content has been flagged for review.</h1>
+            <?php elseif ($this->post->isDeleted()): ?>
+                <h1>This content has been deleted.</h1>
+            <?php else: ?>
+                <h1>This content is pending moderator approval.</h1>
+            <?php endif ?>
+        <?php endif ?>
+    </div>
+
+    <?php if ($this->post->isPublic()): ?>
+        <?php echo $this->partial('post/_review.phtml',
+            array('post' => $this->post, 'voteValue' => $this->voteValue) ) ?>
+        <?php echo $this->partial('post/_comments.phtml', array('post' => $this->post)) ?>
+    <?php endif ?>
+</div>

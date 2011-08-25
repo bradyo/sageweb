@@ -1,0 +1,53 @@
+<?php $post = $this->post ?>
+
+<div class="postEntry">
+    <?php if ($post->getIconUri()): ?>
+        <div class="defaultIcon articleIcon"></div>
+    <?php else: ?>
+        <?php if ($post->entity->type == Sageweb_Cms_Entity::TYPE_FILE): ?>
+            <div class="defaultIcon fileIcon"></div>
+        <?php elseif ($post->entity->type == Sageweb_Cms_Entity::TYPE_LINK): ?>
+            <div class="defaultIcon linkIcon"></div>
+        <?php elseif ($post->entity->type == Sageweb_Cms_Entity::TYPE_EVENT): ?>
+            <div class="defaultIcon eventIcon"></div>
+        <?php else: ?>
+            <div class="defaultIcon articleIcon"></div>
+        <?php endif ?>
+    <?php endif ?>
+
+    <div style="margin-left: 165px">
+        <h2 style="margin:0; display:inline-block">
+            <a href="<?php echo $this->url(
+                array('id' => $post->getSlugId()), $post->entity->type, true) ?>"
+                ><?php echo $this->escape($post->title) ?></a>
+        </h2>
+
+        <?php if ($post->isFeatured): ?>
+            <span class="featured">Featured</span>
+        <?php endif ?>
+
+        <div>
+            <?php echo $this->cleanHtmlSummary($post->summary) ?>
+        </div>
+
+        <div class="entryAuthor">
+            <?php $author = $post->author ?>
+            Posted
+            <?php if ($author): ?>
+                by
+                <a href="<?php echo $this->url(
+                    array('username' => $author->username), 'profile', true) ?>"
+                    ><?php echo $this->escape($author->displayName) ?></a>
+            <?php endif ?>
+            on
+            <?php echo $this->formatDate($post->createdAt) ?>
+
+            <span class="postStats">
+                <span class="rating"><?php echo $post->entity->rating ?></span>
+                <span class="views"><?php echo $post->entity->viewsCount ?></span>
+                <span class="comments"><?php echo $post->entity->commentsCount ?></span>
+            </span>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>

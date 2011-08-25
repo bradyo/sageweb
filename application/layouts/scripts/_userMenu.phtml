@@ -1,0 +1,25 @@
+
+<?php if (!Zend_Auth::getInstance()->hasIdentity()): ?>
+    <a href="<?php echo $this->url(array(), 'login', true)
+        . '?dest=' . $this->url()
+        ?>">Sign In</a>
+<?php else: ?>
+    <?php $user = Application_Registry::getUser() ?>
+    <a href="<?php echo $this->url(array(), 'account', true)
+        ?>">My Account</a>
+    <?php if ($user->isModerator()): ?>
+        <a href="<?php echo $this->url(array(), 'manage', true)
+            ?>">Manage</a>
+    <?php endif ?>
+    <a href="<?php echo $this->url(array(), 'logout', true)
+        . '?dest=' . $this->url() ?>">Logout</a>
+<?php endif ?>
+
+<a id="addPost" class="post" href="<?php echo $this->url(
+    array('controller' => 'posts', 'action' => 'add'), null, true
+    ) ?>"><span class="add">Add Post</span></a>
+<div style="display:none">
+    <div id="postOverlay">
+        <?php //echo $this->render('_overlay.phtml') ?>
+    </div>
+</div>

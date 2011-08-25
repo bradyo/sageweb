@@ -1,0 +1,18 @@
+<?php if (count($this->tags) > 0): ?>
+    <div class="block">
+        <div class="blockTitle">Tagged</div>
+        <div class="blockContent">
+            <ul class="tagsList">
+                <?php foreach ($this->tags as $tag => $count): ?>
+                    <li>
+                        <span class="tag"><a href="<?php echo $this->url(
+                            array('tag' => $tag), 'discussions', true
+                            ) ?>"><?php echo $this->escape($tag) ?></a>
+                            (<?php echo $count ?>)
+                        </span>
+                    </li>
+                <?php endforeach ?>
+            </ul>
+        </div>
+    </div>
+<?php endif ?>

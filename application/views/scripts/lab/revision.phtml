@@ -1,0 +1,113 @@
+<?php $this->headTitle()->prepend('Lab Revision') ?>
+
+<div class="main">
+    <h1>Lab Revision</h1>
+
+    <table class="fieldsTable">
+        <tr>
+            <th>Status:</th>
+            <td><?php echo $this->revision->status ?></td>
+        </tr>
+        <tr>
+            <th>Created:</th>
+            <td>
+                By <?php echo $this->userLink($this->revision->creatorId) ?>
+                on <?php echo $this->formatDate($this->revision->createdAt, true) ?>
+            </td>
+        </tr>
+        <tr>
+            <th>Comment:</th>
+            <td><?php echo $this->escape($this->revision->creatorComment) ?></td>
+        </tr>
+        <?php if ($this->revision->status != Sageweb_Cms_EntityRevision::STATUS_PENDING): ?>
+            <tr>
+                <th>Reviewed:</th>
+                <td>
+                    By <?php echo $this->userLink($this->revision->reviewerId) ?>
+                    on <?php echo $this->formatDate($this->revision->reviewedAt, true) ?>
+                </td>
+            </tr>
+            <tr>
+                <th>Comment:</th>
+                <td><?php echo $this->escape($this->revision->reviewerComment) ?></td>
+            </tr>
+        <?php endif ?>
+    </table>
+    <br />
+
+    <table class="revisionTable" style="width:100%">
+        <tr>
+            <th></th>
+            <th style="width:50%">Revision Data</th>
+            <th style="width:50%">Current Data</th>
+        </tr>
+
+        <tr>
+            <th>Status:</th>
+            <td><?php echo $this->revisionData['status'] ?></td>
+            <?php if ($this->revisionData['status'] !== $this->currentData['status']): ?>
+                <td><?php echo $this->currentData['status'] ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+        <tr>
+            <th>Author:</th>
+            <td><?php echo $this->userLink($this->revisionData['authorId']) ?></td>
+            <?php if ($this->revisionData['authorId'] !== $this->currentData['authorId']): ?>
+                <td><?php echo $this->userLink($this->currentData['authorId']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+
+        <tr>
+            <th>Name:</th>
+            <td><?php echo $this->escape($this->revisionData['name']) ?></td>
+            <?php if ($this->revisionData['name'] !== $this->currentData['name']): ?>
+                <td><?php echo $this->escape($this->currentData['name']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+        <tr>
+            <th>Type:</th>
+            <td><?php echo $this->escape($this->revisionData['type']) ?></td>
+            <?php if ($this->revisionData['type'] !== $this->currentData['type']): ?>
+                <td><?php echo $this->escape($this->currentData['type']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+        <tr>
+            <th>Location:</th>
+            <td><?php echo $this->escape($this->revisionData['location']) ?></td>
+            <?php if ($this->revisionData['location'] !== $this->currentData['location']): ?>
+                <td><?php echo $this->escape($this->currentData['location']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+        <tr>
+            <th>URL:</th>
+            <td><a href="<?php echo $this->escape($this->revisionData['url'])
+               ?>"><?php echo $this->escape($this->revisionData['url']) ?></a></td>
+            <?php if ($this->revisionData['url'] !== $this->currentData['url']): ?>
+                <td><?php echo $this->escape($this->currentData['url']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+        <tr>
+            <th>Summary:</th>
+            <td><?php echo $this->escape($this->revisionData['body']) ?></td>
+            <?php if ($this->revisionData['body'] !== $this->currentData['body']): ?>
+                <td><?php echo $this->escape($this->currentData['body']) ?></td>
+            <?php else: ?>
+                <td></td>
+            <?php endif ?>
+        </tr>
+    </table>
+
+    <?php echo $this->partial('post/_revisionForm.phtml', array('revision' => $this->revision)) ?>
+</div>

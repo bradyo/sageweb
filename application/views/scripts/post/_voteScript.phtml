@@ -1,0 +1,20 @@
+<script type="text/javascript">
+    $('.vote-up').click(function() {
+        $.post('<?php echo $this->url(
+            array('controller' => 'api', 'action' => 'vote-up'), 'default', true
+            ) ?>',
+            {'entityId': <?php echo $this->post->entityId ?>}
+        );
+        $('.vote-down').removeClass('vote-down-selected');
+        $('.vote-up').toggleClass('vote-up-selected');
+    });
+    $('.vote-down').click(function() {
+        $.post('<?php echo $this->url(
+            array('controller' => 'api', 'action' => 'vote-down'), 'default', true
+            ) ?>',
+            {'entityId': <?php echo $this->post->entityId ?>}
+        );
+        $('.vote-up').removeClass('vote-up-selected');
+        $('.vote-down').toggleClass('vote-down-selected');
+    });
+</script>

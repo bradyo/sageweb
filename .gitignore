@@ -1,13 +1,6 @@
 # ignore local configuration
 application/configs/application.ini
 
-# ignore data directories
-data/cache
-data/logs
-data/lucene
-data/sql-dumps
-data/uploads
-
 # ignore developer directories
 /nbproject/private/
 

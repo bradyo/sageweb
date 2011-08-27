@@ -80,7 +80,7 @@ class EventController extends Zend_Controller_Action {
         $events = $this->eventRepository->getAll($filter, $offset, self::ITEMS_PER_PAGE);
         $this->view->events =  $events;
         
-        $this->renderScript('events/list.phtml');
+        $this->renderScript('event/list.phtml');
     }
     
     public function pastAction() {
@@ -103,7 +103,7 @@ class EventController extends Zend_Controller_Action {
         $events = $this->eventRepository->getAll($filter, $offset, self::ITEMS_PER_PAGE);
         $this->view->events =  $events;
         
-        $this->renderScript('events/list.phtml');
+        $this->renderScript('event/list.phtml');
     }
 
     public function calendarAction() {

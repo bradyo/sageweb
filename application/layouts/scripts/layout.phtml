@@ -30,7 +30,10 @@
     <div id="content">
         <?php echo $this->layout()->content; ?>
     </div>
-    <?php echo $this->render('_footer.phtml') ?>
+    
+    <div id="footer">
+        <?php echo $this->render('_footer.phtml') ?>
+    </div>
 
     <?php if (APPLICATION_ENV !== 'development'): ?>
         <?php echo $this->render('_feedback.phtml') ?>

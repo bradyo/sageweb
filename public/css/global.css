@@ -1,7 +1,7 @@
 /* HTML elements */
 
 * { margin: 0; padding: 0; }
-body { background-color: #DDDDDD; font: 14px/1.5 arial,helvetica,clean,sans-serif; color: #000000; }
+body { background-color: #F0F0F0; font: 14px/1.5 arial,helvetica,clean,sans-serif; color: #000000; }
 .mceContentBody { background-color: white; }
 h1, h2, h3, h4 { margin-bottom: 0.5em; line-height: 1.15em; }
 h1 { font-size: 1.5em; }
@@ -98,14 +98,17 @@ padding-right: 15px; }
 
 /* Footer */
 
-#footer { padding: 5px; color: black; 
-    clear: both; width: 960px; margin: 0 auto; border: 0px; padding: 1em 0;
-    background-color: #ddd; color: #666; }
-#footer .column { float:left; width: 25%; color: #333; text-align:center; }
-#footer .column .header { font-weight: bold; color: black; }
-#footer .column ul { list-style-type: none; margin: 0; padding: 0; }
-#footer a { color: #333; }
-#footer a:hover { color: #00f; }
+#footer { background-color: #DDDDDD; clear: both; margin: 0; padding: 0; border-top: 1px solid #666;
+    overflow: auto; padding: 1em; }
+#footerContent { padding: 5px; width: 960px; margin: 0 auto; background-color: #ddd;
+     color: #666; overflow: auto; padding-bottom: 1em; }
+#footerContent .column { float:left; width: 25%; color: #333; text-align:center; }
+#footerContent .column .header { font-weight: bold; color: black; }
+#footerContent .column ul { list-style-type: none; margin: 0; padding: 0; }
+#footerContent a { color: #333; }
+#footerContent a:hover { color: #00f; }
+
+
 
 /* Overlay */
 
@@ -119,7 +122,8 @@ padding-right: 15px; }
 
 /* Content */
 
-#content { margin: 0 auto; width: 980px; clear: both; overflow: auto; margin-bottom: 1em; }
+#content { margin: 0 auto; width: 980px; clear: both; overflow: auto; margin-bottom: 1em; 
+padding-bottom: 1em;}
 #sidebar { float: right; width: 180px;}
 #page { float: left; width: 790px; }
 

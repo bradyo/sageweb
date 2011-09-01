@@ -23,14 +23,14 @@
         <div id="rootComment" class="comment" style="display:none; margin-bottom:1em">
             <div class="commentAvatar">
                 <img src="<?php echo $this->escape(
-                    $this->gravatar(Application_Registry::getUser()->email, array('s'=> 50, 'd' => 'mm'))
+                    $this->gravatar(Application_Registry::getCurrentUser()->email, array('s'=> 50, 'd' => 'mm'))
                     ) ?>" alt="" style="float:left" />
             </div>
 
             <div class="commentCallout">
                 <div class="calloutContent">
                     <div class="commentMeta">
-                        <?php echo $this->userLink(Application_Registry::getUser()->id) ?>:
+                        <?php echo $this->userLink(Application_Registry::getCurrentUser()->id) ?>:
                     </div>
 
                     <div class="commentBody">

@@ -88,6 +88,14 @@ class Application_Model_Post_Post extends Doctrine_Record {
             'local' => 'id',
             'foreign' => 'post_id'
         ));
+        
+        // link in post types
+        // TODO: move to config, or figure out how to reverse the relationship
+        // so these relations can be defined in post sub-type classes
+        $this->hasOne('Application_Model_Event_Event as event', array(
+            'local' => 'id',
+            'foreign' => 'post_id',
+        ));
     }
 
     public function getSlugId() {
@@ -98,7 +106,25 @@ class Application_Model_Post_Post extends Doctrine_Record {
         return $slugId;
     }
     
+    public function isPublic() {
+        return $this->status == self::STATUS_PUBLIC;
+    }
+    
+    public static function getPublicIdFromSlug($slug) {
+        $matches = array();
+        preg_match('/^(\d+).*$/', $slug, $matches);
+        if (isset($matches[1])) {
+            return $matches[1];
+        } else {
+            return null;
+        }
+    }
+    
     public function addViewBy(Application_Model_User_User $user) {
+        if ($user->isGuest()) {
+            return;
+        }
+        
         // check if view already exists in the last 30 min
         $targetDate = new Zend_Date(time());
         $targetDate->subMinute(30);
@@ -114,6 +140,7 @@ class Application_Model_Post_Post extends Doctrine_Record {
             return;
         }
 
+        // TODO fix me
 //        $query = Doctrine_Query::create()->from('Application_Model_Entity_EntityView v')
 //            ->where('v.entityId = ?', $this->entityId)
 //            ->andWhere('v.ipAddress = ?', $_SERVER['REMOTE_ADDR'])

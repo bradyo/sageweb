@@ -6,6 +6,13 @@ class Application_Model_Event_EventFilter extends Application_Model_Post_PostFil
     protected $startDateAfter;
     protected $startDateBefore;
     
+    public function __get($property) {
+        return $this->$property;
+    }
+    public function __set($property, $value) {
+        $this->$property = $value;
+    }
+    
     public function __construct() {
         $this->eventTypes = array();
         $this->orderBy = 'event.startDate asc';

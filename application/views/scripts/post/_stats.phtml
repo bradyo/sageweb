@@ -1,7 +1,7 @@
 <span class="post-stats">
-    <?php $entity = $this->post->entity ?>
-    <span class="up-votes" title="Up Votes"><?php echo $entity->upVotesCount ?></span>
-    <span class="down-votes" title="Down Votes"><?php echo $entity->downVotesCount ?></span>
-    <span class="views" title="Views"><?php echo $entity->viewsCount ?></span>
-    <span class="comments" title ="Comments"><?php echo $entity->commentsCount ?></span>
+    <?php $stats = $this->post->stats ?>
+    <span class="up-votes" title="Up Votes"><?php echo $stats->upVotesCount ?></span>
+    <span class="down-votes" title="Down Votes"><?php echo $stats->downVotesCount ?></span>
+    <span class="views" title="Views"><?php echo $stats->viewsCount ?></span>
+    <span class="comments" title ="Comments"><?php echo $stats->commentsCount ?></span>
 </span>

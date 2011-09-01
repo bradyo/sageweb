@@ -1,7 +1,7 @@
 <div class="review" style="margin:0.5em 20px; height:40px; overflow: visible;">
     <div style="float:left;">
         <span style="font-weight:bold; margin-right:5px">Did you like this post?</span>
-        <?php if (!Application_Registry::getUser()->isGuest()): ?>
+        <?php if (!Application_Registry::getCurrentUser()->isGuest()): ?>
             <a class="vote-up <?php echo ($this->voteValue == 1) ? 'vote-up-selected' : '' ?>"
                 href="#" onclick="return false;">Vote Up</a>
             <a class="vote-down <?php echo ($this->voteValue == -1) ? 'vote-down-selected' : '' ?>"

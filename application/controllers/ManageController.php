@@ -10,7 +10,7 @@ class ManageController extends Zend_Controller_Action
     {
         parent::preDispatch();
 
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         if (!$viewingUser->isModerator()) {
             throw new Zend_Controller_Action_Exception('Access Denied', 404);
         }

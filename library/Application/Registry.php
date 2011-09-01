@@ -17,4 +17,34 @@ class Application_Registry extends Zend_Registry {
         }
     }
     
+    /**
+     * @return Application_Model_User_UserRepository 
+     */
+    public static function getUserRepostiory() {
+        $registry = Zend_Registry::getInstance();
+        if ($registry->isRegistered('userRepository')) {
+            return $registry->get('userRepository');
+        } else {
+            $searchIndex = Zend_Registry::get('searchIndex');
+            $userRepository = new Application_Model_User_UserRepository($searchIndex);
+            $registry->set('userRepository', $userRepository);
+            return $userRepository;
+        }
+    }
+    
+    /**
+     * @return Application_Model_User_User
+     */
+    public static function getCurrentUser() {
+        $user = null;
+        if (Zend_Auth::getInstance()->hasIdentity()) {
+            $userId = $auth->getStorage()->get('userId');
+            $userRepository = self::getUserRepostiory();
+            $user = $userRepository->getOneById($userId);
+        }
+        if ($user == null) {
+            $user = new Application_Model_User_GuestUser();
+        }
+        return $user;
+    }
 }

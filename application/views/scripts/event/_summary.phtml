@@ -1,6 +1,10 @@
 <?php
-/* @var $event Sageweb_Event_EventPost */
-$event = $this->event;
+/* @var $post Application_Model_Post_Post */
+$post = $this->post;
+
+/* @var $event Application_Model_Event_Event */
+$event = $post->event;
+
 /* @var $eventTypes Application_Model_Event_EventTypes */
 $eventTypes = $this->eventTypes;
 ?>
@@ -17,9 +21,9 @@ $eventTypes = $this->eventTypes;
 
 <div class="eventData">
     <h2>
-        <?php $url = $this->url(array('id' => $event->post->getSlugId()), 'event', true) ?>
+        <?php $url = $this->url(array('id' => $post->getSlugId()), 'event', true) ?>
         <a href="<?php echo $this->escape($url) 
-            ?>"><?php echo $this->escape($event->post->title) ?></a>
+            ?>"><?php echo $this->escape($post->title) ?></a>
     </h2>
 
     <div class="eventDates">
@@ -30,6 +34,6 @@ $eventTypes = $this->eventTypes;
     </div>
 
     <div>
-        <?php echo $this->cleanHtmlSummary($event->post->summary) ?>
+        <?php echo $this->cleanHtmlSummary($post->summary) ?>
     </div>
 </div>

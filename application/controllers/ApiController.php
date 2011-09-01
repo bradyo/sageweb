@@ -87,7 +87,7 @@ class ApiController extends Zend_Controller_Action
             ->where('e.id = ?', $entityId)
             ->limit(1)
             ->fetchOne();
-        Application_Registry::getUser()->vote($entity, 1);
+        Application_Registry::getCurrentUser()->vote($entity, 1);
         
         $response = array('success' => true);
         $this->_helper->json->sendJson($response);
@@ -100,7 +100,7 @@ class ApiController extends Zend_Controller_Action
             ->where('e.id = ?', $entityId)
             ->limit(1)
             ->fetchOne();
-        Application_Registry::getUser()->vote($entity, -1);
+        Application_Registry::getCurrentUser()->vote($entity, -1);
 
         $response = array('success' => true);
         $this->_helper->json->sendJson($response);
@@ -118,7 +118,7 @@ class ApiController extends Zend_Controller_Action
         $rootEntityId = $this->_getParam('rootEntityId');
         $parentEntityId = $this->_getParam('parentEntityId');
 
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         $form = new Application_Form_PostComment();
         if ($form->isValid($this->_getAllParams())) {
             $formValues = $this->_getAllParams();
@@ -168,7 +168,7 @@ class ApiController extends Zend_Controller_Action
     {
         $entityId = $this->_getParam('entityId');
 
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         $form = new Application_Form_Flag();
         if ($form->isValid($this->_getAllParams()) && !$viewingUser->isGuest()) {
             $values = $form->getValues();

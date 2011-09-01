@@ -28,7 +28,7 @@ class ProfileController extends Zend_Controller_Action
         ));
         $pages[] = $profilePage;
 
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         if ($viewingUser->username == $username) {
             $editPage = new Zend_Navigation_Page_Mvc(array(
                 'label' => 'Edit Profile',
@@ -65,7 +65,7 @@ class ProfileController extends Zend_Controller_Action
             throw new Zend_Controller_Action_Exception('User does not exist', 404);
         }
 
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         if ($viewingUser->username !== $username) {
             throw new Zend_Controller_Action_Exception('Cannot edit page', 404);
         }
@@ -123,7 +123,7 @@ class ProfileController extends Zend_Controller_Action
 
     public function blockAction()
     {
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         if (!$viewingUser->isModerator()) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
@@ -147,7 +147,7 @@ class ProfileController extends Zend_Controller_Action
 
     public function unblockAction()
     {
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         if (!$viewingUser->isModerator()) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
@@ -171,7 +171,7 @@ class ProfileController extends Zend_Controller_Action
 
     public function roleAction()
     {
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         if (!$viewingUser->isAdmin()) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }

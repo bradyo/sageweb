@@ -20,7 +20,7 @@ class Application_Model_Event_EventTypes
     }
     
     public function getLabel($type) {
-        $choices = $this->getChoices();
+        $choices = $this->choices;
         if (isset($choices[$type])) {
             return $choices[$type];
         }

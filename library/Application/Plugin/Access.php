@@ -7,7 +7,7 @@ class Application_Plugin_Access extends Zend_Controller_Plugin_Abstract {
 
         // if the user is logged in, update thier last seen time at each request
         if (Zend_Auth::getInstance()->hasIdentity()) {
-            $user = Application_Registry::getUser();
+            $user = Application_Registry::getCurrentUser();
             if (! $user->isGuest()) {
                 $user->seenAt = date("Y-m-d H:i:s", time());
                 $user->save();

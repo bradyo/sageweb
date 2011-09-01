@@ -22,13 +22,13 @@
         <ul class="menuList">
             <li>
                 <a class="menuItem" href="<?php echo $this->url(
-                    array('username' => Application_Registry::getUser()->username, 'action' => 'show'),
+                    array('username' => Application_Registry::getCurrentUser()->username, 'action' => 'show'),
                     'profile', true)
                     ?>">View Profile</a>
             </li>
             <li>
                 <a class="menuItem" href="<?php echo $this->url(
-                    array('username' => Application_Registry::getUser()->username, 'action' => 'edit'),
+                    array('username' => Application_Registry::getCurrentUser()->username, 'action' => 'edit'),
                     'profile', true)
                     ?>">Edit Profile</a>
             </li>

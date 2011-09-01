@@ -130,18 +130,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $router = $this->frontController->getRouter();
         $router->setChainNameSeparator('/');
         
-        $dirIterator = new DirectoryIterator(APPLICATION_PATH . '/configs/routes');
-        foreach ($dirIterator as $file) {
-            if ($file->isDot() || $file->isDir()) {
-                continue;
-            }
-            $filename = $file->getFilename();
-            if (preg_match('/^.+\.ini$/i', $filename)) {
-                $configPath = APPLICATION_PATH . '/configs/routes/' . $filename;
-                $config = new Zend_Config_Ini($configPath);
-                $router->addConfig($config, 'routes');
-            }
-        }
+        $configPath = APPLICATION_PATH . '/configs/routes.ini';
+        $config = new Zend_Config_Ini($configPath);
+        $router->addConfig($config, 'routes');
     }
 
     protected function _initI18n() {

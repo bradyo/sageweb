@@ -1,4 +1,9 @@
-<?php $this->headTitle()->prepend($this->post->title) ?>
+<?php 
+$this->headTitle()->prepend($this->post->title);
+
+/* @var $post Application_Model_Post_Post */
+$post = $this->post;
+?>
 
 <div id="sidebar">
     <?php echo $this->render('event/_actionsBlock.phtml') ?>
@@ -36,27 +41,27 @@
                 <tr>
                     <th>Date:</th>
                     <td>
-                        <?php echo $this->formatDate($this->post->startsAt) ?>
-                        <?php if (!empty($this->post->endsAt)): ?>
-                            - <?php echo $this->formatDate($this->post->endsAt) ?>
+                        <?php echo $this->formatDate($post->event->startDate) ?>
+                        <?php if (!empty($post->event->endDate)): ?>
+                            - <?php echo $this->formatDate($post->event->endDate) ?>
                         <?php endif ?>
                     </td>
                 </tr>
                 <tr>
                     <th>Type:</th>
-                    <td><?php echo Sageweb_Cms_PostEvent::getTypeLabel($this->post->type) ?></td>
+                    <td><?php echo Application_Model_Event_EventTypes::getLabel($post->event->eventType) ?></td>
                 </tr>
-                <?php if (!empty($this->post->location)): ?>
+                <?php if (!empty($post->location)): ?>
                     <tr>
                         <th>Location:</th>
-                        <td><?php echo $this->escape($this->post->location) ?></td>
+                        <td><?php echo $this->escape($post->location) ?></td>
                     </tr>
                 <?php endif ?>
-                <?php if (!empty($this->post->url)): ?>
+                <?php if (!empty($post->event->url)): ?>
                     <tr>
                         <th>URL:</th>
-                        <td><a href="<?php echo $this->escape($this->post->url)
-                                ?>" target="_blank"><?php echo $this->escape($this->post->url) ?></a>
+                        <td><a href="<?php echo $this->escape($post->event->url)
+                            ?>" target="_blank"><?php echo $this->escape($post->event->url) ?></a>
                         </td>
                     </tr>
                 <?php endif ?>
@@ -78,6 +83,6 @@
     <?php if ($this->post->isPublic()): ?>
         <?php echo $this->partial('post/_review.phtml',
                 array('post' => $this->post, 'voteValue' => $this->voteValue) ) ?>
-        <?php echo $this->partial('post/_comments.phtml', array('post' => $this->post)) ?>
+        <?php //echo $this->partial('post/_comments.phtml', array('post' => $this->post)) ?>
     <?php endif ?>
 </div>

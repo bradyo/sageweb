@@ -2,7 +2,8 @@
 
 class Application_Model_User_UserRepository {
     
-    public function getAll(Application_Model_User_UserFilter $filter = null, $offset = null, $limit = null) {
+    public function getAll(Application_Model_User_UserFilter $filter = null, 
+            $offset = null, $limit = null) {
         $query = $this->getQuery($filter);
         if ($offset !== null) {
             $query->offset($offset);

@@ -1,0 +1,15 @@
+# ignore local configuration
+application/configs/application.in directories
+data/cache/application/*
+data/cache/htmlpurifier/*
+data/logs/*
+data/lucene/*
+data/sql-dumps/*
+data/uploads/*
+
+# ignore developer directories
+/nbproject/private/
+
+# ignore error files
+error.log
+

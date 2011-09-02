@@ -3,6 +3,8 @@ $this->headTitle()->prepend($this->post->title);
 
 /* @var $post Application_Model_Post_Post */
 $post = $this->post;
+
+$eventTypes = new Application_Model_Event_EventTypes();
 ?>
 
 <div id="sidebar">
@@ -49,7 +51,7 @@ $post = $this->post;
                 </tr>
                 <tr>
                     <th>Type:</th>
-                    <td><?php echo Application_Model_Event_EventTypes::getLabel($post->event->eventType) ?></td>
+                    <td><?php echo $eventTypes->getLabel($post->event->eventType) ?></td>
                 </tr>
                 <?php if (!empty($post->location)): ?>
                     <tr>

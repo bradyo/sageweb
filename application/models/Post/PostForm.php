@@ -78,7 +78,7 @@ abstract class Application_Model_Post_PostForm extends Zend_Form {
 
             $element = new Zend_Form_Element_Text('author');
             $element->setLabel('Author:');
-            $element->addValidator(new Sageweb_Validate_Username());
+            $element->addValidator(new Application_Validate_Username());
             $this->addElement($element);
             
             $element = new Zend_Form_Element_Checkbox('isFeatured');

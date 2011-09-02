@@ -10,25 +10,27 @@
 </head>
 
 <body>
-    <div id="top-bar">
-        <div id="global-crumb">
-            <?php echo $this->render('_globalCrumb.phtml') ?>
+    <div id="viewport">
+        <div id="top-bar">
+            <div id="global-crumb">
+                <?php echo $this->render('_globalCrumb.phtml') ?>
+            </div>
+            <div id="user-menu">
+                <?php echo $this->render('_userMenu.phtml') ?>
+            </div>
         </div>
-        <div id="user-menu" style="float:right">
-            <?php echo $this->render('_userMenu.phtml') ?>
+
+        <div id="header">
+            <?php echo $this->render('_header.phtml') ?>
         </div>
-    </div>
 
-    <div id="header">
-        <?php echo $this->render('_header.phtml') ?>
-    </div>
-    
-    <div id="navigation" style="position:relative;">
-        <?php echo $this->render('_navigation.phtml') ?>
-    </div>
+        <div id="navigation" style="position:relative;">
+            <?php echo $this->render('_navigation.phtml') ?>
+        </div>
 
-    <div id="content">
-        <?php echo $this->layout()->content; ?>
+        <div id="content">
+            <?php echo $this->layout()->content; ?>
+        </div>
     </div>
     
     <div id="footer">

@@ -93,6 +93,43 @@ class ManageController extends Zend_Controller_Action
         $this->view->sort = $this->_getParam('sort', 'createdAt');
         $this->view->order = $this->_getParam('order');
     }
+    
+    //    public function revisionAction() {
+//        $id = $this->_getParam('id');
+//        $post = $this->eventRepository->getLatestById($id);
+//        if (!$post) {
+//            throw new Zend_Controller_Action_Exception(404, 'Post not found.');
+//        }
+//
+//        $version = $this->_getParam('version');
+//        $targetPost = $this->eventRepository->getVersion($id, $version);
+//        if (!$targetPost) {
+//            throw new Zend_Controller_Action_Exception(404, 'Version not found.');
+//        }
+//
+//        if ($this->_request->isPost()) {
+//            $currentUser = Application_Registry::getCurrentUser();
+//            if ($currentUser->isModerator()) {
+//                $targetPost->reviewerId = $currentUser->id;
+//                
+//                $status = $this->_getParam('status');
+//                $targetPost->status = $status;
+//                
+//                $comment = $this->_getParam('reviewerComment');
+//                $targetPost->reviewerComment = $comment;
+//
+//
+//                $url = $this->view->url(
+//                    array('action' => 'revisions', 'id' => $post->publicId), 'event', true);
+//                $this->_redirect($url);
+//            }
+//        }
+//
+//        $this->view->post = $post;
+//        $this->view->targetPost = $targetPost;
+//        $this->view->currentData = $post->getRevisionData();
+//        $this->view->revisionData = Zend_Json::decode($targetPost->jsonData);
+//    }
 
     public function flagsAction()
     {

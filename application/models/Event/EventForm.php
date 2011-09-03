@@ -4,12 +4,6 @@ class Application_Model_Event_EventForm extends Application_Model_Post_PostForm 
     
     private $eventTypeChoices;
     
-    public function __construct($options = array()) {
-        parent::__construct($options);
-        
-        
-    }
-    
     public function init() {
         parent::init();
         

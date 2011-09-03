@@ -6,8 +6,6 @@ class Application_Model_Event_EventViewsMenu extends Zend_Navigation
         $page = new Application_Navigation_Page_MvcCount(array(
             'label' => 'Upcoming',
             'route' => 'events',
-            'module' => 'default',
-            'controller' => 'events',
             'action' => 'upcoming',
         ));
         $page->setResetParams(false);
@@ -16,8 +14,6 @@ class Application_Model_Event_EventViewsMenu extends Zend_Navigation
         $page = new Application_Navigation_Page_MvcCount(array(
             'label' => 'Past',
             'route' => 'events',
-            'module' => 'default',
-            'controller' => 'events',
             'action' => 'past',
         ));
         $page->setResetParams(false);
@@ -26,8 +22,6 @@ class Application_Model_Event_EventViewsMenu extends Zend_Navigation
         $page = new Application_Navigation_Page_MvcCount(array(
             'label' => 'Calendar',
             'route' => 'events',
-            'module' => 'default',
-            'controller' => 'events',
             'action' => 'calendar',
         ));
         $page->setResetParams(false);

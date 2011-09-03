@@ -77,7 +77,7 @@ class Application_Model_Post_PostRepository {
             if ($search->status) {
                 $query->andWhere('post.status = ?', $search->status);
             }
-            if ($search->isLatest) {
+            if ($search->isCurrent) {
                 $query->andWhere('post.isLatest = ?', true);
             }
             if (count($search->postTypes) > 0) {

@@ -12,18 +12,6 @@ abstract class Application_Model_Post_PostForm extends Zend_Form {
     public function __construct(Application_Model_User_User $viewingUser, $options = array()) {
         $this->viewingUser = $viewingUser;
     }
-    
-    public function __construct($options = array()) {
-        if (isset($options['viewingUser'])) {
-            $this->viewingUser = $options['viewingUser'];
-            unset($options['viewingUser']);
-        }
-        if (isset($options['categoryOptions'])) {
-            $this->categoryOptions = $options['categoryOptions'];
-            unset($options['categoryOptions']);
-        }
-        parent::__construct($options);
-    }
 
     public function init() {
         $this->setMethod('post');

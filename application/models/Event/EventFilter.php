@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @property array $eventTypes
+ * @property string $startDateAfter
+ * @property string $startDateBefore
+ */
 class Application_Model_Event_EventFilter extends Application_Model_Post_PostFilter {
     
     protected $eventTypes;

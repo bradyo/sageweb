@@ -11,26 +11,26 @@ class Application_Model_Event_EventRepository
         $this->searchIndex = $searchIndex;
     }
 
-    public function save(Application_Model_Event_EventPost $event) {
+    public function save(Application_Model_Event_Event $event) {
         $event->save();
         $this->updateSearchIndex($event);
     }
     
-    private function updateSearchIndex(Application_Model_Event_EventPost $event) {
+    private function updateSearchIndex(Application_Model_Post_Post $post) {
         // remove existing document from index if it exists
-        $term = new Zend_Search_Lucene_Index_Term($event->post->entityId, 'entityId');
+        $term = new Zend_Search_Lucene_Index_Term($post->entityId, 'entityId');
         $docIds  = $this->searchIndex->termDocs($term);
         foreach ($docIds as $docId) {
             $this->searchIndex->delete($docId);
         }
         // add document
         $doc = new Zend_Search_Lucene_Document();
-        $doc->addField(Zend_Search_Lucene_Field::text('entityId', $event->post->entityId));
-        $doc->addField(Zend_Search_Lucene_field::unStored('type', $event->post->type));
-        $doc->addField(Zend_Search_Lucene_Field::unStored('title', $event->post->title));
-        $doc->addField(Zend_Search_Lucene_Field::unStored('summary', $event->post->summary));
-        $doc->addField(Zend_Search_Lucene_Field::unStored('body', $event->post->body));
-        $doc->addField(Zend_Search_Lucene_Field::unStored('location', $event->location));
+        $doc->addField(Zend_Search_Lucene_Field::text('entityId', $post->entityId));
+        $doc->addField(Zend_Search_Lucene_field::unStored('type', $post->type));
+        $doc->addField(Zend_Search_Lucene_Field::unStored('title', $post->title));
+        $doc->addField(Zend_Search_Lucene_Field::unStored('summary', $post->summary));
+        $doc->addField(Zend_Search_Lucene_Field::unStored('body', $post->body));
+        $doc->addField(Zend_Search_Lucene_Field::unStored('location', $post->event->location));
         $this->searchIndex->addDocument($doc);
         $this->searchIndex->commit();
     }
@@ -51,6 +51,20 @@ class Application_Model_Event_EventRepository
         $query->limit(1);
         return $query->fetchOne();
     }
+    
+    /**
+     * @param integer $id
+     * @return Application_Model_Post_Post
+     */
+    public function getLatestById($id) {
+        $filter = new Application_Model_Event_EventFilter();
+        $filter->publicId = $id;
+        $filter->isLatest = true;
+        
+        $query = $this->getQuery($filter);
+        $query->limit(1);
+        return $query->fetchOne();
+    }
         
     public function getCount(Application_Model_Event_EventFilter $filter) {
         $query = $this->getQuery($filter);
@@ -62,7 +76,7 @@ class Application_Model_Event_EventRepository
      */
     public function getQuery(Application_Model_Event_EventFilter $filter = null) {
         $query = Doctrine_Query::create()->from('
-            Application_Model_Event_EventPost event, event.post post, 
+            Application_Model_Post_Post post, post.event event, 
             post.stats stats, post.creator creator, post.reviewer reviewer, 
             post.author author, post.categories category, post.tags tags 
             ');
@@ -74,7 +88,13 @@ class Application_Model_Event_EventRepository
                     $doc = $hit->getDocument();
                     $entityIds[] = $doc->getFieldValue('entityId');
                 }
-                $query->andWhereIn('post.entityId', $entityIds);
+                // work around for doctrine for wherein bug with empty array: 
+                // http://www.doctrine-project.org/jira/browse/DC-727
+                if (count($entityIds) == 0) {
+                    $query->andWhere('1 = 2');
+                } else {
+                    $query->andWhereIn('post.entityId', $entityIds);
+                }
             }
             if ($filter->publicId != null) {
                 $query->andWhere('post.publicId = ?', $filter->publicId);
@@ -120,17 +140,17 @@ class Application_Model_Event_EventRepository
     
     public function rebuildIndex() {
         $query = Doctrine_Query::create()->from('
-            Application_Model_Event_EventPost event, event.post post, 
+            Application_Model_Post_Post post, post.event event, 
             post.stats stats, post.creator creator, post.reviewer reviewer, 
             post.author author, post.categories category, post.tags tags 
             ');
-        $events = $query->execute();
-        foreach ($events as $event) {
+        $posts = $query->execute();
+        foreach ($posts as $post) {
             try {
-                $this->updateSearchIndex($event);
+                $this->updateSearchIndex($post);
             } catch (Exception $e) {
                 echo "failed to index event : ";
-                var_dump($event->toArray());
+                var_dump($post->toArray());
             }
         }
     }

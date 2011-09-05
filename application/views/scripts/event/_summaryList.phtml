@@ -1,8 +1,8 @@
 <ol class="postSummaryList">
-    <?php foreach ($this->events as $event): ?>
+    <?php foreach ($this->posts as $post): ?>
         <li class="eventSummary">
             <?php echo $this->partial('event/_summary.phtml', array(
-                'event' => $event, 
+                'post' => $post, 
                 'eventTypes' => $this->eventTypes
                 )) ?>
         </li>

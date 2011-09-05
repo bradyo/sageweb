@@ -91,7 +91,7 @@ abstract class Application_Model_Post_PostForm extends Zend_Form {
             $element = new Zend_Form_Element_Text('captcha');
             $element->setLabel('Enter "sageweb" below:');
             $element->setRequired(true);
-            $element->addValidator(new Sageweb_Validate_Captcha());
+            $element->addValidator(new Application_Validate_Captcha());
             $this->addElement($element);
         }
 

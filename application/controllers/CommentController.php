@@ -10,7 +10,7 @@ class CommentController extends Zend_Controller_Action
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         if (!$viewingUser->canEdit($post)) {
             throw new Zend_Controller_Action_Exception('Permission denied.', 404);
         }

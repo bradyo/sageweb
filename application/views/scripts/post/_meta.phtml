@@ -3,8 +3,5 @@ Posted
     by <?php echo $this->userLink($this->post->author->id) ?>
 <?php endif ?>
 
-on <?php echo $this->formatDate($this->post->createdAt) ?>
+on <?php echo $this->formatDate($this->post->whenAt) ?>
 
-<?php if ($this->post->updatedAt > $this->post->createdAt): ?>
-    (updated <?php echo $this->formatDate($this->post->updatedAt) ?>)
-<?php endif ?>

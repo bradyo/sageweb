@@ -17,18 +17,18 @@ $feed->setEncoding('utf-8');
 $feed->setLanguage('en');
 
 $entries = array();
-foreach ($this->events as $event) {
+foreach ($this->posts as $post) {
     /* @var $event Sageweb_Event_EventPost */
     $entry = $feed->createEntry();
-    $entry->setTitle($event->post->title);
+    $entry->setTitle($post->title);
     $entry->setLink('http://' . $_SERVER['SERVER_NAME'] . $this->url(
-        array('id' => $event->post->getSlugId()), 'events', true)
+        array('id' => $post->getSlugId()), 'events', true)
     );
-    if ($event->post->author) {
-        $entry->addAuthor($event->post->author->getDisplayName());
+    if ($post->author) {
+        $entry->addAuthor($post->author->getDisplayName());
     }
-    $entry->setDateCreated(strtotime($event->post->whenAt));
-    $entry->setDescription($event->post->summary . ' ');
+    $entry->setDateCreated(strtotime($post->whenAt));
+    $entry->setDescription($post->summary . ' ');
     $feed->addEntry($entry);
 }
 echo $feed->export('rss');

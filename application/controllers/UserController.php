@@ -1,10 +1,10 @@
 <?php
 
-class User_UserController extends Zend_Controller_Action
+class UserController extends Zend_Controller_Action
 {
     public function accountAction()
     {
-        $user = Application_Registry::getUser();
+        $user = Application_Registry::getCurrentUser();
         if ($user->role == Sageweb_Cms_User::ROLE_GUEST) {
             throw new Zend_Controller_Action_Exception('Not logged in', 404);
         }
@@ -58,7 +58,7 @@ class User_UserController extends Zend_Controller_Action
             }
         }
 
-        $user = Application_Registry::getUser();
+        $user = Application_Registry::getCurrentUser();
         if ($user->role == Sageweb_Cms_User::ROLE_GUEST) {
             $url = $this->view->url(array(), 'login', true) . '?dest=' . $this->view->url();
             $this->_redirect($url);
@@ -85,7 +85,7 @@ class User_UserController extends Zend_Controller_Action
 
     public function notificationsAction()
     {
-        $user = Application_Registry::getUser();
+        $user = Application_Registry::getCurrentUser();
         if ($user->role == Sageweb_Cms_User::ROLE_GUEST) {
             throw new Zend_Controller_Action_Exception('Not logged in', 404);
         }
@@ -148,7 +148,7 @@ class User_UserController extends Zend_Controller_Action
      */
     public function registerAction()
     {
-        $form = new Application_Form_Register();
+        $form = new Application_Model_User_RegisterForm();
         if ($this->getRequest()->isPost()) {
             $isValid = $form->isValid($this->getRequest()->getParams());
             if ($isValid) {
@@ -250,7 +250,7 @@ class User_UserController extends Zend_Controller_Action
             $this->_redirect('/account/password');
         }
 
-        $form = new Application_Form_Login();
+        $form = new Application_Model_User_LoginForm();
         if ($this->_request->isPost()) {
             $form->populate($this->_getAllParams());
 
@@ -287,7 +287,7 @@ class User_UserController extends Zend_Controller_Action
         }
         $this->view->form = $form;
 
-				$form = new Application_Form_Register();
+        $form = new Application_Model_User_RegisterForm();
         if ($this->getRequest()->isPost()) {
             $isValid = $form->isValid($this->getRequest()->getParams());
             if ($isValid) {

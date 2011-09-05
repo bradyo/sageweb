@@ -21,7 +21,7 @@
     </ul>
 </div>
 
-<?php if (Application_Registry::getUser()->isModerator()): ?>
+<?php if (Application_Registry::getCurrentUser()->isModerator()): ?>
     <div class="blockContainer">
         <ul class="menuList">
             <li>
@@ -33,7 +33,7 @@
                     ?>">Unblock User</a>
             </li>
 
-            <?php if (Application_Registry::getUser()->isAdmin()): ?>
+            <?php if (Application_Registry::getCurrentUser()->isAdmin()): ?>
                 <li>
                     <a class="menuItem" href="<?php echo $this->url(array('action' => 'role'))
                         ?>">Change Role</a>

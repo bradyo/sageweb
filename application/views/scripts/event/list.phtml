@@ -28,9 +28,9 @@ $viewsMenu = new Application_Model_Event_EventViewsMenu();
             </div>
             
             <hr />
-            <?php if (count($this->events) > 0): ?>
+            <?php if (count($this->posts) > 0): ?>
                 <?php echo $this->partial('event/_summaryList.phtml', array(
-                    'events' => $this->events,
+                    'posts' => $this->posts,
                     'eventTypes' => $eventTypes,
                     )) ?>
 

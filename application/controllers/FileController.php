@@ -21,7 +21,7 @@ class FileController extends Zend_Controller_Action
         }
 
         // increment view counter
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         if ($post->isPublic()) {
             $post->incrementViews($viewingUser);
 
@@ -38,7 +38,7 @@ class FileController extends Zend_Controller_Action
 
     public function newAction()
     {
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         $form = new Application_Form_PostFile(array('viewingUser' => $viewingUser));
         if ($this->getRequest()->isPost()) {
             if($form->isValid($_POST)) {
@@ -81,7 +81,7 @@ class FileController extends Zend_Controller_Action
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         if (!$viewingUser->canEdit($post)) {
             throw new Zend_Controller_Action_Exception('Permission denied.', 404);
         }
@@ -143,7 +143,7 @@ class FileController extends Zend_Controller_Action
             $file['name'],
             $file['type'],
             $file['size'],
-            Application_Registry::getUser()->id,
+            Application_Registry::getCurrentUser()->id,
             false,
             date('Y-m-d H:i:s')
             ));
@@ -205,7 +205,7 @@ class FileController extends Zend_Controller_Action
         }
 
         if ($this->_request->isPost()) {
-            $viewingUser = Application_Registry::getUser();
+            $viewingUser = Application_Registry::getCurrentUser();
             if ($viewingUser->isModerator()) {
                 // accept or reject revision
                 $comment = $this->_getParam('reviewerComment');

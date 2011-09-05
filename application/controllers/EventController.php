@@ -22,14 +22,6 @@ class EventController extends Zend_Controller_Action {
         $this->eventRepository = Application_Registry::getEventRepository();
         $this->view->eventTypes = new Application_Model_Event_EventTypes();
     }
-    
-    public function testAction() {
-        //$this->eventRepository->rebuildIndex();
-    }
-    
-    public function indexAction() {
-        $this->_helper->redirector('calendar');
-    }
        
     /**
      * @return Application_Model_Event_EventFilter 
@@ -59,6 +51,10 @@ class EventController extends Zend_Controller_Action {
         }
         return $filter;
     }
+    
+    public function indexAction() {
+        $this->_helper->redirector('calendar');
+    }
    
     public function upcomingAction() {
         $this->view->title = 'Upcoming Events';
@@ -77,8 +73,8 @@ class EventController extends Zend_Controller_Action {
         
         // fetch items
         $offset = ($pageNumber - 1) * self::ITEMS_PER_PAGE;
-        $events = $this->eventRepository->getAll($filter, $offset, self::ITEMS_PER_PAGE);
-        $this->view->events =  $events;
+        $posts = $this->eventRepository->getAll($filter, $offset, self::ITEMS_PER_PAGE);
+        $this->view->posts = $posts;
         
         $this->renderScript('event/list.phtml');
     }
@@ -100,8 +96,8 @@ class EventController extends Zend_Controller_Action {
         
         // fetch items
         $offset = ($pageNumber - 1) * self::ITEMS_PER_PAGE;
-        $events = $this->eventRepository->getAll($filter, $offset, self::ITEMS_PER_PAGE);
-        $this->view->events =  $events;
+        $posts = $this->eventRepository->getAll($filter, $offset, self::ITEMS_PER_PAGE);
+        $this->view->posts =  $posts;
         
         $this->renderScript('event/list.phtml');
     }
@@ -114,19 +110,19 @@ class EventController extends Zend_Controller_Action {
         $this->view->filter = $filter;
         
         // fetch items
-        $events = $this->eventRepository->getAll($filter);
-        $this->view->events =  $events;
+        $posts = $this->eventRepository->getAll($filter);
+        $this->view->posts =  $posts;
         
         // build json representation of events for calendar
         $jsonData = array();
-        foreach ($events as $event) {
-            $url = $this->view->url(array('id' => $event->post->getSlugId()), 'events', true);
+        foreach ($posts as $post) {
+            $url = $this->view->url(array('id' => $post->getSlugId()), 'events', true);
             $eventData = array(
-                'title' => $this->view->escape($event->post->title),
-                'start' => strtotime($event->startDate),
-                'end' => strtotime($event->endDate),
+                'title' => $this->view->escape($post->title),
+                'start' => strtotime($post->event->startDate),
+                'end' => strtotime($post->event->endDate),
                 'url' => $this->view->escape($url),
-                'className' => $event->eventType,
+                'className' => $post->event->eventType,
             );
             $jsonData[] = $eventData;
         }
@@ -138,49 +134,42 @@ class EventController extends Zend_Controller_Action {
         
         // set up search criteria
         $filter = $this->getFilterFromRequestParameters();
-        $filter->orderBy = 'event.post.createdAt desc';
+        $filter->orderBy = 'post.createdAt desc';
         $this->view->filter = $filter;
         
         // fetch items
-        $events = $this->eventRepository->getAll($filter, 0, self::ITEMS_PER_FEED);
-        $this->view->events =  $events;
+        $posts = $this->eventRepository->getAll($filter, 0, self::ITEMS_PER_FEED);
+        $this->view->posts =  $posts;
     }
 
     public function showAction() {
-        $publicId = $this->_getParam('id');
+        $slugId = $this->_getParam('id');
+        $publicId = Application_Model_Post_Post::getPublicIdFromSlug($slugId);
         
-        $event = $this->eventRepository->getLatestById($publicId);
-        if (!$event) {
+        $post = $this->eventRepository->getLatestById($publicId);
+        if (!$post) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
         // increment view counter
-        
-        
-        $viewingUser = Application_Registry::getUser();
+        $currentUser = Application_Registry::getCurrentUser();
         if ($post->isPublic()) {
-            $post->incrementViews($viewingUser);
+            $post->addViewBy($currentUser);
 
             // fetch vote record
-            $existingVote = $viewingUser->getVote($post->entity);
+            $existingVote = $currentUser->getVote($post->entityId);
             if ($existingVote) {
                 $this->view->voteValue = $existingVote->value;
             }
         }
 
-        $this->view->canEdit = $viewingUser->canEdit($post);
+        $this->view->canEdit = $currentUser->canEdit($post);
         $this->view->post = $post;
     }
     
-    public function getPublicIdFromSlug($slug) {
-        $matches = $array();
-        preg_match('^(\d+).+$', $slug, $matches);
-        return $matches[1];
-    }
-
     public function addAction()
     {
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         $form = new Application_Model_Event_EventForm($viewingUser);
         if ($this->getRequest()->isPost()) {
             if ($form->isValid($this->getRequest()->getParams())) {
@@ -218,7 +207,7 @@ class EventController extends Zend_Controller_Action {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         if (!$viewingUser->canEdit($post)) {
             throw new Zend_Controller_Action_Exception('Permission denied.', 404);
         }
@@ -281,7 +270,7 @@ class EventController extends Zend_Controller_Action {
         }
 
         if ($this->_request->isPost()) {
-            $viewingUser = Application_Registry::getUser();
+            $viewingUser = Application_Registry::getCurrentUser();
             if ($viewingUser->isModerator()) {
                 // accept or reject revision
                 $comment = $this->_getParam('reviewerComment');

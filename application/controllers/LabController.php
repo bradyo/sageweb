@@ -48,7 +48,7 @@ class LabController extends Zend_Controller_Action
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         $pendingRevisions = array();
         $canEdit = $viewingUser->canEdit($post);
         if ($canEdit) {
@@ -63,7 +63,7 @@ class LabController extends Zend_Controller_Action
 
     public function newAction()
     {
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         $form = new Application_Form_PostLab(array('viewingUser' => $viewingUser));
         if ($this->getRequest()->isPost()) {
             if($form->isValid($this->_getAllParams())) {
@@ -106,7 +106,7 @@ class LabController extends Zend_Controller_Action
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         if (!$viewingUser->canEdit($post)) {
             throw new Zend_Controller_Action_Exception('Permission denied.', 404);
         }
@@ -181,7 +181,7 @@ class LabController extends Zend_Controller_Action
         }
 
         if ($this->_request->isPost()) {
-            $viewingUser = Application_Registry::getUser();
+            $viewingUser = Application_Registry::getCurrentUser();
             if ($viewingUser->isModerator()) {
                 // accept or reject revision
                 $reviewerComment = $this->_getParam('reviewerComment');

@@ -16,7 +16,7 @@ class ArticleController extends Zend_Controller_Action
         }
 
         // increment view counter
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         if ($post->isPublic()) {
             $post->incrementViews($viewingUser);
 
@@ -33,7 +33,7 @@ class ArticleController extends Zend_Controller_Action
 
     public function newAction()
     {
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         $form = new Application_Form_PostArticle(array('viewingUser' => $viewingUser));
         if ($this->getRequest()->isPost()) {
             if ($form->isValid($this->getRequest()->getParams())) {
@@ -72,7 +72,7 @@ class ArticleController extends Zend_Controller_Action
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
-        $viewingUser = Application_Registry::getUser();
+        $viewingUser = Application_Registry::getCurrentUser();
         if (!$viewingUser->canEdit($post)) {
             throw new Zend_Controller_Action_Exception('Permission denied.', 404);
         }
@@ -156,7 +156,7 @@ class ArticleController extends Zend_Controller_Action
         }
 
         if ($this->_request->isPost()) {
-            $viewingUser = Application_Registry::getUser();
+            $viewingUser = Application_Registry::getCurrentUser();
             if ($viewingUser->isModerator()) {
                 // accept or reject revision
                 $comment = $this->_getParam('reviewerComment');

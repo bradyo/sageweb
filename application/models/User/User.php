@@ -110,32 +110,27 @@ class Application_Model_User_User extends Doctrine_Record
         }
     }
 
-    public function getRoleLabel()
-    {
+    public function getRoleLabel() {
         $roles = self::getRoleChoices();
         return $roles[$this->getRole()];
     }
 
-    public function isGuest()
-    {
+    public function isGuest() {
         return ($this->role == self::ROLE_GUEST);
     }
 
-    public function isModerator()
-    {
+    public function isModerator() {
         // true if either admin or moderator
         $isModerator = ($this->role == Application_Model_User_User::ROLE_MODERATOR);
         $isAdmin = ($this->role == Application_Model_User_User::ROLE_ADMIN);
         return ($isModerator || $isAdmin);
     }
 
-    public function isAdmin()
-    {
+    public function isAdmin() {
         return ($this->role == Application_Model_User_User::ROLE_ADMIN);
     }
 
-    public function isOnline()
-    {
+    public function isOnline() {
         $seenAtTimestamp = strtotime($this->seenAt);
         if (time() - $seenAtTimestamp < self::LAST_SEEN_LIMIT) {
             return true;
@@ -143,39 +138,28 @@ class Application_Model_User_User extends Doctrine_Record
         return false;
     }
 
-    public function isBlocked()
-    {
+    public function isBlocked() {
         return ($this->status == self::STATUS_BLOCKED);
     }
 
-    public function isDeleted()
-    {
+    public function isDeleted() {
         return ($this->status == self::STATUS_DELETED);
     }
 
-    public function canEdit(Sageweb_Abstract_Post $post)
-    {
-        switch ($post->entity->type) {
-            case Sageweb_Entity::TYPE_PAPER:
-            case Sageweb_Entity::TYPE_PERSON:
-            case Sageweb_Entity::TYPE_LAB:
-                // allow anybody to edit posts
+    public function canEdit(Application_Model_Post_Post $post) {
+        $typesEditableByAnyone = array('paper', 'person', 'lab');
+        if (in_array($post->type, $typesEditableByAnyone)) {
+            return true;
+        }
+        
+        $typesEditableByOwner = array(
+            'article', 'link', 'file', 'event', 'job', 'discussion', 'comment'
+            );
+        if (in_array($post->type, $typesEditableByAnyone)) {
+            if ($this->isModerator() || $this->isAuthor($post)) {
                 return true;
-                break;
-            case Sageweb_Entity::TYPE_ARTICLE:
-            case Sageweb_Entity::TYPE_LINK:
-            case Sageweb_Entity::TYPE_FILE:
-            case Sageweb_Entity::TYPE_EVENT:
-            case Sageweb_Entity::TYPE_JOB:
-            case Sageweb_Entity::TYPE_COMMENT:
-            case Sageweb_Entity::TYPE_DISCUSSION:
-//            case Sageweb_Entity::TYPE_QUESTION:
-//            case Sageweb_Entity::TYPE_ANSWER:
-                // allow authors and moderators to edit posts
-                if ($this->isModerator() || $post->isAuthor($this)) {
-                    return true;
-                }
-                break;
+
+            }
         }
         return false;
     }
@@ -226,11 +210,11 @@ class Application_Model_User_User extends Doctrine_Record
         $post->updateVotesCount();
     }
 
-    public function getVote($entity)
+    public function getVote($entityId)
     {
         $existingVote = Doctrine_Query::create()
             ->from('Application_Model_Entity_EntityVote v')
-            ->where('v.userId = ? AND v.entityId = ?', array($this->id, $entity->id))
+            ->where('v.userId = ? AND v.entityId = ?', array($this->id, $entityId))
             ->limit(1)
             ->fetchOne();
         return $existingVote;

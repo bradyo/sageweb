@@ -2,9 +2,9 @@
 
 class Application_View_Helper_UserLink extends Zend_View_Helper_Abstract
 {
-    public function userLink($id)
-    {
-        $user = Sageweb_Table_User::findOneById($id);
+    public function userLink($userId) {
+        $userRepository = Application_Registry::getUserRepostiory();
+        $user = $userRepository->getOneById($userId);
         if (!$user) {
             return 'anonymous';
         } else {

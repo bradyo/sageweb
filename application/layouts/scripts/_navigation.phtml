@@ -3,24 +3,15 @@
     <ul>
       <li class="first menuItem">
          <a href="<?php echo $this->baseUrl('/') 
-             ?>"><span class="dropdown">Articles</span></a>
+             ?>">Home</a>
       </li>
+      
+      <li class="menuItem">
+        <a href=""><span class="dropdown">Resources</span></a>
+        <ul class="subMenuBlock">
 
-      <li class="first menuItem">
-         <a href="<?php echo $this->baseUrl('/') 
-             ?>"><span class="dropdown">Media</span></a>
+        </ul>
       </li>
-
-      <li class="first menuItem">
-         <a href="<?php echo $this->baseUrl('/') 
-             ?>"><span class="dropdown">Documents</span></a>
-      </li>
-
-      <li class="first menuItem">
-         <a href="<?php echo $this->baseUrl('/') 
-             ?>"><span class="dropdown">Links</span></a>
-      </li>
-
 
       <li class="menuItem">
         <a href=""><span class="dropdown">Community</span></a>
@@ -36,16 +27,6 @@
               <li>
                   <a href="<?php echo $this->url(array(), 'labs', true)
                       ?>" style="font-weight:normal">Labs in Gerontology</a>
-              </li>
-              <li>
-                  <a href="<?php echo $this->url(
-                      array('controller' => 'blog-stream', 'action' => 'index'), 'default', true) ?>"
-                      style="font-weight:normal">Blog Stream</a>
-              </li>
-              <li>
-                  <a href="<?php echo $this->url(
-                      array('controller' => 'twitter-stream', 'action' => 'index'), 'default', true) ?>"
-                      style="font-weight:normal">Twitter Stream</a>
               </li>
           </ul>
       </li>

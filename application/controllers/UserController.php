@@ -2,6 +2,13 @@
 
 class UserController extends Zend_Controller_Action
 {
+    private $userRepository;
+    
+    public function init() {
+        parent::init();
+        $this->userRepository = Application_Registry::getUserRepostiory();
+    }
+    
     public function accountAction()
     {
         $user = Application_Registry::getCurrentUser();
@@ -46,7 +53,7 @@ class UserController extends Zend_Controller_Action
         $auth = Zend_Auth::getInstance();
         $activationKey = $this->_request->getParam('activationKey');
         if ($activationKey) {
-            $user = Sageweb_Cms_Table_User::findByActivationKey($activationKey);
+            $user = Application_Model_User_UserRepository::findByActivationKey($activationKey);
             if ($user) {
                 // clear the activation key and re-save
                 $user->activationKey = null;
@@ -200,7 +207,7 @@ class UserController extends Zend_Controller_Action
                 $values = $form->getValues();
 
                 // save a new activation key to the user
-                $user = Sageweb_Cms_Table_User::findOneByUsername($values['username']);
+                $user = Application_Model_User_UserRepository::findOneByUsername($values['username']);
                 $user->activationKey = md5(time());
                 $user->save();
 
@@ -231,7 +238,7 @@ class UserController extends Zend_Controller_Action
         // if passing a one time login key, bypass login form
         if ($this->_getParam('key')) {
             $key = $this->_getParam('key');
-            $user = Sageweb_Cms_Table_User::findByActivationKey($key);
+            $user = $this->userRepository->findByActivationKey($key);
             if ($user) {
                 $user->activationKey = null;
                 $user->save();
@@ -255,14 +262,15 @@ class UserController extends Zend_Controller_Action
             $form->populate($this->_getAllParams());
 
             // authenticate the user with auth adapter
-            $adapter = new Application_Auth_Adapter();
+            $db = Application_Registry::getDb();
+            $adapter = new Application_Auth_Adapter($db);
             $adapter->setUsername($form->getValue('username'));
             $adapter->setPassword($form->getValue('password'));
             $result = Zend_Auth::getInstance()->authenticate($adapter);
             if ($result->isValid()) {
                 // get the user object
-                $username = Zend_Auth::getInstance()->getIdentity();
-                $user = Sageweb_Cms_Table_User::getUser($username);
+                $userId = Zend_Auth::getInstance()->getIdentity();
+                $user = $this->userRepository->getOneById($userId);
 
                 // save user to session
                 $namespace = new Zend_Session_Namespace('user');

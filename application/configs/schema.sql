@@ -1,5 +1,5 @@
 
-CREATE TABLE session (
+CREATE TABLE IF NOT EXISTS session (
     id char(32) PRIMARY KEY,
     modified int,
     lifetime int,

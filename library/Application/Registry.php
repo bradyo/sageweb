@@ -3,6 +3,13 @@
 class Application_Registry extends Zend_Registry {
     
     /**
+     * @return PDO
+     */
+    public static function getDb() {
+        return Zend_Registry::get('db');
+    }
+    
+    /**
      * @return Application_Model_Event_EventRepository 
      */
     public static function getEventRepository() {
@@ -38,7 +45,8 @@ class Application_Registry extends Zend_Registry {
     public static function getCurrentUser() {
         $user = null;
         if (Zend_Auth::getInstance()->hasIdentity()) {
-            $userId = $auth->getStorage()->get('userId');
+            $auth = Zend_Auth::getInstance();
+            $userId = $auth->getIdentity();
             $userRepository = self::getUserRepostiory();
             $user = $userRepository->getOneById($userId);
         }

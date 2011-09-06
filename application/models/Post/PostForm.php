@@ -11,6 +11,11 @@ class Application_Model_Post_PostForm extends Zend_Form {
 
     public function __construct(Application_Model_User_User $viewingUser, $options = array()) {
         $this->viewingUser = $viewingUser;
+    }
+    
+    
+    public function init() {
+        parent::init();
         
         $this->setMethod('post');
         $this->setAttrib('accept-charset', 'utf-8');

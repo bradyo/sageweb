@@ -23,7 +23,7 @@ class Application_Auth_Adapter implements Zend_Auth_Adapter_Interface {
     }
 
     public function authenticate()  {
-        $stmt = $db->prepare('SELECT * FROM user WHERE username = ?');
+        $stmt = $this->db->prepare('SELECT * FROM user WHERE username = ?');
         $stmt->execute(array($this->username));
 
         // if we have a user, check the hashed password
@@ -43,7 +43,7 @@ class Application_Auth_Adapter implements Zend_Auth_Adapter_Interface {
                 if ($row['status'] == Application_Model_User_User::STATUS_BLOCKED) {
                     return new Application_Auth_Result(Application_Auth_Result::FAILURE_BLOCKED, null);
                 }
-                return new Application_Auth_Result(Application_Auth_Result::SUCCESS, $this->username);
+                return new Application_Auth_Result(Application_Auth_Result::SUCCESS, $row['id']);
             }
         }
         return new Application_Auth_Result(Application_Auth_Result::FAILURE, null);

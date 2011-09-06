@@ -7,8 +7,13 @@ class Application_Model_Event_EventForm extends Application_Model_Post_PostForm 
     public function __construct(Application_Model_User_User $viewingUser, $options = array()) {
         parent::__construct($viewingUser, $options);
         
-        echo "initing EventForm";
-
+        if (isset($options['eventTypeChoices'])) {
+            $this->eventTypeChoices = $options['eventTypeChoices'];
+        }
+    }
+    
+    public function init() {
+        parent::init();
         
         $eventTypes = new Application_Model_Event_EventTypes();
         $this->eventTypeChoices = $eventTypes.getChoices();

@@ -150,6 +150,7 @@ class EventController extends Zend_Controller_Action {
         if (!$post) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
+        $this->view->post = $post;
 
         // increment view counter
         $currentUser = Application_Registry::getCurrentUser();
@@ -164,39 +165,52 @@ class EventController extends Zend_Controller_Action {
         }
 
         $this->view->canEdit = $currentUser->canEdit($post);
-        $this->view->post = $post;
     }
     
-    public function addAction()
-    {
-        $viewingUser = Application_Registry::getCurrentUser();
-        $form = new Application_Model_Event_EventForm($viewingUser);
+    public function addAction() {
+        $currentUser = Application_Registry::getCurrentUser();
+        $form = new Application_Model_Event_EventForm($currentUser);
+        
+        die();
+        
+        $this->view->form = $form;
+        
         if ($this->getRequest()->isPost()) {
             if ($form->isValid($this->getRequest()->getParams())) {
                 $formValues = $form->getValues();
+                
+                print_r($formValues);
+                die();
+                
                 $formValues['tags'] = Application_Converter_Tags::getArray($formValues['tags']);
 
-                // create a new article entry
-                $data = $this->_getRevisionData($formValues, $viewingUser);
-                $post = Sageweb_Table_Entity::createPost('event', $data);
+                // create a new post
+                $post = new Application_Model_Post_Post();
+                $post->status = Application_Model_Post_Post::REVIEW_STATUS_PENDING;
+                $post->title = $formValues['title'];
+                $post->summary = $formValues['summary'];
+ 
+                
+                $post->event = new Application_Model_Event_Event();
+                
 
-                // create revision entry
-                $data['status'] = Sageweb_Abstract_Post::STATUS_PUBLIC;
-                $revision = $viewingUser->createRevision($post->entity, $data);
-                if ($viewingUser->isModerator()) {
-                    $comment = $formValues['reviewerComment'];
-                    $viewingUser->acceptRevision($revision, $comment);
+                if ($currentUser->isModerator()) {
+                    $post->reviewerId = $currentUser->id;
+                    $post->status = Application_Model_Post_Post::REVIEW_STATUS_ACCEPTED;
+                    $post->reviewerComment = $formValues['reviewerComment'];
                 }
+                $this->eventRepository->save($post);
+                
 
                 $url = $this->view->url(array('id' => $post->getSlugId()), 'event', true);
                 $this->_redirect($url);
             }
         } else {
-            if ($viewingUser->isModerator()) {
-                $form->getElement('author')->setValue($viewingUser->username);
+            if ($currentUser->isModerator()) {
+                $form->getElement('author')->setValue($currentUser->username);
             }
         }
-        $this->view->form = $form;
+        
     }
 
     public function editAction()
@@ -240,56 +254,5 @@ class EventController extends Zend_Controller_Action {
 
         $this->view->post = $post;
         $this->view->form = $form;
-    }
-
-    public function revisionsAction()
-    {
-        $id = $this->_getParam('id');
-        $event = Sageweb_Table_Event::findOneById($id);
-        if (!$event) {
-            throw new Zend_Controller_Action_Exception(404, 'Post not found.');
-        }
-        $revisions = Sageweb_Table_Revision::findByEntityId($event->entityId);
-
-        $this->view->post = $event;
-        $this->view->revisions = $revisions;
-    }
-
-    public function revisionAction()
-    {
-        $id = $this->_getParam('id');
-        $post = Sageweb_Table_Event::findOneById($id);
-        if (!$post) {
-            throw new Zend_Controller_Action_Exception(404, 'Post not found.');
-        }
-
-        $revisionId = $this->_getParam('revisionId');
-        $revision = Sageweb_Table_Revision::findOneByEntityId($post->entityId, $revisionId);
-        if (!$revision) {
-            throw new Zend_Controller_Action_Exception(404, 'Revision not found.');
-        }
-
-        if ($this->_request->isPost()) {
-            $viewingUser = Application_Registry::getCurrentUser();
-            if ($viewingUser->isModerator()) {
-                // accept or reject revision
-                $comment = $this->_getParam('reviewerComment');
-                $status = $this->_getParam('status');
-                if ($status == Sageweb_EntityRevision::STATUS_ACCEPTED) {
-                    $viewingUser->acceptRevision($revision, $comment);
-                } else {
-                    $viewingUser->rejectRevision($revision, $comment);
-                }
-
-                $url = $this->view->url(
-                    array('action' => 'revisions', 'id' => $post->id), 'event', true);
-                $this->_redirect($url);
-            }
-        }
-
-        $this->view->post = $post;
-        $this->view->revision = $revision;
-        $this->view->currentData = $post->getRevisionData();
-        $this->view->revisionData = Zend_Json::decode($revision->jsonData);
     }
 }

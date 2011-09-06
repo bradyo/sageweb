@@ -59,7 +59,7 @@ class Application_Model_Post_PostRepository {
         $query = Doctrine_Query::create()->from('
             Sageweb_Post post, 
             post.stats stats, post.creator creator, post.reviewer reviewer, 
-            post.author author, post.categories category, post.tags tags 
+            post.author author, post.tags tags
             ');
         if ($search != null) {
             if (!empty($search->search)) {
@@ -77,18 +77,15 @@ class Application_Model_Post_PostRepository {
             if ($search->status) {
                 $query->andWhere('post.status = ?', $search->status);
             }
-            if ($search->isLatest) {
+            if ($search->isCurrent) {
                 $query->andWhere('post.isLatest = ?', true);
             }
             if (count($search->postTypes) > 0) {
                 $query->whereIn('post.type', $search->postTypes);
             }
-            if (count($search->categories) > 0) {
-                $query->andWhereIn('post.categories.category.value', $search->categories);
-            }
             if (count($search->tags) > 0) {
                 $normalizedTags = $this->getNormalizedTags($search->tags);
-                $query->andWhereIn('post.tags.normalValue', $normalizedTags);
+                $query->andWhereIn('tags.tag.value', $normalizedTags);
             }
             $query->orderBy($search->orderBy);
         }

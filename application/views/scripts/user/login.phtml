@@ -1,36 +1,12 @@
-<div id="sidebar">
-    <div class="block">
-        <div class="blockTitle">Account Help</div>
-        <div class="blockContent">
-            <ul>
-                <li>
-                    <a href="<?php echo $this->url(
-                        array('controller' => 'user', 'action' => 'reset-password'),
-                        'default', true
-                        ) ?>">Lost your password?</a>
-                </li>
-                <li>
-                    <a href="<?php echo $this->url(
-                        array('controller' => 'user', 'action' => 'register'),
-                        'default', true
-                        ) ?>">Need an account?</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<div id="page">
-    <div class="main">
-        <h1>Sign in to Sageweb.org:</h1>
+<div class="main" style="overflow:auto; padding: 30px; padding-top:20px">
+    <div style="float:left; width:400px; margin-right:20px;">
+        <h1 style="font-size:2em">Sign in to Sageweb</h1>
 
         <?php if (isset($this->message)): ?>
             <div style="margin: 1em 0; color: red">
                 * <?php echo $this->message ?>
             </div>
         <?php endif ?>
-
-        <p style="margin: 1em 0">Enter your username name and password below.</p>
 
         <?php $form = $this->form ?>
         <form id="loginForm" name="loginForm" action="<?php echo $form->getAction() ?>"
@@ -42,25 +18,63 @@
                 </tr>
                 <tr>
                     <th><strong><?php echo $form->password->getLabel() ?>:</strong></th>
-                    <td><?php echo $form->password->renderViewHelper() ?></td>
-                </tr>
-                <tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <label for="<?php echo $form->remember->getName() ?>">
-                            <?php echo $form->remember->renderViewHelper() ?>
-                            <?php echo $form->remember->getLabel() ?>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="submit" value="Sign In" style="width:10em" />
+                    <td><?php echo $form->password->renderViewHelper() ?><br />
+                        <a href="<?php echo $this->url(
+                            array('controller' => 'user', 'action' => 'reset-password'),
+                            'default', true
+                            ) ?>">Lost your password?</a>                                        
                     </td>
                 </tr>
             </table>
+            <br />
+                        
+            <label for="<?php echo $form->remember->getName() ?>">
+                <?php echo $form->remember->renderViewHelper() ?>
+                Keep me logged in on this computer.
+            </label>
+            <br />
+            <input type="submit" value="Sign In" style="width:10em" />
+        </form>
+    </div>
+
+    <div style="float:left; padding-left:30px; border-left: 1px solid #999; width:400px;">
+        <h1 style="font-size:2em">Create a New Account</h1>
+
+                 <?php $form = $this->registerForm ?>
+        <form id="registerForm" name="registerForm" action="<?php echo $form->getAction() ?>"
+            method="<?php echo $form->getMethod() ?>">
+
+            <?php if ($form->isErrors()): ?>
+                <p style="color:red; margin-bottom: 1em;">
+                    The form had some errors. Please correct them below.</p>
+            <?php endif ?>
+
+            <strong><?php echo $form->username->getLabel() ?>:</strong>
+            <div>
+                <?php echo $form->username->renderViewHelper() ?>
+                <span id="usernameAvailabilty" style="margin-left:5px">
+                    <?php echo $form->username->renderErrors() ?>
+                </span>
+                <p class="inputDetail">Enter between 3 and 32 letters or numbers.</p>
+            </div>
+            <br />
+
+            <strong><?php echo $form->email->getLabel() ?>:</strong>
+            <div>
+                <?php echo $form->email->renderViewHelper() ?>
+                <span id="emailCheck">
+                    <?php echo $form->email->renderErrors() ?>
+                </span>
+                <p class="inputDetail">The e-mail address is not made public and will only be
+                    used if you wish to receive a new password or wish to receive certain
+                    news or notifications by e-mail.</p>
+            </div>
+
+            <div style="margin-top:1em">
+                <?php echo $form->captcha ?>
+            </div>
+
+            <input type="submit" value="Register Account" />
         </form>
     </div>
 </div>

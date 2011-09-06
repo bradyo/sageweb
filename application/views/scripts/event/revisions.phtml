@@ -17,17 +17,17 @@
         </thead>
 
         <?php $iRow = 0 ?>
-        <?php foreach ($this->revisions as $revision): ?>
+        <?php foreach ($this->posts as $post): ?>
             <tr class="<?php echo ($iRow % 2 != 0) ? 'alternate' : '' ?>">
-                <td><?php echo $revision->status ?></td>
+                <td><?php echo $post->status ?></td>
                 <td>
-                    <?php echo $this->userLink($revision->creatorId) ?>
-                    on <?php echo $this->formatDate($revision->createdAt, true) ?>
+                    <?php echo $this->userLink($post->creatorId) ?>
+                    on <?php echo $this->formatDate($post->createdAt, true) ?>
                 </td>
-                <td><?php echo $this->escape($revision->creatorComment) ?></td>
+                <td><?php echo $this->escape($post->creatorComment) ?></td>
                 <td style="text-align:center">
                     <a href="<?php echo $this->url(
-                        array('id' => $this->post->id, 'revisionId' => $revision->id),
+                        array('id' => $post->publicId, 'revisionId' => $post->id),
                         'eventRevision', true
                         ) ?>">View</a>
                 </td>

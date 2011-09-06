@@ -2,10 +2,10 @@
 
 class Application_Model_Event_EventTypes 
 {
-    private $choices;
+    private $_choices;
     
     public function __construct() {
-        $this->choices = array(
+        $this->_choices = array(
             'conference' => 'Conference',
             'grant-deadline' => 'Grant Deadline',
             'talk' => 'Talk',
@@ -16,13 +16,12 @@ class Application_Model_Event_EventTypes
     }
     
     public function getChoices() {
-        return $this->choices;
+        return $this->_choices;
     }
     
     public function getLabel($type) {
-        $choices = $this->choices;
-        if (isset($choices[$type])) {
-            return $choices[$type];
+        if (isset($this->_choices[$type])) {
+            return $this->_choices[$type];
         }
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-abstract class Application_Model_Post_PostForm extends Zend_Form {
+class Application_Model_Post_PostForm extends Zend_Form {
     
-    protected $categoryOptions;
+    protected $categoryOptions = array();
     
     /**
      * @var Application_Model_User_User 
@@ -11,21 +11,7 @@ abstract class Application_Model_Post_PostForm extends Zend_Form {
 
     public function __construct(Application_Model_User_User $viewingUser, $options = array()) {
         $this->viewingUser = $viewingUser;
-    }
-    
-    public function __construct($options = array()) {
-        if (isset($options['viewingUser'])) {
-            $this->viewingUser = $options['viewingUser'];
-            unset($options['viewingUser']);
-        }
-        if (isset($options['categoryOptions'])) {
-            $this->categoryOptions = $options['categoryOptions'];
-            unset($options['categoryOptions']);
-        }
-        parent::__construct($options);
-    }
-
-    public function init() {
+        
         $this->setMethod('post');
         $this->setAttrib('accept-charset', 'utf-8');
 
@@ -51,7 +37,7 @@ abstract class Application_Model_Post_PostForm extends Zend_Form {
         $this->addElement($element);
 
         // categories element
-        $element = new Zend_Form_Element_Multi('categories');
+        $element = new Zend_Form_Element_MultiCheckbox('categories');
         $element->setLabel('Categories:');
         $element->setMultiOptions($this->categoryOptions);
         $element->setDecorators(array('ViewHelper', 'Errors'));
@@ -78,7 +64,7 @@ abstract class Application_Model_Post_PostForm extends Zend_Form {
 
             $element = new Zend_Form_Element_Text('author');
             $element->setLabel('Author:');
-            $element->addValidator(new Sageweb_Validate_Username());
+            $element->addValidator(new Application_Validate_Username());
             $this->addElement($element);
             
             $element = new Zend_Form_Element_Checkbox('isFeatured');

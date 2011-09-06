@@ -46,6 +46,16 @@ class Application_Model_Event_EventRepository
         return $query->execute();
     }
     
+    public function getAllVersions($id) {
+        $filter = new Application_Model_Event_EventFilter();
+        $filter->publicId = $id;
+        return $this->getAll($filter);
+    }
+    
+    /**
+     * @param Application_Model_Event_EventFilter $filter
+     * @return Application_Model_Event_Event
+     */
     public function getOne(Application_Model_Event_EventFilter $filter) {
         $query = $this->getQuery($filter);
         $query->limit(1);
@@ -59,13 +69,28 @@ class Application_Model_Event_EventRepository
     public function getLatestById($id) {
         $filter = new Application_Model_Event_EventFilter();
         $filter->publicId = $id;
-        $filter->isLatest = true;
+        $filter->isCurrent = true;
         
         $query = $this->getQuery($filter);
         $query->limit(1);
         return $query->fetchOne();
     }
         
+    /**
+     * @param integer $id
+     * @param integer $version
+     * @return Application_Model_Post_Post
+     */
+    public function getVersion($id, $version) {
+        $filter = new Application_Model_Event_EventFilter();
+        $filter->publicId = $id;
+        $filter->version = $version;
+        
+        $query = $this->getQuery($filter);
+        $query->limit(1);
+        return $query->fetchOne();
+    }
+    
     public function getCount(Application_Model_Event_EventFilter $filter) {
         $query = $this->getQuery($filter);
         return $query->count();
@@ -78,7 +103,7 @@ class Application_Model_Event_EventRepository
         $query = Doctrine_Query::create()->from('
             Application_Model_Post_Post post, post.event event, 
             post.stats stats, post.creator creator, post.reviewer reviewer, 
-            post.author author, post.categories category, post.tags tags 
+            post.author author, post.tags tags, tags.tag tag
             ');
         if ($filter != null) {
             if ($filter->search) {
@@ -99,18 +124,18 @@ class Application_Model_Event_EventRepository
             if ($filter->publicId != null) {
                 $query->andWhere('post.publicId = ?', $filter->publicId);
             }
+            if ($filter->version) { 
+                $query->andWhere('post.version = ?', $filter->version);
+            }
             if ($filter->status) {
                 $query->andWhere('post.status = ?', $filter->status);
             }
-            if ($filter->isLatest) {
+            if ($filter->isCurrent) {
                 $query->andWhere('post.isLatest = ?', true);
-            }
-            if (count($filter->categories) > 0) {
-                $query->andWhereIn('post.categories.category.value', $filter->categories);
             }
             if (count($filter->tags) > 0) {
                 $normalizedTags = $this->getNormalizedTags($filter->tags);
-                $query->andWhereIn('post.tags.normalValue', $normalizedTags);
+                $query->andWhereIn('tags.tag.value', $normalizedTags);
             }
             
             // event options

@@ -23,8 +23,7 @@
  * @property string $body
  * 
  * @property Application_Model_Entity_EntityStats $stats
- * @property array $categories array of Application_Model_Post_Category objects
- * @property array $tags array of Application_Model_Post_Tag objects
+ * @property array $tags array of Application_Model_Post_PostTag objects
  */
 class Application_Model_Post_Post extends Doctrine_Record {
 
@@ -79,14 +78,9 @@ class Application_Model_Post_Post extends Doctrine_Record {
             'local' => 'entity_id',
             'foreign' => 'id',
         ));
-        $this->hasMany('Application_Model_Post_Category as categories', array(
-            'local' => 'post_id',
-            'foreign' => 'category_id',
-            'refClass' => 'Application_Model_Post_PostCategory',
-        ));
-        $this->hasMany('Application_Model_Post_Tag as tags', array(
+        $this->hasMany('Application_Model_Post_PostTag as tags', array(
             'local' => 'id',
-            'foreign' => 'post_id'
+            'foreign' => 'post_id',
         ));
         
         // link in post types

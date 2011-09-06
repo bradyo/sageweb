@@ -244,40 +244,34 @@ CREATE TABLE IF NOT EXISTS post_person (
 ) ENGINE = INNODB DEFAULT CHARSET = utf8;
 
 
-CREATE TABLE IF NOT EXISTS category (
+CREATE TABLE IF NOT EXISTS tag (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     value VARCHAR(64),
-    label VARCHAR(255),
+    label VARCHAR(64),
     INDEX (id), INDEX (value)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8;
 
-CREATE TABLE IF NOT EXISTS category_heiarchy (
-    namespace VARCHAR(32),
-    category_id INTEGER NOT NULL,
-    parent_category_id INTEGER NOT NULL,
-    PRIMARY KEY (category_id, parent_category_id), INDEX (parent_category_id),
-    INDEX (namespace)
+CREATE TABLE IF NOT EXISTS tag_heiarchy (
+    namespace VARCHAR(64),
+    tag_id INTEGER NOT NULL,    
+    parent_tag_id INTEGER NOT NULL,    
+    PRIMARY KEY (tag_id, parent_tag_id), INDEX (namespace),
+    FOREIGN KEY (tag_id) REFERENCES tag (id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_tag_id) REFERENCES tag (id) ON DELETE CASCADE
 ) ENGINE = INNODB DEFAULT CHARSET = utf8;
-
-CREATE TABLE IF NOT EXISTS post_category (
-    post_id INTEGER NOT NULL,
-    category_id INTEGER NOT NULL,
-    position INTEGER,
-    INDEX (post_id, position), INDEX (category_id),
-    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE,
-    FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE
-) ENGINE = INNODB DEFAULT CHARSET = utf8;
-
 
 CREATE TABLE IF NOT EXISTS post_tag (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     post_id INTEGER NOT NULL,
-    value VARCHAR(64) NOT NULL,
-    normal_value VARCHAR(64) NOT NULL,
-    position INTEGER,
-    INDEX (post_id, position), INDEX (value), INDEX (normal_value),
-    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE
+    tag_id INTEGER NOT NULL,
+    creator_id INTEGER,
+    review_status VARCHAR(32),
+    INDEX (review_status),
+    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tag (id) ON DELETE CASCADE,
+    FOREIGN KEY (creator_id) REFERENCES user (id) ON DELETE CASCADE
 ) ENGINE = INNODB DEFAULT CHARSET = utf8;
+
 
 
 CREATE TABLE IF NOT EXISTS post_flag (

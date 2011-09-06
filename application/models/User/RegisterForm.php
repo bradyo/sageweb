@@ -43,6 +43,8 @@ class Application_Model_User_RegisterForm extends Zend_Form
         $element->addValidator(new Application_Validate_Captcha());
         $this->addElement($element);
 
+        // This captcha is commented out since it was not blocking spam very well
+        // 
 //        $captchaElement = new Zend_Form_Element_Captcha('captcha',
 //            array(
 //                'label' => 'Enter the words below:',

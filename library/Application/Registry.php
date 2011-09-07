@@ -10,6 +10,30 @@ class Application_Registry extends Zend_Registry {
     }
     
     /**
+     * @return Zend_Cache_Core
+     */
+    public static function getCache()
+    {
+        return Zend_Registry::get('cache');
+    }
+
+    /**
+     * @return Zend_Mail
+     */
+    public static function getMailer()
+    {
+        return Zend_Registry::get('mailer');
+    }
+
+    /**
+     * @return Zend_Controller_Action_Helper_FlashMessenger
+     */
+    public static function getFlashMessenger()
+    {
+        return Zend_Controller_Action_HelperBroker::getStaticHelper('FlashMessenger');
+    }
+    
+    /**
      * @return Application_Model_Event_EventRepository 
      */
     public static function getEventRepository() {

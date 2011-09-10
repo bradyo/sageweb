@@ -10,5 +10,5 @@ data/sql-dumps/*
 data/uploads/*
 
 # ignore developer directories
-/nbproject/private/
+nbproject/private/
 

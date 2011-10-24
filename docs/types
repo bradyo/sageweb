@@ -1,0 +1,48 @@
+articles/
+	news/
+	viewpoints/
+	sythesis/
+	reviews/
+	ideas/
+	other/
+
+resources/
+	database/
+	funding/
+	software/
+	tutorial/
+	presentation/
+	protocol/
+	audio/
+	image/
+	video/
+	other/
+
+links/
+	blogs/
+	biotech/
+	resources/
+	institutes/
+	programs/
+	foundations/
+	other/
+
+events/
+	conference/
+	deadline/
+	talk/
+	training/
+	workshop/
+	other/
+
+discussions/
+	open/
+	support/
+	protocols/
+	analysis/
+	news/
+
+papers/
+	new-findings/
+	classics/
+

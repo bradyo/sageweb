@@ -9,9 +9,21 @@
     <div class="main">
         <h1>Key Papers</h1>
 
-        <div style="position:absolute; right:10px; top:10px;">
+        <div style="overflow:hidden">
+        <div style="float:right">
             Sort: <?php echo $this->partial('paper/_sortLinks.phtml',
                 array('navigation' => $this->sortNavigation)) ?>
+        </div>
+				<div style="float:left">
+            Type: 
+						<?php foreach ($this->typeNavigation->getPages() as $page): ?>
+								<?php if ($page->isActive()): ?>
+										<strong><?php echo $page->getLabel() ?></strong>
+								<?php else: ?>
+										<a href="<?php echo $page->getHref() ?>"><?php echo $page->getLabel() ?></a>
+								<?php endif ?>
+						<?php endforeach ?>
+        </div>
         </div>
 
         <hr />

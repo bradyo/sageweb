@@ -8,38 +8,42 @@
 <div id="page">
     <div class="main">
         <h1>People in Gerontology</h1>
+        <hr />
 
-        <div style="position:absolute; right:10px; top:10px;">
-            Last Name: 
+        <div>
+            <label>Last Name:</label>
             <?php echo $this->partial('person/_countLinks.phtml',
                 array('navigation' => $this->sortNavigation)) ?>
         </div>
-
         <hr />
 
         <?php if (count($this->pager) > 0): ?>
-            <?php foreach ($this->pager as $hit): ?>
-                <?php $doc = $hit->getDocument() ?>
-                <h2><a href="<?php echo $this->url(
-                    array('action' => 'show', 'id' => $doc->getFieldValue('id')), 'person', true)
-                    ?>"><?php echo $this->escape($doc->getFieldUtf8Value('title')) ?></a>
+            <div style="overflow: auto">
+                <?php foreach ($this->pager as $hit): ?>
+                    <?php $doc = $hit->getDocument() ?>
+                        <div style="width: 230px; margin-right:10px; float: left; height: 7em; overflow: hidden; margin-bottom: 1em">
+                            <img src="/images/default-portrait.png" style="border:1px solid #aaa; width: 50px; height: 50px; float: left" />
+                            <div style="margin-left: 60px">
+                                <h2 style="margin-bottom: 0; margin-top: 0px;"><a href="<?php echo $this->url(
+                                    array('action' => 'show', 'id' => $doc->getFieldValue('id')), 'person', true)
+                                    ?>"><?php echo $this->escape($doc->getFieldUtf8Value('title')) ?></a>                        
+                                </h2>
+                                <?php $labName = $doc->getFieldUtf8Value('labName') ?>
+                                <?php if (!empty($labName)): ?>
+                                     <div style="font-weight:bold"><?php echo $this->escape($labName) ?></div>
+                                <?php endif ?>
 
-                    <span style="color:#aaa">
-                        <?php $labName = $doc->getFieldUtf8Value('labName') ?>
-                        <?php if (!empty($labName)): ?>
-                            at <?php echo $this->escape($labName) ?>
-                        <?php endif ?>
-
-                        <?php $location = $doc->getFieldUtf8Value('location') ?>
-                        <?php if (!empty($location)): ?>
-                            in <?php echo $this->escape($location) ?>
-                        <?php endif ?>
-                    </span>
-                </h2>
-            <?php endforeach ?>
+                                <?php $location = $doc->getFieldUtf8Value('location') ?>
+                                <?php if (!empty($location)): ?>
+                                    <div style=""><?php echo $this->escape($location) ?></div>
+                                <?php endif ?>
+                        </div>
+                    </div>
+                <?php endforeach ?>
+            </div>
 
             <?php if ($this->pager->getTotalItemCount() > $this->pager->getItemCountPerPage()): ?>
-                <hr style="margin-top:2em;" />
+                <hr style="margin-top:1em;" />
                 <?php echo $this->partial('pagination.phtml', array('pager' => $this->pager)) ?>
             <?php endif ?>
         <?php else: ?>

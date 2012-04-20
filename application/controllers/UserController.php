@@ -1,10 +1,13 @@
 <?php
 
+/**
+ * Controller for listing users, adding users, editing users.
+ */
 class UserController extends Zend_Controller_Action
 {
     public function accountAction()
     {
-        $user = Application_Registry::getCurrentUser();
+        $user = Sageweb_Registry::getUser();
         if ($user->role == Sageweb_Cms_User::ROLE_GUEST) {
             throw new Zend_Controller_Action_Exception('Not logged in', 404);
         }
@@ -24,7 +27,7 @@ class UserController extends Zend_Controller_Action
             $user->save();
 
             // add a flash message and redirect
-            Application_Registry::getFlashMessenger()->addMessage(array(
+            Sageweb_Registry::getFlashMessenger()->addMessage(array(
                 'type' => 'info',
                 'value' => 'Your account has been updated.'
             ));
@@ -58,7 +61,7 @@ class UserController extends Zend_Controller_Action
             }
         }
 
-        $user = Application_Registry::getCurrentUser();
+        $user = Sageweb_Registry::getUser();
         if ($user->role == Sageweb_Cms_User::ROLE_GUEST) {
             $url = $this->view->url(array(), 'login', true) . '?dest=' . $this->view->url();
             $this->_redirect($url);
@@ -72,7 +75,7 @@ class UserController extends Zend_Controller_Action
             $user->save();
 
             // add a flash message and redirect
-            Application_Registry::getFlashMessenger()->addMessage(array(
+            Sageweb_Registry::getFlashMessenger()->addMessage(array(
                 'type' => 'info',
                 'value' => 'Your password has been updated.'
             ));
@@ -85,7 +88,7 @@ class UserController extends Zend_Controller_Action
 
     public function notificationsAction()
     {
-        $user = Application_Registry::getCurrentUser();
+        $user = Sageweb_Registry::getUser();
         if ($user->role == Sageweb_Cms_User::ROLE_GUEST) {
             throw new Zend_Controller_Action_Exception('Not logged in', 404);
         }
@@ -98,7 +101,7 @@ class UserController extends Zend_Controller_Action
             $user->save();
 
             // add a flash message and redirect
-            Application_Registry::getFlashMessenger()->addMessage(array(
+            Sageweb_Registry::getFlashMessenger()->addMessage(array(
                 'type' => 'info',
                 'value' => 'Your e-mail notification options have been updated.'
             ));
@@ -148,7 +151,7 @@ class UserController extends Zend_Controller_Action
      */
     public function registerAction()
     {
-        $form = new Application_Model_User_RegisterForm();
+        $form = new Application_Form_Register();
         if ($this->getRequest()->isPost()) {
             $isValid = $form->isValid($this->getRequest()->getParams());
             if ($isValid) {
@@ -209,7 +212,7 @@ class UserController extends Zend_Controller_Action
                     'username' => $user->username,
                     'activationKey' => $user->activationKey,
                 ));
-                $mailer = Application_Registry::getMailer();
+                $mailer = Sageweb_Registry::getMailer();
                 $mailer->setFrom('support@sageweb.org', 'Sageweb Support');
                 $mailer->addTo($user->email);
                 $mailer->setSubject('reset password request for '. $user->username);
@@ -243,19 +246,19 @@ class UserController extends Zend_Controller_Action
                 Zend_Session::rememberMe();
             }
 
-            Application_Registry::getFlashMessenger()->addMessage(array(
+            Sageweb_Registry::getFlashMessenger()->addMessage(array(
                 'type' => 'info',
                 'value' => 'Please set your new password below.'
             ));
             $this->_redirect('/account/password');
         }
 
-        $form = new Application_Model_User_LoginForm();
+        $form = new Application_Form_Login();
         if ($this->_request->isPost()) {
             $form->populate($this->_getAllParams());
 
             // authenticate the user with auth adapter
-            $adapter = new Application_Auth_Adapter();
+            $adapter = new Sageweb_Auth_Adapter();
             $adapter->setUsername($form->getValue('username'));
             $adapter->setPassword($form->getValue('password'));
             $result = Zend_Auth::getInstance()->authenticate($adapter);
@@ -279,7 +282,7 @@ class UserController extends Zend_Controller_Action
                     );
                 }
                 $this->_redirect(urldecode($dest));
-            } elseif ($result->getCode() == Application_Auth_Result::FAILURE_BLOCKED) {
+            } elseif ($result->getCode() == Sageweb_Auth_Result::FAILURE_BLOCKED) {
                 $this->view->message = 'User has been blocked. Please contact support@sageweb.org to get re-activated.';
             } else {
                 $this->view->message = 'Username and password incorrect.';
@@ -287,7 +290,7 @@ class UserController extends Zend_Controller_Action
         }
         $this->view->form = $form;
 
-        $form = new Application_Model_User_RegisterForm();
+				$form = new Application_Form_Register();
         if ($this->getRequest()->isPost()) {
             $isValid = $form->isValid($this->getRequest()->getParams());
             if ($isValid) {

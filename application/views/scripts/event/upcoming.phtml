@@ -1,0 +1,70 @@
+<div id="sidebar">
+    <?php echo $this->render('event/_actionsBlock.phtml') ?>
+    <?php echo $this->partial('event/_filtersBlock.phtml',
+            array('selectedTypes' => $this->selectedTypes)) ?>
+</div>
+
+<div id="page">
+    <div class="main">
+
+        <h1>Upcoming Events</h1>
+
+        <div>
+            Show: <?php echo $this->partial('_sortLinks.phtml',
+                array('navigation' => $this->viewMenu)) ?>
+        </div>
+
+        <hr />
+
+        <?php if (count($this->pager) > 0): ?>
+            <?php foreach ($this->pager as $post): ?>
+                <div class="postEntry">
+                    <a href="">
+                        <div class="defaultIcon eventIcon" style="position:relative">
+                            <div style="position:absolute; top:5px; left: 2px">
+                                <a href="<?php echo $this->url(array('action' => 'upcoming'), 'events', true)
+                                   . '?type=' . $post->type ?>" class="type-key <?php echo $post->type . '-key' ?>"
+                                   ><?php echo Sageweb_Cms_PostEvent::getTypeLabel($post->type) ?></a>
+                            </div>
+                        </div>
+                    </a>
+
+                    <div style="margin-left: 165px">
+
+                        
+
+                        <h2 style="margin:0;">
+                            <a href="<?php echo $this->url(
+                                array('id' => $post->getSlugId()), 'event', true
+                                ) ?>"><?php echo $post->title ?></a>
+                        </h2>
+                        <p>
+                            <span style="font-weight:bold">
+                                <?php echo $this->formatDate($post->startsAt) ?>
+                                <?php if (!empty($post->endsAt) && $post->endsAt != $post->startsAt): ?>
+                                    - <?php echo $this->formatDate($post->endsAt) ?>
+                                <?php endif ?>
+	                              <?php if (!empty($post->location)): ?>
+                                   &bull;
+                                   <?php echo $this->escape($post->location) ?>
+                                <?php endif ?>
+                            </span>
+                        </p>
+                        
+                        <p><?php echo $this->cleanHtmlSummary($post->summary) ?></p>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            <?php endforeach ?>
+
+            <?php if ($this->pager->getTotalItemCount() > $this->pager->getItemCountPerPage()): ?>
+                <div style="border-top: 1px solid #ccc; padding-top:0.5em">
+                    <?php echo $this->partial('pagination.phtml', array('pager' => $this->pager)) ?>
+                </div>
+            <?php endif ?>
+        
+        <?php else: ?>
+            <p>There are currently no events with the selected types.</p>
+        <?php endif ?>
+    </div>
+</div>

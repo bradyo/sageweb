@@ -10,7 +10,7 @@ class ManageController extends Zend_Controller_Action
     {
         parent::preDispatch();
 
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         if (!$viewingUser->isModerator()) {
             throw new Zend_Controller_Action_Exception('Access Denied', 404);
         }
@@ -49,12 +49,13 @@ class ManageController extends Zend_Controller_Action
     public function revisionsAction()
     {
         $q = Doctrine_Query::create()
-            ->from('Sageweb_EntityRevision r, r.entity e, r.creator c, r.reviewer r2')
-            ->where('r.status = ?', Sageweb_EntityRevision::STATUS_PENDING);
+            ->from('Sageweb_Cms_EntityRevision r, r.entity e, r.creator c, r.reviewer r2')
+            ->where('r.status = ?', Sageweb_Cms_EntityRevision::STATUS_PENDING)
+            ->andWhere('e.type <> ?', 'comment');
 
         $type = $this->_getParam('type', 'any');
         if ($type != 'any') {
-            $q->where('e.type = ?', $this->_getParam('type'));
+            $q->andWhere('e.type = ?', $this->_getParam('type'));
         }
 
         $sort = $this->_getParam('sort', 'createdAt');
@@ -87,7 +88,7 @@ class ManageController extends Zend_Controller_Action
         $this->view->revisions = $q->execute();
 
         $this->view->type = $this->_getParam('role');
-        $this->view->status = $this->_getParam('status', Sageweb_EntityRevision::STATUS_PENDING);
+        $this->view->status = $this->_getParam('status', Sageweb_Cms_EntityRevision::STATUS_PENDING);
         $this->view->creator = $this->_getParam('creator');
         $this->view->reviewer = $this->_getParam('reviewer');
         $this->view->sort = $this->_getParam('sort', 'createdAt');
@@ -100,14 +101,14 @@ class ManageController extends Zend_Controller_Action
             $this->_forward('flag');
         }
 
-        $this->view->flags = Sageweb_Table_Flag::findAll();
+        $this->view->flags = Sageweb_Cms_Table_Flag::findAll();
     }
 
     public function flagAction()
     {
         $id = $this->_getParam('id');
 
-        $flag = Sageweb_Table_Flag::findOneById($id);
+        $flag = Sageweb_Cms_Table_Flag::findOneById($id);
         if (!$flag) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
@@ -121,8 +122,8 @@ class ManageController extends Zend_Controller_Action
             $this->_redirect($url);
         }
 
-        $entity = Sageweb_Table_Entity::findOneById($flag->entityId);
-        $post = Sageweb_Table_Entity::findPostByEntity($entity);
+        $entity = Sageweb_Cms_Table_Entity::findOneById($flag->entityId);
+        $post = Sageweb_Cms_Table_Entity::findPostByEntity($entity);
         
         $this->view->flag = $flag;
         $this->view->post = $post;

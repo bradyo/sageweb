@@ -14,23 +14,15 @@ $(document).ready(function() {
     // add tooltips to top links
     $("#lifespanDbLink").tooltip({
         position: "bottom center",
-        opacity: 0.95
+        opacity: 1
     });
     $("#pathwayDbLink").tooltip({
         position: "bottom center",
-        opacity: 0.95
+        opacity: 1
     });
     $("#yodaLink").tooltip({
         position: "bottom center",
-        opacity: 0.95
-    });
-    $("#kaeberleinLabLink").tooltip({
-        position: "bottom center",
-        opacity: 0.95
-    });
-    $("#igagLink").tooltip({
-        position: "bottom center",
-        opacity: 0.95
+        opacity: 1
     });
 
     // change the href to postOverlay for overlay when js is enabled

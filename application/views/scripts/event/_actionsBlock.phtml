@@ -1,13 +1,12 @@
-<div class="block">
-    <div class="blockTitle">Actions:</div>
-    <div class="blockContent">
-        <a href="<?php echo $this->url(
-            array('action' => 'edit', 'id' => $this->post->id), 'events', true
-            ) ?>">New Revision</a>
-        <br />
+<div class="blockContainer">
+    <a class="browse" href="<?php echo $this->url(array('action' => 'upcoming'), 'events', true)
+        ?>">Browse Events</a>
 
-        <a href="<?php echo $this->url(
-            array('action' => 'revisions', 'id' => $this->post->id), 'events', true
-            ) ?>">Show Revisions</a>
-    </div>
+    <a class="rss" href="<?php echo $this->qurl(array('action' => 'rss'), 'events')
+        ?>">Subscribe</a>
+    <br />
+
+    <a class="add" style="font-weight:bold" href="<?php echo $this->url(
+            array('action' => 'new'), 'events', true
+        ) ?>">Add Event</a>
 </div>

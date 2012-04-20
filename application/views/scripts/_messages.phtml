@@ -1,4 +1,4 @@
-<?php $flashMessenger = Application_Registry::getFlashMessenger() ?>
+<?php $flashMessenger = Sageweb_Registry::getFlashMessenger() ?>
 <?php foreach ($flashMessenger->getMessages() as $message): ?>
     <div class="<?php echo $message['type'] ?>Message">
         <?php echo $message['value'] ?>

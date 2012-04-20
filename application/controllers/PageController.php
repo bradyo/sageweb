@@ -1,8 +1,12 @@
 <?php
 
+/**
+ *
+ */
 class PageController extends Zend_Controller_Action
 {
-    public function showAction() {
+    public function showAction()
+    {
         $pageName = basename($this->_getParam('name'));
 
         // if the view script exists, render it

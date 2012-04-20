@@ -73,23 +73,6 @@
 
 <div style="float:left; width:980px; overflow:auto;">
     <div class="block" style="float:left; width:320px; margin-right:10px">
-        <div class="blockTitle"><span class="announcement">Announcements</span></div>
-        <div class="blockContent" style="overflow:auto;">
-            <ul class="blockItems">
-                <li><strong><?php echo date('Y-m-d') ?></strong><br />
-                    new updates made to sageweb.org site</li>
-                <li><strong>2011-01-08</strong><br />
-                    new updates made to gene, compound, and search pages</li>
-                <li><strong>2010-06-08</strong><br />
-                    gene data from AGEID database imported</li>
-                <li><strong>2010-06-02</strong><br />
-                    database application launched on sageweb.org</li>
-               
-            </ul>
-        </div>
-    </div>
-
-    <div class="block" style="float:left; width:320px; margin-right:10px">
         <div class="blockTitle"><span class="calendar">Upcoming Events</span></div>
         <div class="blockContent" style="overflow:auto;">
             <ul class="blockItems">
@@ -101,6 +84,23 @@
                     </li>
                 <?php endforeach ?>
                 <li><a href="<?php echo $this->url(array('action' => 'upcoming'), 'events', true)
+                     ?>">View More...</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="block" style="float:left; width:320px; margin-right:10px">
+        <div class="blockTitle"><span class="paper">New Papers</span></div>
+        <div class="blockContent" style="overflow:auto;">
+            <ul class="blockItems">
+                <?php foreach (Sageweb_Cms_Table_Paper::findNewest(5) as $post): ?>
+                    <li>
+                        <strong><?php echo $this->formatDate($post->createdAt) ?></strong><br />
+                        <a href="<?php echo $this->url(array('id' => $post->id), 'paper', true)
+                            ?>"><?php echo $this->escape($post->title) ?></a>
+                    </li>
+                <?php endforeach ?>
+                <li><a href="<?php echo $this->url(array(), 'papers', true)
                      ?>">View More...</a></li>
             </ul>
         </div>

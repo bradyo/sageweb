@@ -1,4 +1,4 @@
-<?php echo $this->headTitle()->prepend('New Article') ?>
+<?php echo $this->headTitle()->prepend('New Page') ?>
 
 <div id="sidebar">
     <?php echo $this->render('content/_actionsBlock.phtml') ?>
@@ -8,7 +8,7 @@
     <div class="main">
         <?php echo $this->render('post/_guestMessage.phtml') ?>
 
-        <h1>New Article</h1>
+        <h1>New Page</h1>
         <?php echo $this->partial('article/_form.phtml', array('form' => $this->form)) ?>
     </div>
 </div>

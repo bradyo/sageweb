@@ -6,7 +6,7 @@ class ProfileController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $pager = Sageweb_Table_User::getPager();
+        $pager = Sageweb_Cms_Table_User::getPager();
 
         $page = $this->_getParam('page', 1);
         $pager->setItemCountPerPage(self::ITEMS_PER_PAGE);
@@ -28,7 +28,7 @@ class ProfileController extends Zend_Controller_Action
         ));
         $pages[] = $profilePage;
 
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         if ($viewingUser->username == $username) {
             $editPage = new Zend_Navigation_Page_Mvc(array(
                 'label' => 'Edit Profile',
@@ -48,7 +48,7 @@ class ProfileController extends Zend_Controller_Action
     public function showAction()
     {
         $username = $this->_getParam('username');
-        $user = Sageweb_Table_User::getUser($username);
+        $user = Sageweb_Cms_Table_User::getUser($username);
         if (!$user) {
             throw new Zend_Controller_Action_Exception('User does not exist', 404);
         }
@@ -60,12 +60,12 @@ class ProfileController extends Zend_Controller_Action
     public function editAction()
     {
         $username = $this->_getParam('username');
-        $user = Sageweb_Table_User::getUser($username);
+        $user = Sageweb_Cms_Table_User::getUser($username);
         if (!$user) {
             throw new Zend_Controller_Action_Exception('User does not exist', 404);
         }
 
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         if ($viewingUser->username !== $username) {
             throw new Zend_Controller_Action_Exception('Cannot edit page', 404);
         }
@@ -73,7 +73,7 @@ class ProfileController extends Zend_Controller_Action
         $form = new Application_Form_Profile();
         $profile = $user->profile;
         if (!$profile) {
-            $profile = new Application_Model_Profile_Profile();
+            $profile = new Sageweb_Cms_Profile();
             $profile->userId = $viewingUser->id;
             $profile->save();
         }
@@ -97,7 +97,7 @@ class ProfileController extends Zend_Controller_Action
     {
         // todo
         $username = $this->_getParam('username');
-        $user = Sageweb_Table_User::getUser($username);
+        $user = Sageweb_Cms_Table_User::getUser($username);
         if (!$user) {
             throw new Zend_Controller_Action_Exception('User does not exist', 404);
         }
@@ -111,7 +111,7 @@ class ProfileController extends Zend_Controller_Action
     {
         // todo
         $username = $this->_getParam('username');
-        $user = Sageweb_Table_User::getUser($username);
+        $user = Sageweb_Cms_Table_User::getUser($username);
         if (!$user) {
             throw new Zend_Controller_Action_Exception('User does not exist', 404);
         }
@@ -123,19 +123,19 @@ class ProfileController extends Zend_Controller_Action
 
     public function blockAction()
     {
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         if (!$viewingUser->isModerator()) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
         $username = $this->_getParam('username');
-        $user = Sageweb_Table_User::getUser($username);
+        $user = Sageweb_Cms_Table_User::getUser($username);
         if (!$user) {
             throw new Zend_Controller_Action_Exception('User does not exist', 404);
         }
 
         if ($this->_request->isPost()) {
-            $user->status = Application_Model_User_User::STATUS_BLOCKED;
+            $user->status = Sageweb_Cms_User::STATUS_BLOCKED;
             $user->save();
 
             $this->_redirect($this->view->url(array('action' => 'show')));
@@ -147,19 +147,19 @@ class ProfileController extends Zend_Controller_Action
 
     public function unblockAction()
     {
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         if (!$viewingUser->isModerator()) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
         $username = $this->_getParam('username');
-        $user = Sageweb_Table_User::getUser($username);
+        $user = Sageweb_Cms_Table_User::getUser($username);
         if (!$user) {
             throw new Zend_Controller_Action_Exception('User does not exist', 404);
         }
 
         if ($this->_request->isPost()) {
-            $user->status = Application_Model_User_User::STATUS_ACTIVE;
+            $user->status = Sageweb_Cms_User::STATUS_ACTIVE;
             $user->save();
 
             $this->_redirect($this->view->url(array('action' => 'show')));
@@ -171,27 +171,27 @@ class ProfileController extends Zend_Controller_Action
 
     public function roleAction()
     {
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         if (!$viewingUser->isAdmin()) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
         $username = $this->_getParam('username');
-        $user = Sageweb_Table_User::getUser($username);
+        $user = Sageweb_Cms_Table_User::getUser($username);
         if (!$user) {
             throw new Zend_Controller_Action_Exception('User does not exist', 404);
         }
 
         if ($this->_request->isPost()) {
             switch ($this->_getParam('role')) {
-                case Application_Model_User_User::ROLE_ADMIN:
-                    $user->role = Application_Model_User_User::ROLE_ADMIN;
+                case Sageweb_Cms_User::ROLE_ADMIN:
+                    $user->role = Sageweb_Cms_User::ROLE_ADMIN;
                     break;
-                case Application_Model_User_User::ROLE_MODERATOR:
-                    $user->role = Application_Model_User_User::ROLE_MODERATOR;
+                case Sageweb_Cms_User::ROLE_MODERATOR:
+                    $user->role = Sageweb_Cms_User::ROLE_MODERATOR;
                     break;
-                case Application_Model_User_User::ROLE_MEMBER:
-                    $user->role = Application_Model_User_User::ROLE_MEMBER;
+                case Sageweb_Cms_User::ROLE_MEMBER:
+                    $user->role = Sageweb_Cms_User::ROLE_MEMBER;
                     break;
             }
             $user->save();

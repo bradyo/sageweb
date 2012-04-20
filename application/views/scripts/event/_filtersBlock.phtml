@@ -1,36 +1,18 @@
-<?php
-/* @var $filter Sageweb_Event_EventFilter */
-$filter = $this->filter;
-
-$types = new Application_Model_Event_EventTypes();
-?>
-
 <div class="block">
-    <div class="blockTitle"><span class="filter">Search</span></div>
+    <div class="blockTitle"><span class="types">Filter Events</span></div>
     <div class="blockContent">
-        <p>
-            <label>Keywords:</label>
-            <br />
-            <input type="text" name="search" style="width:90%"
-               value="<?php echo $this->escape($filter->search) ?>" />
-        </p>
-
-        <p>
-            <label>Types:</label>
-            <br />
-            <?php foreach ($types->getChoices() as $type => $label): ?>
-                <?php $class = 'type-key ' . $type . '-key' ?>
-                <label class="<?php echo $class ?>" style="margin-bottom:4px; width:90%">
-                    <input type="checkbox" name="eventTypes[]" value="<?php echo $type 
-                            ?>"<?php echo (in_array($type, $filter->eventTypes)) 
-                            ? 'checked="checked"' : '' ?>>
-                    <?php echo $label ?>
+        <form action="" method="post">
+            <?php $types = Sageweb_Cms_PostEvent::getTypeChoices() ?>
+            <?php foreach ($types as $key => $value): ?>
+                <label >
+                    <input type="checkbox" name="types[]" value="<?php echo $key ?>"
+                        <?php echo (in_array($key, $this->selectedTypes)) ? 'checked="checked"' : '' ?>>
+                    <?php echo $value ?>
                 </label>
                 <br />
             <?php endforeach ?>
-        </p>
-
-        <input type="submit" value="Update" />
-        <a href="<?php echo $this->url(array(), 'events', false) ?>">clear...</a>
+            <input type="submit" value="Apply" />
+        </form>
     </div>
 </div>
+

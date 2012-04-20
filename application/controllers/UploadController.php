@@ -15,7 +15,7 @@ class UploadController extends Zend_Controller_Action
 
         if ($this->_request->isPost()) {
             if ($this->_hasParam('submitUpload')) {
-                $upload = Sageweb_Table_Upload::receiveUpload(true);
+                $upload = Sageweb_Cms_Table_Upload::receiveUpload(true);
                 $this->view->upload = $upload;
             }
             else { // insert submit
@@ -49,7 +49,7 @@ class UploadController extends Zend_Controller_Action
 
         if ($this->_request->isPost()) {
             if ($this->_hasParam('submitUpload')) {
-                $upload = Sageweb_Table_Upload::receiveUpload(true);
+                $upload = Sageweb_Cms_Table_Upload::receiveUpload(true);
                 $this->view->upload = $upload;
             } else {
                 $html = '<a href="' . $this->view->escape($this->_getParam('fileHref')) . '" '
@@ -75,7 +75,7 @@ class UploadController extends Zend_Controller_Action
         $units = explode('-', $filename);
         $id = intval($units[0]);
 
-        $upload = Sageweb_Table_Upload::findOneById($id);
+        $upload = Sageweb_Cms_Table_Upload::findOneById($id);
         if (!$upload) {
             throw new Zend_Controller_Exception('File not found.', 404);
         }

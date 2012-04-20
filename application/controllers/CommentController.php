@@ -5,12 +5,12 @@ class CommentController extends Zend_Controller_Action
     public function editAction()
     {
         $id = $this->getRequest()->getParam('id');
-        $post = Sageweb_Table_Comment::findOneById($id);
+        $post = Sageweb_Cms_Table_Comment::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         if (!$viewingUser->canEdit($post)) {
             throw new Zend_Controller_Action_Exception('Permission denied.', 404);
         }
@@ -30,7 +30,7 @@ class CommentController extends Zend_Controller_Action
                     $viewingUser->acceptRevision($revision, $comment);
                 }
 
-                Application_Registry::getFlashMessenger()->addMessage(array(
+                Sageweb_Registry::getFlashMessenger()->addMessage(array(
                     'type' => 'info',
                     'value' => 'Updated successfully.'
                 ));
@@ -55,27 +55,9 @@ class CommentController extends Zend_Controller_Action
             $revisionData['status'] = $formValues['status'];
 
             $username = $formValues['author'];
-            $author = Sageweb_Table_User::findOneByUsername($username);
+            $author = Sageweb_Cms_Table_User::findOneByUsername($username);
             $revisionData['authorId'] = $author->id;
         }
         return $revisionData;
-    }
-    
-    public function addCommentAction()
-    {
-        $postId = $this->_getParam('id');
-
-        $user = Zend_Auth::getInstance()->getIdentity();
-        if (!$user) {
-            return;
-        }
-
-        $comment = new Sageweb_Model__Comment();
-        $comment->fromArray(array(
-            'parentEntityId' => $this->_getParam('parentEntityId'),
-            'parentCommentId' => $this->_getParam('parentCommentId'),
-            'depth' => $depth,
-            'body' => $this->_getParam('body')
-        ));
     }
 }

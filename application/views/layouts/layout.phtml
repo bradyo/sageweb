@@ -1,0 +1,275 @@
+<?php echo $this->doctype() ?>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <?php echo $this->headTitle(); ?>
+    <?php echo $this->headMeta(); ?>
+    <?php echo $this->headStyle(); ?>
+    <?php echo $this->headLink(); ?>
+    <?php echo $this->headScript(); ?>
+
+<script type="text/javascript" src="/jwplayer/jwplayer.js"></script>
+
+    <link rel="shortcut icon" href="/images/sageweb_favicon.png" />
+</head>
+
+<body>
+    <div id="viewport">
+
+        <div id="top-bar">
+            <div id="user-bar" style="float:right;">
+                <div id="user-menu">
+                    <?php if (!Zend_Auth::getInstance()->hasIdentity()): ?>
+                        <a href="<?php echo $this->url(array(), 'login', true) . '?dest=' . $this->url()
+                            ?>">Sign In</a>
+                    <?php else: ?>
+                        <?php $user = Sageweb_Registry::getUser() ?>
+                        <a href="<?php echo $this->url(array(), 'account', true)
+                            ?>">My Account</a>
+                        <?php if ($user->isModerator()): ?>
+                            <a href="<?php echo $this->url(array(), 'manage', true)
+                                ?>">Manage</a>
+                        <?php endif ?>
+                        <a href="<?php echo $this->url(array(), 'logout', true) . '?dest=' . $this->url() 
+                            ?>">Logout</a>
+                    <?php endif ?>
+
+                    <a id="addPost" class="post" href="<?php echo $this->url(
+                        array('controller' => 'post', 'action' => 'add'), 'default', true
+                        ) ?>"><span class="add">Add Post</span></a>
+                    <div style="display:none">
+                        <div id="postOverlay">
+                            <?php echo $this->render('post/_overlay.phtml') ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="global-crumb"> 
+                <strong>Tools:</strong>
+                <a id="lifespanDbLink" href="http://www.sageweb.org/lifespandb">Lifespan DB</a>
+                <div id="lifespanDbTooltip" class="tooltip">
+                    <div style="font-size:1.2em;  line-height:1.2em;font-weight: bold; margin-bottom:0.5em">Lifespan Observation Database</div>
+                    <p>Search our database of lifespan measurements made across
+                        hundreds of publications.</p>
+                </div>
+                &bull;
+                <a id="yodaLink" href="http://www.sageweb.org/yoda">YODA</a>
+                <div id="yodaTooltip" class="tooltip">
+                    <div style="font-size:1.2em; line-height:1.2em; font-weight: bold;  margin-bottom:0.5em">Yeast Outgrowth Data Analyzer</div>
+                    <p>Analyze growth curves for doubling time and
+                        relative survivals.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="header">
+            <div id="headerWrapper">
+                <div style="float: left">
+                    <a href="/"><img id="header-logo" src="/images/sageweb_logo_sm.png"
+                          alt="sageweb-logo" style="display:block;float:left; margin-right: 10px" /></a>
+                    <span id="header-text"><a href="/">Science of Aging</a></span>
+                </div>
+
+                <div id="topSearch_" style="float:right; font-size:1.2em; position:relative">
+                    <img src="/images/magnifier.png" alt="search" style="position:absolute; top:15px; border:none; margin-left:10px;" />
+                    <form id="searchForm" action="<?php echo $this->url(
+                        array('controller' => 'search'), 'default', true) 
+                        ?>" method="get">
+                        <input id="q" name="q" class="search-input" type="text" 
+                            style="font-size: 1.2em; font-weight: bold; border: 1px solid black; width: 12em; padding: 2px 4px; padding-left:30px;"
+                            value="" />
+		            </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="navigation" style="position:relative;">
+            <div id="topMenu">
+                <img src="/images/left-cap.png" alt="" style="float:left; width:10px" />
+                <div id="menu-wrapper" style="float:left; width: 960px; background-color: #287BBF">
+                    <ul>
+                      <li class="first menuItem">
+                        <a href="<?php echo $this->url(array('category' => 'all'), 'content') ?>"
+                           ><span class="dropdown">Resources</span></a>
+                        <ul class="subMenuBlock">
+                            <div class="subMenuColumWrapper">
+                                <div class="subMenuColumn">
+                                    <?php $categories = Sageweb_Cms_Table_Content::getDefaultCategoryOptions() ?>
+                                    <?php foreach ($categories as $key => $value): ?>
+                                      <li>
+                                          <a style="font-weight:normal" href="<?php echo $this->url(
+                                              array('category' => $key), 'content', true)
+                                              ?>"><?php echo $this->escape($value) ?></a>
+                                      </li>
+                                    <?php endforeach ?>
+                                </div>
+
+                                <div class="subMenuColumn">
+                                    <?php $categories = Sageweb_Cms_Table_Content::getLinkCategoryOptions() ?>
+                                    <?php foreach ($categories as $key => $value): ?>
+                                        <li>
+                                            <a style="font-weight:normal" href="<?php echo $this->url(
+                                                array('category' => $key), 'content', true)
+                                                ?>"><?php echo $this->escape($value) ?></a>
+                                        </li>
+                                    <?php endforeach ?>
+                                </div>
+
+                                <div class="subMenuColumn">
+                                    <?php $categories = Sageweb_Cms_Table_Content::getMediaCategoryOptions() ?>
+                                    <?php foreach ($categories as $key => $value): ?>
+                                        <li>
+                                            <a style="font-weight:normal" href="<?php echo $this->url(
+                                                array('category' => $key), 'content', true)
+                                                ?>"><?php echo $this->escape($value) ?></a>
+                                        </li>
+                                    <?php endforeach ?>
+                                </div>
+                            </div>
+                        </ul>
+                      </li>
+
+                      <li class="menuItem">
+                        <a href=""><span class="dropdown">Community</span></a>
+                          <ul class="subMenuBlock">
+                              <li>
+                                  <a href="<?php echo $this->url(array(), 'profiles', true)
+                                      ?>" style="font-weight:normal">User Profiles</a>
+                              </li>
+                              <li>
+                                  <a href="<?php echo $this->url(array(), 'persons', true)
+                                      ?>" style="font-weight:normal">People in Gerontology</a>
+                              </li>
+<?php /*
+                              <li>
+                                  <a href="<?php echo $this->url(array(), 'labs', true)
+                                      ?>" style="font-weight:normal">Labs in Gerontology</a>
+                              </li>
+*/ ?>
+                          </ul>
+                      </li>
+
+                      <li class="menuItem">
+                          <a href="<?php echo $this->url(array('action' => 'upcoming'), 'events', true)
+                              ?>">Events</a>
+                      </li>
+                      
+                      <li class="menuItem">
+                          <a href="<?php echo $this->url(array(), 'discussions', true)
+                              ?>">Discussions</a>
+                      </li>
+
+                      <li class="menuItem">
+                          <a href="<?php echo $this->url(array(), 'papers', true)
+                              ?>">Journal Club</a>
+                      </li>
+                    </ul>
+
+                </div>
+                <img src="/images/right-cap.png" alt="" style="float:left; width: 10px;" />
+
+            </div>
+        </div>
+
+        <div id="content">
+            <?php echo $this->layout()->content; ?>
+        </div>
+    </div>
+
+    <div id="footer">
+        <div style="margin-bottom: 1em; overflow: auto;">
+            <div class="column">
+                <div class="header">Sageweb.org</div>
+                <ul>
+                    <li><a href="<?php echo $this->url(array('name' => 'about-us'), 'page')
+                        ?>">About Us</a></li>
+                    <li><a href="<?php echo $this->url(array('name' => 'the-team'), 'page') 
+                        ?>">The Team</a></li>
+                    <li><a href="<?php echo $this->url(array('name' => 'contact'), 'page')
+                        ?>">Contact Us</a></li>
+                    <li><a href="<?php echo $this->url(array('name' => 'faq'), 'page')
+                        ?>">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div class="column">
+                <div class="header">Partners</div>
+                <ul>
+                    <li><a href="http://kaeberleinlab.org">Kaeberlein Lab</a></li>
+                    <li><a href="http://pcwww.liv.ac.uk/~aging">de Magalhães Lab</a></li>
+                </ul>
+            </div>
+
+            <div class="column">
+                <div class="header">Tools</div>
+                <ul>
+                    <li><a href="http://lifespandb.sageweb.org">Lifespan Observation Database</a></li>
+                    <li><a href="http://yoda.sageweb.org">Yeast Outgrowth Data Analyzer</a></li>
+                </ul>
+            </div>
+            <div class="column">
+                <div class="header">Connect</div>
+                <ul>
+                    <li><a href="http://www.facebook.com/pages/sageweb/108201382531390">Facebook</a></li>
+                    <li><a href="http://twitter.com/sagewebteam">Twitter</a></li>
+                    <li><a href="http://www.linkedin.com/e/vgh/2886369/">LinkedIn</a></li>
+                </ul>
+            </div>
+            <div class="column">
+                <div class="header">Legal</div>
+                <ul>
+                    <li><a href="<?php echo $this->url(array('name' => 'terms-of-service'), 'page')
+                        ?>">Terms of Service</a></li>
+                    <li><a href="<?php echo $this->url(array('name' => 'privacy-policy'), 'page')
+                        ?>">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+				<div id="collaborators" style="padding-top:1em">
+							<a href="http://www.ellisonfoundation.org/">
+								  <img class="sponsor" src="<?php echo $this->baseUrl() . '/images/ellison_50px_wide.jpg' ?>"
+								     alt="" title="Ellison Medical Foundation" />
+							</a>
+							<a href="http://www.pathology.washington.edu/">
+								  <img class="sponsor" src="<?php echo $this->baseUrl() . '/images/uw-path_50px_wide.jpg' ?>"
+								     alt="" title="University of Washington Pathology" />
+							</a>
+
+							<a href="http://www.uwaging.org/">
+								  <img class="sponsor" src="<?php echo $this->baseUrl() . '/images/uwaging_50px_wide.jpg' ?>"
+								     alt="" title="University of Washington Biology of Aging" />
+							</a>
+					</div>
+    </div>
+
+		
+
+    <?php if (APPLICATION_ENV !== 'development'): ?>
+        <script type="text/javascript">
+            var uservoiceOptions = {
+                key: 'sageweb',
+                host: 'sageweb.uservoice.com',
+                forum: '78261',
+                showTab: true,
+                alignment: 'right',
+                background_color:'#287BBF',
+                text_color: 'white',
+                hover_color: '#00f',
+                lang: 'en'
+            };
+
+            function _loadUserVoice() {
+                var s = document.createElement('script');
+                s.setAttribute('type', 'text/javascript');
+                s.setAttribute('src', ("https:" == document.location.protocol ? "https://" : "http://")
+                    + "cdn.uservoice.com/javascripts/widgets/tab.js");
+                document.getElementsByTagName('head')[0].appendChild(s);
+            }
+            _loadSuper = window.onload;
+            window.onload = (typeof window.onload != 'function')
+                ? _loadUserVoice : function() { _loadSuper(); _loadUserVoice(); };
+        </script>
+    <?php endif ?>
+</body>
+</html>

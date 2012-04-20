@@ -2,16 +2,16 @@
 
 class LabController extends Zend_Controller_Action
 {
-    const ENTITY_TYPE = Sageweb_Entity::TYPE_LAB;
+    const ENTITY_TYPE = Sageweb_Cms_Entity::TYPE_LAB;
     const ITEMS_PER_PAGE = 25;
 
     public function indexAction()
     {
         $queryString = $this->_getParam('search');
         $letter = $this->_getParam('letter');
-        $letterCounts = Sageweb_Table_Lab::getLetterCounts();
+        $letterCounts = Sageweb_Cms_Table_Lab::getLetterCounts();
 
-        $pager = Sageweb_Table_Lab::getSearchPager($queryString, $letter);
+        $pager = Sageweb_Cms_Table_Lab::getSearchPager($queryString, $letter);
         $page = $this->_getParam('page', 1);
         $pager->setItemCountPerPage(self::ITEMS_PER_PAGE);
         $pager->setCurrentPageNumber($page);
@@ -26,7 +26,7 @@ class LabController extends Zend_Controller_Action
     {
         $navigation = new Zend_Navigation();
         foreach ($letterCounts as $letter => $count) {
-            $page = new Application_Navigation_Page_MvcCount(array(
+            $page = new My_Navigation_Page_MvcCount(array(
                 'label' => strtoupper($letter),
                 'count' => $count,
                 'route' => 'labs',
@@ -43,16 +43,16 @@ class LabController extends Zend_Controller_Action
     public function showAction()
     {
         $id = $this->_getParam('id');
-        $post = Sageweb_Table_Lab::findOneById($id);
+        $post = Sageweb_Cms_Table_Lab::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         $pendingRevisions = array();
         $canEdit = $viewingUser->canEdit($post);
         if ($canEdit) {
-            $pendingRevisions = Sageweb_Table_Revision::findPendingById($post->entityId);
+            $pendingRevisions = Sageweb_Cms_Table_Revision::findPendingById($post->entityId);
         }
 
         $this->view->pendingRevisions = $pendingRevisions;
@@ -63,7 +63,7 @@ class LabController extends Zend_Controller_Action
 
     public function newAction()
     {
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         $form = new Application_Form_PostLab(array('viewingUser' => $viewingUser));
         if ($this->getRequest()->isPost()) {
             if($form->isValid($this->_getAllParams())) {
@@ -71,17 +71,17 @@ class LabController extends Zend_Controller_Action
 
                 // create a new article entry
                 $data = $this->_getRevisionData($formValues, $viewingUser);
-                $post = Sageweb_Table_Entity::createPost(self::ENTITY_TYPE, $data);
+                $post = Sageweb_Cms_Table_Entity::createPost(self::ENTITY_TYPE, $data);
 
                 // create revision entry (pendign => public)
-                $data['status'] = Sageweb_Abstract_Post::STATUS_PUBLIC;
+                $data['status'] = Sageweb_Cms_Abstract_Post::STATUS_PUBLIC;
                 $revision = $viewingUser->createRevision($post->entity, $data);
                 if ($viewingUser->isModerator()) {
                     $reviewerComment = $formValues['reviewerComment'];
                     $viewingUser->acceptRevision($revision, $reviewerComment);
                 }
 
-                Application_Registry::getFlashMessenger()->addMessage(array(
+                Sageweb_Registry::getFlashMessenger()->addMessage(array(
                     'type' => 'thanks',
                     'value' => $this->view->render('post/_thanksMessage.phtml')
                 ));
@@ -101,12 +101,12 @@ class LabController extends Zend_Controller_Action
     public function editAction()
     {
         $id = $this->_getParam('id');
-        $post = Sageweb_Table_Lab::findOneById($id);
+        $post = Sageweb_Cms_Table_Lab::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         if (!$viewingUser->canEdit($post)) {
             throw new Zend_Controller_Action_Exception('Permission denied.', 404);
         }
@@ -148,7 +148,7 @@ class LabController extends Zend_Controller_Action
         $revisionData['body'] = $formValues['body'];
         if ($viewingUser->isModerator()) {
             $username = $formValues['author'];
-            $author = Sageweb_Table_User::findOneByUsername($username);
+            $author = Sageweb_Cms_Table_User::findOneByUsername($username);
             $revisionData['authorId'] = $author->id;
             $revisionData['status'] = $formValues['status'];
         }
@@ -158,11 +158,11 @@ class LabController extends Zend_Controller_Action
     public function revisionsAction()
     {
         $id = $this->_getParam('id');
-        $post = Sageweb_Table_Lab::findOneById($id);
+        $post = Sageweb_Cms_Table_Lab::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception(404, 'Post not found.');
         }
-        $revisions = Sageweb_Table_Revision::findByEntityId($post->entityId);
+        $revisions = Sageweb_Cms_Table_Revision::findByEntityId($post->entityId);
 
         $this->view->post = $post;
         $this->view->revisions = $revisions;
@@ -171,22 +171,22 @@ class LabController extends Zend_Controller_Action
     public function revisionAction()
     {
         $id = $this->_getParam('id');
-        $post = Sageweb_Table_Lab::findOneById($id);
+        $post = Sageweb_Cms_Table_Lab::findOneById($id);
 
         $revisionId = $this->_getParam('revisionId');
-        $revision = Sageweb_Table_Revision::findOneByEntityId($post->entityId, $revisionId);
+        $revision = Sageweb_Cms_Table_Revision::findOneByEntityId($post->entityId, $revisionId);
 
         if (!$post || !$revision) {
             throw new Zend_Controller_Action_Exception(404, 'Revision not found.');
         }
 
         if ($this->_request->isPost()) {
-            $viewingUser = Application_Registry::getCurrentUser();
+            $viewingUser = Sageweb_Registry::getUser();
             if ($viewingUser->isModerator()) {
                 // accept or reject revision
                 $reviewerComment = $this->_getParam('reviewerComment');
                 $status = $this->_getParam('status');
-                if ($status == Sageweb_EntityRevision::STATUS_ACCEPTED) {
+                if ($status == Sageweb_Cms_EntityRevision::STATUS_ACCEPTED) {
                     $viewingUser->acceptRevision($revision, $reviewerComment);
                 } else {
                     $viewingUser->rejectRevision($revision, $reviewerComment);

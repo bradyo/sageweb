@@ -33,7 +33,6 @@
                     <tr>
                         <th style="width:5em">Status</th>
                         <th>Title</th>
-                        <th style="width:5em; text-align:center">Views</th>
                         <th style="width:5em; text-align:center">Replies</th>
                     </tr>
                 </thead>
@@ -55,9 +54,6 @@
                                 <?php endif ?>
                                 on <?php echo $this->formatDate($post->createdAt) ?>
                             </div>
-                        </td>
-                        <td style="text-align:center">
-                            <?php echo $post->entity->viewsCount ?>
                         </td>
                         <td style="text-align:center">
                             <?php echo $post->entity->commentsCount ?>

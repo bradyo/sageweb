@@ -1,46 +1,54 @@
-<?php 
+<div id="sidebar">
+    <?php echo $this->render('event/_actionsBlock.phtml') ?>
+    <?php echo $this->partial('event/_filtersBlock.phtml',
+            array('selectedTypes' => $this->selectedTypes)) ?>
+</div>
 
-/* @var $filter Sageweb_Event_EventFilter */
-$filter = $this->filter;
+<div id="page">
+    <div class="main">
+        <h1>Upcoming Event List</h1>
 
-/* @var $eventTypes Application_Model_Event_EventTypes */
-$eventTypes = $this->eventTypes;
-
-/* @var $pager Sageweb_pager */
-$pager = $this->pager;
-
-$viewsMenu = new Application_Model_Event_EventViewsMenu();
-?>
-
-<form action="<?php echo $this->url() ?>" method="get">
-    <div id="sidebar">
-        <?php echo $this->render('event/_listActionsBlock.phtml') ?>
-        <?php echo $this->partial('event/_filtersBlock.phtml', array('filter' => $filter)) ?>
-    </div>
-
-    <div id="page">
-        <div class="main">
-            <h1><?php echo $this->title ?></h1>
-            
-            <div class="topPanel">
-                <?php echo $this->partial('event/_viewsPanel.phtml', array('viewsMenu' => $viewsMenu)) ?>
-                <?php echo $this->partial('event/_sortPanel.phtml', array('filter' => $filter)) ?>
-            </div>
-            
-            <hr />
-            <?php if (count($this->posts) > 0): ?>
-                <?php echo $this->partial('event/_summaryList.phtml', array(
-                    'posts' => $this->posts,
-                    'eventTypes' => $eventTypes,
-                    )) ?>
-
-                <?php if ($pager->hasMultiplePages()): ?>
-                    <hr />
-                    <?php echo $this->partial('_pager.phtml', array('pager' => $pager)) ?>
-                <?php endif ?>
-            <?php else: ?>
-                <p>There are currently no events matching your criteria.</p>
-            <?php endif ?>
+        <div>
+            Show: <?php echo $this->partial('_sortLinks.phtml',
+                array('navigation' => $this->viewMenu)) ?>
         </div>
+
+        <hr />
+
+        <?php if (count($this->pager) > 0): ?>
+            <table class="dataTable">
+                <tr>
+                    <th>Starts</th>
+                    <th>Ends</th>
+                    <th>Event</th>
+                    <th>Location</th>
+                </tr>
+                <?php foreach ($this->pager as $post): ?>
+                    <tr class="postEntry">
+                        <td>
+                            <?php echo $this->escape($post->startsAt) ?>
+                        </td>
+                        <td>
+                            <?php if (!empty($post->endsAt) && $post->endsAt != $post->startsAt): ?>
+                                <?php echo $this->escape($post->endsAt) ?>
+                            <?php endif ?>
+                        </td>
+                        <td>
+                            <a href="<?php echo $this->url(
+                                array('id' => $post->getSlugId()), 'event', true
+                                ) ?>"><?php echo $post->title ?></a>
+                        </td>
+                        
+                        <td>
+                              <?php if (!empty($post->location)): ?>                    
+                                  <?php echo $this->escape($post->location) ?>
+                              <?php endif ?>
+                        </td>
+                    </tr>
+                <?php endforeach ?>
+            </table>        
+        <?php else: ?>
+            <p>There are currently no events with the selected types.</p>
+        <?php endif ?>
     </div>
-</form>
+</div>

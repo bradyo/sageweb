@@ -5,12 +5,12 @@
  */
 class LinkController extends Zend_Controller_Action
 {
-    const ENTITY_TYPE = Sageweb_Entity::TYPE_LINK;
+    const ENTITY_TYPE = Sageweb_Cms_Entity::TYPE_LINK;
 
     public function showAction()
     {
         $id = $this->_getParam('id');
-        $post = Sageweb_Table_Link::findOneById($id);
+        $post = Sageweb_Cms_Table_Link::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
@@ -21,7 +21,7 @@ class LinkController extends Zend_Controller_Action
         }
 
         // increment view counter
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         if ($post->isPublic()) {
             $post->incrementViews($viewingUser);
 
@@ -38,19 +38,19 @@ class LinkController extends Zend_Controller_Action
 
     public function newAction()
     {
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         $form = new Application_Form_PostLink(array('viewingUser' => $viewingUser));
         if ($this->getRequest()->isPost()) {
             if($form->isValid($_POST)) {
                 $formValues = $form->getValues();
-                $formValues['tags'] = Application_Converter_Tags::getArray($formValues['tags']);
+                $formValues['tags'] = My_Converter_Tags::getArray($formValues['tags']);
 
                 // create a new article entry
                 $data = $this->_getRevisionData($formValues, $viewingUser);
-                $post = Sageweb_Table_Entity::createPost(self::ENTITY_TYPE, $data);
+                $post = Sageweb_Cms_Table_Entity::createPost(self::ENTITY_TYPE, $data);
 
                 // create revision entry (pendign => public)
-                $data['status'] = Sageweb_Abstract_Post::STATUS_PUBLIC;
+                $data['status'] = Sageweb_Cms_Abstract_Post::STATUS_PUBLIC;
                 $revision = $viewingUser->createRevision($post->entity, $data);
                 if ($viewingUser->isModerator()) {
                     $comment = $formValues['reviewerComment'];
@@ -71,12 +71,12 @@ class LinkController extends Zend_Controller_Action
     public function editAction()
     {
         $id = $this->getRequest()->getParam('id');
-        $post = Sageweb_Table_Link::findOneById($id);
+        $post = Sageweb_Cms_Table_Link::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         if (!$viewingUser->canEdit($post)) {
             throw new Zend_Controller_Action_Exception('Permission denied.', 404);
         }
@@ -85,7 +85,7 @@ class LinkController extends Zend_Controller_Action
         if ($this->getRequest()->isPost()) {
             if ($form->isValid($this->_getAllParams())) {
                 $formValues = $form->getValues();
-                $formValues['tags'] = Application_Converter_Tags::getArray($formValues['tags']);
+                $formValues['tags'] = My_Converter_Tags::getArray($formValues['tags']);
 
                 // save revision entry
                 $data = $this->_getRevisionData($formValues, $viewingUser);
@@ -122,7 +122,7 @@ class LinkController extends Zend_Controller_Action
             $revisionData['isFeatured'] = $formValues['isFeatured'];
 
             $username = $formValues['author'];
-            $author = Sageweb_Table_User::findOneByUsername($username);
+            $author = Sageweb_Cms_Table_User::findOneByUsername($username);
             $revisionData['authorId'] = $author->id;
         }
         return $revisionData;
@@ -131,12 +131,12 @@ class LinkController extends Zend_Controller_Action
     public function revisionsAction()
     {
         $id = $this->_getParam('id');
-        $post = Sageweb_Table_Link::findOneById($id);
+        $post = Sageweb_Cms_Table_Link::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception(404, 'Post not found.');
         }
         
-        $revisions = Sageweb_Table_Revision::findByEntityId($post->entityId);
+        $revisions = Sageweb_Cms_Table_Revision::findByEntityId($post->entityId);
 
         $this->view->post = $post;
         $this->view->revisions = $revisions;
@@ -145,24 +145,24 @@ class LinkController extends Zend_Controller_Action
     public function revisionAction()
     {
         $id = $this->_getParam('id');
-        $post = Sageweb_Table_Link::findOneById($id);
+        $post = Sageweb_Cms_Table_Link::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception(404, 'Post not found.');
         }
 
         $revisionId = $this->_getParam('revisionId');
-        $revision = Sageweb_Table_Revision::findOneByEntityId($post->entityId, $revisionId);
+        $revision = Sageweb_Cms_Table_Revision::findOneByEntityId($post->entityId, $revisionId);
         if (!$revision) {
             throw new Zend_Controller_Action_Exception(404, 'Revision not found.');
         }
 
         if ($this->_request->isPost()) {
-            $viewingUser = Application_Registry::getCurrentUser();
+            $viewingUser = Sageweb_Registry::getUser();
             if ($viewingUser->isModerator()) {
                 // accept or reject revision
                 $comment = $this->_getParam('reviewerComment');
                 $status = $this->_getParam('status');
-                if ($status == Sageweb_EntityRevision::STATUS_ACCEPTED) {
+                if ($status == Sageweb_Cms_EntityRevision::STATUS_ACCEPTED) {
                     $viewingUser->acceptRevision($revision, $comment);
                 } else {
                     $viewingUser->rejectRevision($revision, $comment);

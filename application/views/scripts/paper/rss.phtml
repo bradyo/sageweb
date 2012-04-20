@@ -18,7 +18,7 @@ $entries = array();
 foreach ($this->posts as $post) {
     $entry = $feed->createEntry();
     $entry->setTitle($post->title);
-    $entry->setLink($post->url);
+    $entry->setLink('http://' . $_SERVER['SERVER_NAME'] . '/papers/' . $post->id);
     $entry->addAuthor($post->authors);
     $entry->setDateCreated(strtotime($post->createdAt));
     if ($post->updatedAt) {

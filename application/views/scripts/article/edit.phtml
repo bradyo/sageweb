@@ -1,4 +1,4 @@
-<?php $this->headTitle()->prepend('Edit Article') ?>
+<?php $this->headTitle()->prepend('Edit Page') ?>
 
 <div id="sidebar">
     <?php echo $this->render('content/_actionsBlock.phtml') ?>
@@ -10,7 +10,7 @@
             <a href="<?php echo $this->url(
                 array('action' => 'show', 'id' => $this->post->getSlugId()),
                 'article', true
-                ) ?>">Article</a>
+                ) ?>">Page</a>
             &gt; Edit
         </h1>
 

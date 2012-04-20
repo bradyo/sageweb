@@ -2,6 +2,8 @@
 
 /**
  * PubMed services
+ *
+ * @author brady
  */
 class Application_Service_PubMed
 {
@@ -11,8 +13,9 @@ class Application_Service_PubMed
         // for xml DTD definition
         $url = sprintf('http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?'
             . 'db=pubmed&report=citation&mode=xml&id=%d', intval($pubmedId));
-
-        $curl = curl_init($url);
+        
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
         curl_close($curl);
@@ -24,7 +27,7 @@ class Application_Service_PubMed
         }
         if (isset($article)) {
             $title = (string)$article->ArticleTitle;
-            $data['title'] = $title;
+            $data['title'] = trim($title);
 
             // get source string
             $source = '';
@@ -53,7 +56,15 @@ class Application_Service_PubMed
                     $source .= ':' . $pages;
                 }
             }
-            $data['source'] = $source;
+            $data['source'] = trim($source);
+
+            // get article publish date
+            $dateElement = $article->ArticleDate;
+            if ($dateElement) {
+                $publishDate = sprintf("%04d-%02d-%02d",
+                    (string)$dateElement->Year, (string)$dateElement->Month, (string)$dateElement->Day);
+                $data['publishDate'] = $publishDate;
+            }
 
             // get authors string
             $authorsArr = array();
@@ -63,18 +74,25 @@ class Application_Service_PubMed
                 }
             }
             $authors = join(", ", $authorsArr);
-            $data['authors'] = $authors;
+            $data['authors'] = trim($authors);
 
             // get abstract
             $abstract = (string)$article->Abstract->AbstractText;
-            $data['abstract'] = $abstract;
+            $data['abstract'] = trim($abstract);
         }
 
-        $pubmedPubDate = $xml->PubmedArticle->PubmedData->History->PubMedPubDate;
-        if ($pubmedPubDate) {
-            $publishDate = sprintf("%04d-%02d-%02d",
-                (string)$pubmedPubDate->Year, (string)$pubmedPubDate->Month, (string)$pubmedPubDate->Day);
-            $data['publishDate'] = $publishDate;
+        if (!isset($data['publishDate'])) {
+            $history = $xml->PubmedArticle->PubmedData->History;
+            if ($history) {
+                $pubmedPubDates = $history->xpath("//PubMedPubDate[@PubStatus='pubmed']");
+                if (count($pubmedPubDates) > 0) {
+                    $pubmedPubDate = $pubmedPubDates[0];
+                    $publishDate = sprintf("%04d-%02d-%02d",
+                        (string)$pubmedPubDate->Year, (string)$pubmedPubDate->Month, (string)$pubmedPubDate->Day);
+                    $data['publishDate'] = $publishDate;
+                }
+            }
+            $pubmedPubDate = $xml->PubmedArticle->PubmedData->History->PubMedPubDate;
         }
 
         if (count($data) > 0) {

@@ -9,18 +9,16 @@
                 $this->gravatar('anonymous', array('s'=> 50, 'd' => 'mm'))
                 ) ?>" alt="" style="float:left; margin-right:10px;" />
         <?php endif ?>
+    </div>
 
-        <div style="float:left;">
+        <div style="margin-left:60px">
             <?php if ($this->user && !$this->user->isGuest()): ?>
                 <a href="<?php echo $this->url(array('username' => $this->user->username),
                     'profile', true) ?>"><?php echo $this->user->getDisplayName() ?></a>
                 <br />
                 <?php echo $this->user->getRoleLabel() ?>
-                <br />
-                <span style="color:#666">Rating: <?php echo $this->user->reputation ?></span>
             <?php else: ?>
                 Anonymous
             <?php endif ?>
         </div>
-    </div>
 </div>

@@ -114,16 +114,16 @@
         </tr>
         <tr>
             <th>Tags:</th>
-            <td><?php echo $this->escape(Application_Converter_Tags::getString($this->revisionData['tags'])) ?></td>
+            <td><?php echo $this->escape(My_Converter_Tags::getString($this->revisionData['tags'])) ?></td>
             <?php if ($this->revisionData['tags'] !== $this->currentData['tags']): ?>
-                <td><?php echo $this->escape(Application_Converter_Tags::getString($this->currentData['tags'])) ?></td>
+                <td><?php echo $this->escape(My_Converter_Tags::getString($this->currentData['tags'])) ?></td>
             <?php else: ?>
                 <td></td>
             <?php endif ?>
         </tr>
     </table>
 
-    <?php $viewingUser = Application_Registry::getCurrentUser() ?>
+    <?php $viewingUser = Sageweb_Registry::getUser() ?>
     <?php if ($viewingUser && $viewingUser->isModerator()): ?>
         <?php if ($this->revision->status == Sageweb_Cms_EntityRevision::STATUS_PENDING): ?>
             <h2>Manage Revision:</h2>

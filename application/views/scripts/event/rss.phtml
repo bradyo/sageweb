@@ -1,7 +1,16 @@
 <?php
 // build rss feed
 $feed = new Zend_Feed_Writer_Feed;
-$title = 'Sageweb.org Events';
+$title = 'Sageweb.org Events ';
+$labels = array();
+if ($this->type) {
+    $types = preg_split('/,/', $this->type);
+    $labels = array();
+    foreach ($types as $type) {
+        $labels[] =  Sageweb_Cms_PostEvent::getTypeLabel($type);
+    }
+    $title .= ' - ' . join(', ', $labels) . ' ';
+}
 
 $feed->setTitle($title);
 $feed->setDescription('Science of Aging Web');
@@ -15,19 +24,24 @@ $feed->addAuthor(array(
 $feed->setDateModified(time());
 $feed->setEncoding('utf-8');
 $feed->setLanguage('en');
+foreach ($labels as $label) {
+    $feed->addCategory(array('term' => $label));
+}
 
 $entries = array();
 foreach ($this->posts as $post) {
-    /* @var $event Sageweb_Event_EventPost */
     $entry = $feed->createEntry();
     $entry->setTitle($post->title);
     $entry->setLink('http://' . $_SERVER['SERVER_NAME'] . $this->url(
-        array('id' => $post->getSlugId()), 'events', true)
+        array('id' => $post->getSlugId()), 'event', true)
     );
     if ($post->author) {
         $entry->addAuthor($post->author->getDisplayName());
     }
-    $entry->setDateCreated(strtotime($post->whenAt));
+    $entry->setDateCreated(strtotime($post->createdAt));
+    if ($post->updatedAt) {
+        $entry->setDateModified(strtotime($post->updatedAt));
+    }
     $entry->setDescription($post->summary . ' ');
     $feed->addEntry($entry);
 }

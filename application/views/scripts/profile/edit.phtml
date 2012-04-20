@@ -40,6 +40,17 @@
             <?php endif ?>
 
             <table class="fieldsTable">
+
+        <tr>
+            <th>
+                <strong><?php echo $form->location->getLabel() ?>:</strong>
+            </th>
+            <td>
+                <?php echo $form->location->renderViewHelper() ?>
+                <p class="inputDetail">Enter your city, state or country.</p>
+            </td>
+        </tr>
+
                 <tr>
                     <th>
                         <strong><?php echo $form->websiteUrl->getLabel() ?>:</strong>

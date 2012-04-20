@@ -19,34 +19,31 @@
     <?php endif ?>
 </div>
 
-
 <div id="page">
     <div class="main">
-        <?php if ($this->post->isPublic()): ?>
-            <h1><?php echo $this->escape($this->post->title) ?></h1>
-            
-            <div class="authorInfo">
-                <?php echo $this->partial('post/_meta.phtml', array('post' => $this->post)) ?>
-            </div>
-
-            <hr />
-
-            <?php if (!empty($this->post->sumary)): ?>
-                <div class="postSummary">
-                    <strong>Summary:</strong>
-                    <?php echo $this->cleanHtmlSummary($this->post->summary) ?>
-                </div>
+        <?php if (!$this->post->isPublic()): ?>
+            <?php if ($this->post->isHeld()): ?>
+                <div class="infoMessage">This content has been flagged for review.</div>
+            <?php elseif ($this->post->isDeleted()): ?>
+                <div class="infoMessage">This content has been deleted.</div>
+            <?php else: ?>
+                <div class="infoMessage">This content has not yet been made public.</div>
             <?php endif ?>
-
-            <?php echo $this->cleanHtmlBody($this->post->body) ?>
-
-        <?php elseif ($this->post->isHeld()): ?>
-            <h1>This content has been flagged for review.</h1>
-        <?php elseif ($this->post->isDeleted()): ?>
-            <h1>This content has been deleted.</h1>
-        <?php else: ?>
-            <h1>This content is pending moderator approval.</h1>
         <?php endif ?>
+
+        <h1><?php echo $this->escape($this->post->title) ?></h1>
+        <div class="authorInfo">
+            <?php echo $this->partial('post/_meta.phtml', array('post' => $this->post)) ?>
+        </div>
+        <hr />
+
+        <?php if (!empty($this->post->summary)): ?>
+            <div class="postSummary">
+                <strong>Summary:</strong>
+                <?php echo $this->cleanHtmlSummary($this->post->summary) ?>
+            </div>
+        <?php endif ?>
+        <?php echo $this->cleanHtmlBody($this->post->body) ?>
     </div>
 
     <?php if ($this->post->isPublic()): ?>

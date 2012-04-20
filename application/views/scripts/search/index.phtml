@@ -12,16 +12,27 @@
 
     <h2>Found <?php echo $this->pager->getTotalItemCount() ?> results:</h2>
 
+    <style type="text/css">
+        .type-label {
+            display: inline-block;
+            border-radius: 3px;
+            background-color: #ddd;
+            padding: 1px 6px;
+            color: #333;
+            border: none;
+            font-weight: normal;
+        }
+    </style>
+
     <?php if (count($this->pager) > 0): ?>
         <?php foreach ($this->pager as $hit): ?>
             <?php $doc = $hit->getDocument() ?>
             <h2>
-                <?php $label = '[' .  ucfirst($doc->getFieldValue('entityType'))
-                        . '] ' . $doc->getFieldValue('title') ?>
+                <span class="type-label"><?php echo ucfirst($doc->getFieldValue('entityType')) ?></span>
                 <a href="<?php echo $this->url(
                     array('id' => $doc->getFieldValue('id')),
                     $doc->getFieldValue('entityType'), true
-                    ) ?>"><?php echo $this->escape($label) ?></a>
+                    ) ?>"><?php echo $this->escape($doc->getFieldValue('title')) ?></a>
             </h2>
             <div>
                 

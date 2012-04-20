@@ -1,9 +1,4 @@
-<?php 
-$this->headTitle()->prepend($this->post->title);
-
-/* @var $post Application_Model_Post_Post */
-$post = $this->post;
-?>
+<?php $this->headTitle()->prepend($this->post->title) ?>
 
 <div id="sidebar">
     <?php echo $this->render('event/_actionsBlock.phtml') ?>
@@ -28,61 +23,66 @@ $post = $this->post;
 
 <div id="page">
     <div class="main">
-        <?php if ($this->post->isPublic()): ?>
-            <h1><?php echo $this->escape($this->post->title) ?></h1>
+        <?php if (!$this->post->isPublic()): ?>
+            <?php if ($this->post->isHeld()): ?>
+                <div class="infoMessage">This content has been flagged for review.</div>
+            <?php elseif ($this->post->isDeleted()): ?>
+                <div class="infoMessage">This content has been deleted.</div>
+            <?php else: ?>
+                <div class="infoMessage">This content has not yet been made public.</div>
+            <?php endif ?>
+        <?php endif ?>
 
-            <div class="authorInfo">
-                <?php echo $this->partial('post/_meta.phtml', array('post' => $this->post)) ?>
-            </div>
+        <h1><?php echo $this->escape($this->post->title) ?></h1>
 
-            <hr />
+        <div class="authorInfo">
+            <?php echo $this->partial('post/_meta.phtml', array('post' => $this->post)) ?>
+        </div>
 
-            <table class="fieldsTable" style="margin-bottom:1em;">
+        <hr />
+
+        <table class="fieldsTable" style="margin-bottom:1em;">
+            <tr>
+                <th>Date:</th>
+                <td>
+                    <?php echo $this->formatDate($this->post->startsAt) ?>
+                    <?php if (!empty($this->post->endsAt)): ?>
+                        - <?php echo $this->formatDate($this->post->endsAt) ?>
+                    <?php endif ?>
+                </td>
+            </tr>
+            <tr>
+                <th>Type:</th>
+                <td><?php echo Sageweb_Cms_PostEvent::getTypeLabel($this->post->type) ?></td>
+            </tr>
+            <?php if (!empty($this->post->location)): ?>
                 <tr>
-                    <th>Date:</th>
-                    <td>
-                        <?php echo $this->formatDate($post->event->startDate) ?>
-                        <?php if (!empty($post->event->endDate)): ?>
-                            - <?php echo $this->formatDate($post->event->endDate) ?>
-                        <?php endif ?>
+                    <th>Location:</th>
+                    <td><?php echo $this->escape($this->post->location) ?></td>
+                </tr>
+            <?php endif ?>
+            <?php if (!empty($this->post->url)): ?>
+                <tr>
+                    <th>URL:</th>
+                    <td><a href="<?php echo $this->escape($this->post->url)
+                            ?>" target="_blank"><?php echo $this->escape($this->post->url) ?></a>
                     </td>
                 </tr>
-                <tr>
-                    <th>Type:</th>
-                    <td><?php echo Application_Model_Event_EventTypes::getLabel($post->event->eventType) ?></td>
-                </tr>
-                <?php if (!empty($post->location)): ?>
-                    <tr>
-                        <th>Location:</th>
-                        <td><?php echo $this->escape($post->location) ?></td>
-                    </tr>
-                <?php endif ?>
-                <?php if (!empty($post->event->url)): ?>
-                    <tr>
-                        <th>URL:</th>
-                        <td><a href="<?php echo $this->escape($post->event->url)
-                            ?>" target="_blank"><?php echo $this->escape($post->event->url) ?></a>
-                        </td>
-                    </tr>
-                <?php endif ?>
-            </table>
+            <?php endif ?>
+        </table>
 
-            <div class="postBody">
-                <?php echo $this->cleanHtmlBody($this->post->body) ?>
-            </div>
+        <div class="postSummary">
+            <?php echo $this->cleanHtmlBody($this->post->summary) ?>
+        </div>
 
-        <?php elseif ($this->post->isHeld()): ?>
-            <h1>This content has been flagged for review.</h1>
-        <?php elseif ($this->post->isDeleted()): ?>
-            <h1>This content has been deleted.</h1>
-        <?php else: ?>
-            <h1>This content is pending moderator approval.</h1>
-        <?php endif ?>
+        <div class="postBody">
+            <?php echo $this->cleanHtmlBody($this->post->body) ?>
+        </div>
     </div>
 
     <?php if ($this->post->isPublic()): ?>
         <?php echo $this->partial('post/_review.phtml',
                 array('post' => $this->post, 'voteValue' => $this->voteValue) ) ?>
-        <?php //echo $this->partial('post/_comments.phtml', array('post' => $this->post)) ?>
+        <?php echo $this->partial('post/_comments.phtml', array('post' => $this->post)) ?>
     <?php endif ?>
 </div>

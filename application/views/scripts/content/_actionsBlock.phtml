@@ -1,0 +1,23 @@
+<div class="blockContainer">
+    <a class="browse" href="<?php echo $this->qurl(array(), 'content', true) 
+        ?>">Browse Content</a>
+    <br />
+
+    <?php $rssUrl = $this->qurl(array('action' => 'rss'), 'content') ?>
+    <?php $rssTitle = 'Sageweb Content' ?>
+    <?php $this->headLink()->appendAlternate($rssUrl, 'application/rss+xml', $rssTitle) ?>
+    <a class="rss" href="<?php echo $rssUrl ?>">RSS Feed</a>
+    <br />
+
+    <a class="add" href="<?php echo $this->url(array('action' => 'new'), 'links', true)
+        ?>">Add Link</a>
+    <br />
+
+    <a class="add" href="<?php echo $this->url(array('action' => 'new'), 'files', true)
+        ?>">Add File</a>
+    <br />
+
+    <a class="add" href="<?php echo $this->url(array('action' => 'new'), 'articles', true)
+        ?>">Add Page</a>
+    <br />
+</div>

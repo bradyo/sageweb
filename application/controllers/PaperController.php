@@ -5,7 +5,7 @@
  */
 class PaperController extends Zend_Controller_Action
 {
-    const ENTITY_TYPE = Sageweb_Entity::TYPE_PAPER;
+    const ENTITY_TYPE = Sageweb_Cms_Entity::TYPE_PAPER;
     const ITEMS_PER_PAGE = 10;
 
     private function _getSortNavigation()
@@ -17,7 +17,7 @@ class PaperController extends Zend_Controller_Action
             'route' => 'papers',
             'module' => 'default',
             'controller' => 'paper',
-            'action' => 'index',
+            'action' => $this->getRequest()->getActionName(),
             'params' => array('sort' => 'newest'),
         ));
         if (!$this->_hasParam('sort')) {
@@ -30,47 +30,102 @@ class PaperController extends Zend_Controller_Action
             'route' => 'papers',
             'module' => 'default',
             'controller' => 'paper',
-            'action' => 'index',
+            'action' => $this->getRequest()->getActionName(),
             'params' => array('sort' => 'top-rated')
+        ));
+        $navigation->addPage($page);
+
+				$page = new Zend_Navigation_Page_Mvc(array(
+            'label' => 'Last-Published',
+            'route' => 'papers',
+            'module' => 'default',
+            'controller' => 'paper',
+            'action' => $this->getRequest()->getActionName(),
+            'params' => array('sort' => 'publishDate')
         ));
         $navigation->addPage($page);
 
         return $navigation;
     }
 
-    public function indexAction()
+    private function _getTypeNavigation()
     {
+        $navigation = new Zend_Navigation();
+
+        $page = new Zend_Navigation_Page_Mvc(array(
+            'label' => 'Current',
+            'route' => 'papers',
+            'module' => 'default',
+            'controller' => 'paper',
+            'action' => 'index',
+        ));
+        $navigation->addPage($page);
+
+        $page = new Zend_Navigation_Page_Mvc(array(
+            'label' => 'Classical',
+            'route' => 'papers',
+            'module' => 'default',
+            'controller' => 'paper',
+            'action' => 'classical',
+        ));
+        $navigation->addPage($page);
+
+        return $navigation;
+    }
+
+    public function indexAction() {
         $queryString = $this->_getParam('search');
+        $type = 'current';
         $sort = $this->_getParam('sort');
-        $pager = Sageweb_Table_Paper::getSearchPager($queryString, $sort);
+        $pager = Sageweb_Cms_Table_Paper::getSearchPager($queryString, $sort, $type);
 
         $page = $this->_getParam('page', 1);
         $pager->setItemCountPerPage(self::ITEMS_PER_PAGE);
         $pager->setCurrentPageNumber($page);
 
+        $this->view->typeNavigation = $this->_getTypeNavigation();
         $this->view->sortNavigation = $this->_getSortNavigation();
         $this->view->pager = $pager;
+
+				$this->_helper->viewRenderer('index');
+    }
+
+    public function classicalAction() {
+        $queryString = $this->_getParam('search');
+        $type = 'classical';
+        $sort = $this->_getParam('sort');
+        $pager = Sageweb_Cms_Table_Paper::getSearchPager($queryString, $sort, $type);
+
+        $page = $this->_getParam('page', 1);
+        $pager->setItemCountPerPage(self::ITEMS_PER_PAGE);
+        $pager->setCurrentPageNumber($page);
+
+        $this->view->typeNavigation = $this->_getTypeNavigation();
+        $this->view->sortNavigation = $this->_getSortNavigation();
+        $this->view->pager = $pager;
+
+        $this->_helper->viewRenderer('index');
     }
 
     public function rssAction()
     {
         $this->getHelper('layout')->disableLayout();
-        $posts = Sageweb_Table_Paper::findNewest();
+        $posts = Sageweb_Cms_Table_Paper::findNewest();
         $this->view->posts = $posts;
     }
 
     public function showAction()
     {
         $id = $this->_getParam('id');
-        $post = Sageweb_Table_Paper::findOneById($id);
+        $post = Sageweb_Cms_Table_Paper::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
         // increment view counter
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         if ($post->isPublic()) {
-            $post->incrementViewCounter($viewingUser);
+            $post->incrementViews($viewingUser);
 
             // fetch vote record
             $existingVote = $viewingUser->getVote($post->entity);
@@ -82,7 +137,7 @@ class PaperController extends Zend_Controller_Action
         $pendingRevisions = array();
         $canEdit = $viewingUser->canEdit($post);
         if ($canEdit) {
-            $pendingRevisions = Sageweb_Table_Revision::findPendingById($post->entityId);
+            $pendingRevisions = Sageweb_Cms_Table_Revision::findPendingById($post->entityId);
         }
 
         $this->view->pendingRevisions = $pendingRevisions;
@@ -92,7 +147,7 @@ class PaperController extends Zend_Controller_Action
 
     public function newAction()
     {
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         $form = new Application_Form_PostPaper(array('viewingUser' => $viewingUser));
         if ($this->getRequest()->isPost()) {
             if($form->isValid($this->_getAllParams())) {
@@ -100,10 +155,10 @@ class PaperController extends Zend_Controller_Action
 
                 // create a new article entry
                 $data = $this->_getRevisionData($formValues, $viewingUser);
-                $post = Sageweb_Table_Entity::createPost(self::ENTITY_TYPE, $data);
+                $post = Sageweb_Cms_Table_Entity::createPost(self::ENTITY_TYPE, $data);
 
                 // create revision entry (pendign => public)
-                $data['status'] = Sageweb_Abstract_Post::STATUS_PUBLIC;
+                $data['status'] = Sageweb_Cms_Abstract_Post::STATUS_PUBLIC;
                 $revision = $viewingUser->createRevision($post->entity, $data);
                 if ($viewingUser->isModerator()) {
                     $reviewerComment = $formValues['reviewerComment'];
@@ -124,12 +179,12 @@ class PaperController extends Zend_Controller_Action
     public function editAction()
     {
         $id = $this->getRequest()->getParam('id');
-        $post = Sageweb_Table_Paper::findOneById($id);
+        $post = Sageweb_Cms_Table_Paper::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         if (!$viewingUser->canEdit($post)) {
             throw new Zend_Controller_Action_Exception('Permission denied.', 404);
         }
@@ -169,11 +224,12 @@ class PaperController extends Zend_Controller_Action
         $revisionData['source'] = $formValues['source'];
         $revisionData['publishDate'] = $formValues['publishDate'];
         $revisionData['url'] = $formValues['url'];
+        $revisionData['type'] = $formValues['type'];
         $revisionData['abstract'] = $formValues['abstract'];
         $revisionData['summary'] = $formValues['summary'];
         if ($viewingUser->isModerator()) {
             $username = $formValues['author'];
-            $author = Sageweb_Table_User::findOneByUsername($username);
+            $author = Sageweb_Cms_Table_User::findOneByUsername($username);
             $revisionData['authorId'] = $author->id;
             $revisionData['status'] = $formValues['status'];
         }
@@ -183,12 +239,12 @@ class PaperController extends Zend_Controller_Action
     public function revisionsAction()
     {
         $id = $this->_getParam('id');
-        $post = Sageweb_Table_Paper::findOneById($id);
+        $post = Sageweb_Cms_Table_Paper::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception(404, 'Post not found.');
         }
         
-        $revisions = Sageweb_Table_Revision::findByEntityId($post->entityId);
+        $revisions = Sageweb_Cms_Table_Revision::findByEntityId($post->entityId);
 
         $this->view->post = $post;
         $this->view->revisions = $revisions;
@@ -197,24 +253,24 @@ class PaperController extends Zend_Controller_Action
     public function revisionAction()
     {
         $id = $this->_getParam('id');
-        $post = Sageweb_Table_Paper::findOneById($id);
+        $post = Sageweb_Cms_Table_Paper::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception(404, 'Post not found.');
         }
 
         $revisionId = $this->_getParam('revisionId');
-        $revision = Sageweb_Table_Revision::findOneByEntityId($post->entityId, $revisionId);
+        $revision = Sageweb_Cms_Table_Revision::findOneByEntityId($post->entityId, $revisionId);
         if (!$revision) {
             throw new Zend_Controller_Action_Exception(404, 'Revision not found.');
         }
 
         if ($this->_request->isPost()) {
-            $viewingUser = Application_Registry::getCurrentUser();
+            $viewingUser = Sageweb_Registry::getUser();
             if ($viewingUser->isModerator()) {
                 // accept or reject revision
                 $reviewerComment = $this->_getParam('reviewerComment');
                 $status = $this->_getParam('status');
-                if ($status == Sageweb_EntityRevision::STATUS_ACCEPTED) {
+                if ($status == Sageweb_Cms_EntityRevision::STATUS_ACCEPTED) {
                     $viewingUser->acceptRevision($revision, $reviewerComment);
                 } else {
                     $viewingUser->rejectRevision($revision, $reviewerComment);

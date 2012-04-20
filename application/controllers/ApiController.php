@@ -43,7 +43,7 @@ class ApiController extends Zend_Controller_Action
 
         // check availablilty
         $isAvailable = false;
-        $user = Sageweb_Table_User::findOneByUsername($username);
+        $user = Sageweb_Cms_Table_User::findOneByUsername($username);
         if (!$user) {
             $isAvailable = true;
         }
@@ -60,7 +60,7 @@ class ApiController extends Zend_Controller_Action
     public function getUsernamesAction()
     {
         $q = $this->_getParam('term');
-        $usernames = Sageweb_Table_User::getUsernames($q, $count = 10);
+        $usernames = Sageweb_Cms_Table_User::getUsernames($q, $count = 10);
         $this->_helper->json->sendJson($usernames);
     }
 
@@ -68,7 +68,7 @@ class ApiController extends Zend_Controller_Action
     {
         $searchTerm = $this->_getParam('term');
 
-        $db = Application_Registry::getDb();
+        $db = Sageweb_Registry::getDb();
         $stmt = $db->prepare('SELECT DISTINCT value FROM entity_tag WHERE value LIKE ?');
         $stmt->execute(array($searchTerm . '%'));
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -83,11 +83,11 @@ class ApiController extends Zend_Controller_Action
     public function voteUpAction()
     {
         $entityId = $this->_getParam('entityId');
-        $entity = Doctrine_Query::create()->from('Sageweb_Entity e')
+        $entity = Doctrine_Query::create()->from('Sageweb_Cms_Entity e')
             ->where('e.id = ?', $entityId)
             ->limit(1)
             ->fetchOne();
-        Application_Registry::getCurrentUser()->vote($entity, 1);
+        Sageweb_Registry::getUser()->vote($entity, 1);
         
         $response = array('success' => true);
         $this->_helper->json->sendJson($response);
@@ -96,11 +96,11 @@ class ApiController extends Zend_Controller_Action
     public function voteDownAction()
     {
         $entityId = $this->_getParam('entityId');
-        $entity = Doctrine_Query::create()->from('Sageweb_Entity e')
+        $entity = Doctrine_Query::create()->from('Sageweb_Cms_Entity e')
             ->where('e.id = ?', $entityId)
             ->limit(1)
             ->fetchOne();
-        Application_Registry::getCurrentUser()->vote($entity, -1);
+        Sageweb_Registry::getUser()->vote($entity, -1);
 
         $response = array('success' => true);
         $this->_helper->json->sendJson($response);
@@ -118,7 +118,7 @@ class ApiController extends Zend_Controller_Action
         $rootEntityId = $this->_getParam('rootEntityId');
         $parentEntityId = $this->_getParam('parentEntityId');
 
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         $form = new Application_Form_PostComment();
         if ($form->isValid($this->_getAllParams())) {
             $formValues = $this->_getAllParams();
@@ -127,7 +127,7 @@ class ApiController extends Zend_Controller_Action
             $data = array(
                 'rootEntityId' => $rootEntityId,
                 'parentEntityId' => $parentEntityId,
-                'status' => Sageweb_Abstract_Post::STATUS_PENDING,
+                'status' => Sageweb_Cms_Abstract_Post::STATUS_PENDING,
                 'createdAt' => date('Y-m-d H:i:s'),
                 'authorId' => $viewingUser->id,
                 'name' => $formValues['name'],
@@ -135,11 +135,11 @@ class ApiController extends Zend_Controller_Action
                 'url' => $formValues['url'],
                 'body' => $formValues['body'],
             );
-            $type = Sageweb_Entity::TYPE_COMMENT;
-            $comment = Sageweb_Table_Entity::createPost($type, $data);
+            $type = Sageweb_Cms_Entity::TYPE_COMMENT;
+            $comment = Sageweb_Cms_Table_Entity::createPost($type, $data);
 
             // create revision entry
-            $data['status'] = Sageweb_Abstract_Post::STATUS_PUBLIC;
+            $data['status'] = Sageweb_Cms_Abstract_Post::STATUS_PUBLIC;
             $revision = $viewingUser->createRevision($comment->entity, $data);
 
             // if moderator, automatically accept revision
@@ -148,8 +148,8 @@ class ApiController extends Zend_Controller_Action
                 $viewingUser->acceptRevision($revision, $reviewerComment);
             }
 
-            $entity = Sageweb_Table_Entity::findOneById($rootEntityId);
-            $post = Sageweb_Table_Entity::findPostByEntity($entity);
+            $entity = Sageweb_Cms_Table_Entity::findOneById($rootEntityId);
+            $post = Sageweb_Cms_Table_Entity::findPostByEntity($entity);
             $post->updateCommentsCount();
 
             $comment->setDepth($this->_getParam('depth', 1));
@@ -168,12 +168,12 @@ class ApiController extends Zend_Controller_Action
     {
         $entityId = $this->_getParam('entityId');
 
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         $form = new Application_Form_Flag();
         if ($form->isValid($this->_getAllParams()) && !$viewingUser->isGuest()) {
             $values = $form->getValues();
 
-            $flag = new Application_Model_Entity_EntityFlag();
+            $flag = new Sageweb_Cms_EntityFlag();
             $flag->creatorId = $viewingUser->id;
             $flag->entityId = $values['entityId'];
             $flag->createdAt = date('Y-m-d H:i:s');

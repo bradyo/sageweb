@@ -1,0 +1,172 @@
+<?php $this->headScript()->appendFile($this->baseUrl() . '/scripts/articleForm.js') ?>
+<?php $this->headScript()->appendFile($this->baseUrl() . '/scripts/tiny_mce/tiny_mce.js') ?>
+
+<script type="text/javascript">
+	tinyMCE.init({
+		mode : "none",
+		theme : "advanced",
+		plugins : "style,inlinepopups,paste",
+		theme_advanced_buttons1 : "styleselect,|,bold,italic,underline,bullist,numlist,link,"
+            +"|,img,file",
+		theme_advanced_buttons2 : "",
+        theme_advanced_buttons3 : "",
+		theme_advanced_toolbar_location : "top",
+		theme_advanced_toolbar_align : "left",
+		theme_advanced_statusbar_location : "",
+        style_formats : [
+			{title: 'Header 2', block: 'h2'},
+            {title: 'Header 3', block: 'h3'},
+            {title: 'Header 4', block: 'h4'},
+            {title: 'Code', block: 'code'},
+            {title: 'Quote', block: 'blockquote'}
+		],
+        relative_urls : false,
+        remove_script_host : true,
+		content_css : "/styles/global.css",
+        height: "400px",
+        width: "100%",
+        setup : function(ed) {
+            // add custom button
+            ed.addButton('img', {
+                title : 'Upload Image',
+                image : '/styles/images/image_button.gif',
+                onclick : function() {
+                    ed.focus();
+                    ckFinderBrowse(ed);
+                }
+            });
+            ed.addButton('file', {
+                title : 'Upload File',
+                image : '/styles/images/file_button.gif',
+                onclick : function() {
+                    ed.focus();
+                    ckFinderFileBrowse(ed);
+                }
+            });
+        }
+	});
+
+    function ckFinderBrowse(ed)
+    {
+        var finder = new CKFinder();
+        finder.startupPath = 'Images:/';
+        finder.removePlugins = 'basket';
+        finder.width = '600px';
+        finder.height = '400px';
+        finder.selectActionFunction = function(fileUrl) {
+            var imgTag = '<img src="'+fileUrl+'" alt=""/>';
+            ed.selection.setContent(imgTag);
+        };
+        finder.popup();
+    }
+
+    function ckFinderFileBrowse(ed)
+    {
+        var finder = new CKFinder();
+        finder.removePlugins = 'basket';
+        finder.resourceType = 'Files';
+        finder.disableHelpButton = true;
+        finder.width = '600px';
+        finder.height = '400px';
+        finder.selectActionFunction = function(fileUrl) {
+            var tag = '<a href="'+fileUrl+'" alt="" />';
+            ed.selection.setContent(tag);
+        };
+        finder.popup();
+    }
+</script>
+
+<?php $form = $this->element ?>
+<div id="formDiv" style="width:680px">
+<form id="articleForm" name="articleForm"
+    action="<?php echo $form->getAction() ?>"
+    method="<?php echo $form->getMethod() ?>">
+
+    <?php if (isset($form->id)): ?>
+        <?php echo $this->elmenet->id ?>
+    <?php endif ?>
+
+    <?php if ($form->isErrors()): ?>
+        <p style="color:red; margin-bottom: 1em;">
+            The form had some errors. Please correct them below.</p>
+    <?php endif ?>
+
+    <strong><?php echo $form->title->getLabel() ?>:</strong>
+    <div>
+        <?php echo $form->title->renderViewHelper() ?>
+        <?php echo $form->title->renderErrors() ?>
+    </div>
+    <br />
+
+    <strong><?php echo $form->summary->getLabel() ?>:</strong>
+    <div>
+        <?php echo $form->summary->renderViewHelper() ?>
+        <?php echo $form->summary->renderErrors() ?>
+        <p class="inputDetail">Enter a short summary (up to 255 characters) to be
+            displayed in post listings.</p>
+    </div>
+    <br />
+
+    <strong><?php echo $form->body->getLabel() ?>:</strong>
+    <div>
+        <?php echo $form->body->renderViewHelper() ?>
+        <?php echo $form->body->renderErrors() ?>
+        <script type="text/javascript">
+            tinyMCE.execCommand('mceAddControl', false,
+            '<?php echo $form->body->id ?>');
+        </script>
+    </div>
+    <br />
+
+    <strong><?php echo $form->categories->getLabel() ?>:</strong>
+    <div class="categories">
+        <?php echo $form->categories->renderViewHelper() ?>
+        <?php echo $form->categories->renderErrors() ?>
+        <div class="clear"></div>
+    </div>
+    <br />
+
+    <strong><?php echo $form->tags->getLabel() ?>:</strong>
+    <div>
+        <?php echo $form->tags->renderViewHelper() ?>
+        <?php echo $form->tags->renderErrors() ?>
+        <p class="inputDetail">A comma-separated list of terms to tag to this post.
+            Example: C. elegans, longevity, "Kaeberlein, Matt".</p>
+    </div>
+    <br />
+
+    <?php if ($form->showModeratorElements): ?>
+        <strong><?php echo $form->author->getLabel() ?>:</strong>
+        <div>
+            <?php echo $form->author->renderViewHelper() ?>
+            <?php echo $form->author->renderErrors() ?>
+        </div>
+        <br />
+
+        <strong><?php echo $form->createdAt->getLabel() ?>:</strong>
+        <div>
+            <?php echo $form->createdAt->renderViewHelper() ?>
+            <?php echo $form->createdAt->renderErrors() ?>
+        </div>
+        <br />
+
+        <strong><?php echo $form->status->getLabel() ?>:</strong>
+        <div>
+            <?php echo $form->status->renderViewHelper() ?>
+            <?php echo $form->status->renderErrors() ?>
+        </div>
+        <br />
+
+        <strong><?php echo $form->featured->getLabel() ?>:</strong>
+        <div>
+            <?php echo $form->featured->renderViewHelper() ?>
+            <?php echo $form->featured->renderErrors() ?>
+        </div>
+        <br />
+    <?php endif ?>
+
+     <strong><?php echo $form->captcha ?></strong>
+   
+    <input type="submit" value="Create new article" style="margin:1em 0; padding:0.5em" />
+</form>
+</div>

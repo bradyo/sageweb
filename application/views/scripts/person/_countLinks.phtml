@@ -1,9 +1,13 @@
-<?php foreach ($this->navigation->getPages() as $page): ?>
-    <?php if ($page->isActive()): ?>
-        <strong><?php echo $page->getLabel() ?></strong>
-    <?php else: ?>
-
-        <a href="<?php echo $page->getHref() ?>"><?php echo $page->getLabel() ?></a>
-        <span style="color:#aaa">(<?php echo $page->getCount() ?>)</span>
-    <?php endif ?>
-<?php endforeach ?>
+<div style="overflow: auto">
+    <?php foreach ($this->navigation->getPages() as $page): ?>
+        <div style="width:50px; float:left">
+            <?php if ($page->isActive()): ?>
+                <strong><?php echo $page->getLabel() ?></strong>
+                <span style="color:#aaa">(<?php echo $page->getCount() ?>)</span>
+            <?php else: ?>
+                <a style="font-weight:bold;" href="<?php echo $page->getHref() ?>"><?php echo $page->getLabel() ?></a>
+                <span style="color:#aaa">(<?php echo $page->getCount() ?>)</span>
+            <?php endif ?>
+        </div>
+    <?php endforeach ?>
+</div>

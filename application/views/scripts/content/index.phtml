@@ -1,0 +1,76 @@
+<?php $this->headTitle()->prepend('Content') ?>
+
+<div id="sidebar">
+    <?php echo $this->render('content/_actionsBlock.phtml') ?>
+    <?php echo $this->partial('content/_filtersBlock.phtml', array('category' => $this->category)) ?>
+</div>
+
+<div id="page">
+    <div class="main">
+        <div style="overflow: visible; margin-bottom:1em;">
+            <div style="float:right">
+                Sort:
+                <?php echo $this->partial('_sortLinks.phtml', array('navigation' => $this->sortLinks)) ?>
+            </div>
+
+            <div class="breadcrum">
+                <?php if (empty($this->category) || $this->category == 'all'): ?>
+                    All Categories
+                <?php else: ?>
+                    <a href="<?php echo $this->url(array('category' => 'all'), 'content', true) ?>"
+                       >All Categories</a>
+                    &gt; <?php echo Sageweb_Cms_Table_Content::getCategoryLabel($this->category) ?>
+                <?php endif ?>
+            </div>
+            <div style="padding-top: 0.5em; border-bottom: 1px solid #ccc"></div>
+        </div>
+
+        <?php if (count($this->pager) > 0): ?>
+            <?php foreach ($this->pager as $hit): ?>
+                <?php $doc = $hit->getDocument() ?>
+
+                <div class="postEntry">
+                    <?php $entityType = $doc->getFieldValue('entityType') ?>
+                    <?php if ($entityType == Sageweb_Cms_Entity::TYPE_FILE): ?>
+                        <div class="defaultIcon fileIcon"></div>
+                    <?php elseif ($entityType == Sageweb_Cms_Entity::TYPE_LINK): ?>
+                        <div class="defaultIcon linkIcon"></div>
+                    <?php elseif ($entityType == Sageweb_Cms_Entity::TYPE_EVENT): ?>
+                        <div class="defaultIcon eventIcon"></div>
+                    <?php else: ?>
+                        <div class="defaultIcon articleIcon"></div>
+                    <?php endif ?>
+
+                    <div style="margin-left: 165px; overflow: auto;">
+                        <h2 style="margin:0; display:inline-block">
+                            <a href="<?php echo $this->url(
+                                array('id' => $doc->getFieldValue('slugId')), 
+                                $doc->getFieldValue('entityType'), true
+                                ) ?>"><?php echo $this->escape($doc->getFieldValue('title')) ?></a>
+                        </h2>
+
+                        <?php if ($doc->getFieldValue('isFeatured')): ?>
+                            <span class="featured">Featured</span>
+                        <?php endif ?>
+
+                        <div style="margin-bottom:0.25em">
+                            <?php echo $this->cleanHtmlSummary($doc->getFieldValue('summary')) ?>
+                        </div>
+
+                        <div style="color:#999; margin-bottom:0.5em">
+                            <?php echo $this->partial('post/_docStats.phtml', array('doc' => $doc)) ?>
+                        </div>
+                    </div>
+                </div>
+
+            <?php endforeach ?>
+
+            <?php if ($this->pager->getTotalItemCount() > $this->pager->getItemCountPerPage()): ?>
+                <hr style="margin-top:2em;" />
+                <?php echo $this->partial('pagination.phtml', array('pager' => $this->pager)) ?>
+            <?php endif ?>
+        <?php else: ?>
+            <p>There are currently no posts in this category.</p>
+        <?php endif ?>
+    </div>
+</div>

@@ -2,36 +2,16 @@
 
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
-    protected function _initAutoloader() {
-        $loader = Zend_Loader_Autoloader::getInstance();
-        $loader->registerNamespace('Doctrine');
-        $loader->registerNamespace('NP');
-        $loader->registerNamespace('Application');
-    }
-
-    protected function _initHtmlPurifier() {
+    protected function _initHtmlPurifier()
+    {
         require_once 'HTMLPurifier/Bootstrap.php';
         spl_autoload_register(array('HTMLPurifier_Bootstrap', 'autoload'));
     }
 
-    protected function _initLayout() {
-        Zend_Layout::startMvc();
-        $layout = Zend_Layout::getMvcInstance();
-        $layout->setLayoutPath(APPLICATION_PATH . '/layouts/scripts');
-        $layout->setLayout('layout');
-        $layout->startMvc();
-    }
-    
-    protected function _initFrontControllerOptions() {
-        $front = Zend_Controller_Front::getInstance();
-        $front->setControllerDirectory(APPLICATION_PATH . '/controllers');
-    }
-    
-    protected function _initView() {
-        $view = new Zend_View();
-        
-        $view->addHelperPath('Application/View/Helper', 'Application_View_Helper');
-        $view->addHelperPath('NP/View/Helper', 'NP_View_Helper');
+    protected function _initViewSettings()
+    {
+        $this->bootstrap('view');
+        $view = $this->getResource('view');
 
         $view->setEncoding('UTF-8');
         $view->doctype('XHTML1_STRICT');
@@ -53,32 +33,30 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         $view->headTitle('Sageweb');
         $view->headTitle()->setSeparator(' - ');
-        
-        // add view helper
-        $viewRenderer = new Zend_Controller_Action_Helper_ViewRenderer();
-        $viewRenderer->setView($view);
-        Zend_Controller_Action_HelperBroker::addHelper($viewRenderer);
     }
 
-    protected function _initPlugins() {
+    protected function _initPlugins()
+    {
         $this->bootstrap('frontController');
         $front = Zend_Controller_Front::getInstance();
-        $front->registerPlugin(new Application_Plugin_Access());
+        $front->registerPlugin(new Sageweb_Plugin_Access());
     }
 
-    protected function _initCache() {
+    protected function _initCache()
+    {
         $frontend = array(
             'lifetime' => 7200,
             'automatic_serialization' => true,
         );
         $backend = array(
-            'cache_dir' => DATA_PATH . '/cache/application'
+            'cache_dir' => APPLICATION_PATH . '/../data/cache/application'
         );
         $cache = Zend_Cache::factory('core', 'File', $frontend, $backend);
         Zend_Registry::set('cache', $cache);
     }
 
-    protected function _initDatabases() {
+    protected function _initDatabases()
+    {
         $this->bootstrap('db');
         $db = $this->getPluginResource('db');
         $dbAdapter = $db->getDbAdapter();
@@ -87,8 +65,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // set up adapter for Zend_Db_Table class
         Zend_Db_Table_Abstract::setDefaultAdapter($dbAdapter);
 
-        // set up doctrine
-        $manager = Doctrine_Manager::getInstance();
+				// set up doctrine
+				$manager = Doctrine_Manager::getInstance();
         $manager->setAttribute(Doctrine::ATTR_AUTO_ACCESSOR_OVERRIDE, true);
         $manager->setAttribute(Doctrine::ATTR_MODEL_LOADING, Doctrine::MODEL_LOADING_CONSERVATIVE);
         $manager->setCharset('utf8');
@@ -98,44 +76,54 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Doctrine::loadModels(APPLICATION_PATH . '/../library');
     }
 
-    protected function _initSession() {     
-        $this->bootstrap('databases');
+    protected function _initSession()
+    {     
+				$this->bootstrap('databases');
         $config = array(
-            'name'           => 'session',
-            'primary'        => 'id',
-            'modifiedColumn' => 'modified',
-            'dataColumn'     => 'data',
-            'lifetimeColumn' => 'lifetime'
-        );
+					'name'           => 'session',
+					'primary'        => 'id',
+					'modifiedColumn' => 'modified',
+					'dataColumn'     => 'data',
+					'lifetimeColumn' => 'lifetime'
+				);
         $sessionHandler = new Zend_Session_SaveHandler_DbTable($config);
-        Zend_Session::setSaveHandler($sessionHandler);
-        Zend_Session::start();
+				Zend_Session::setSaveHandler($sessionHandler);
+				Zend_Session::start();
     }
 
-    protected function _initMailer() {
+    protected function _initMailer()
+    {
         $this->bootstrap('mail');
         $mailer = new Zend_Mail('utf-8');
         Zend_Registry::set('mailer', $mailer);
     }
     
-    protected function _initJsonEncoder() {
+    protected function _initJsonEncoder()
+    {
         // There is problem with php json_encode function and utf-8 strings.
         // Here we tell the Zend_Json encoder to use its built in encoder that
         // can properly encode utf-8 strings, unlike the php one.
         Zend_Json::$useBuiltinEncoderDecoder = true;
     }
+
+    protected function _initApplicationConfig()
+    {
+        $options = $this->getOptions();
+        Zend_Registry::set('config.recaptcha', $options['recaptcha']);
+    }
     
-    protected function _initRoutes() {
+    protected function _initRoutes()
+    {
         $this->bootstrap('frontController');
+
+        $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/routes.ini', 'production');
         $router = $this->frontController->getRouter();
         $router->setChainNameSeparator('/');
-        
-        $configPath = APPLICATION_PATH . '/configs/routes.ini';
-        $config = new Zend_Config_Ini($configPath);
         $router->addConfig($config, 'routes');
     }
 
-    protected function _initI18n() {
+    protected function _initI18n()
+    {
         // set up timezone
         date_default_timezone_set('America/Los_Angeles');
 
@@ -144,10 +132,65 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Registry::set('Zend_Locale', $locale);
     }
 
-    protected function _initLucene() {
+    protected function _initLucene()
+    {
         // allow numbers in searches (default is alpha only)
-        $analyzer = new Zend_Search_Lucene_Analysis_Analyzer_Common_Utf8Num_CaseInsensitive();
+        $analyzer = new Zend_Search_Lucene_Analysis_Analyzer_Common_TextNum_CaseInsensitive();
         Zend_Search_Lucene_Analysis_Analyzer::setDefault($analyzer);
+
+        // create content index
+        $indexPath = DATA_PATH . '/lucene/content-index';
+        try {
+            $index = Zend_Search_Lucene::open($indexPath);
+        } catch (Zend_Search_Lucene_Exception $e) {
+            $index = Zend_Search_Lucene::create($indexPath);
+        }
+        Zend_Registry::set('contentIndex', $index);
+
+        // create event index
+        $indexPath = DATA_PATH . '/lucene/event-index';
+        try {
+            $index = Zend_Search_Lucene::open($indexPath);
+        } catch (Zend_Search_Lucene_Exception $e) {
+            $index = Zend_Search_Lucene::create($indexPath);
+        }
+        Zend_Registry::set('eventIndex', $index);
+
+        // create discussion index
+        $indexPath = DATA_PATH . '/lucene/discussion-index';
+        try {
+            $index = Zend_Search_Lucene::open($indexPath);
+        } catch (Zend_Search_Lucene_Exception $e) {
+            $index = Zend_Search_Lucene::create($indexPath);
+        }
+        Zend_Registry::set('discussionIndex', $index);
+
+        // init search indexes
+        $indexPath = DATA_PATH . '/lucene/paper-index';
+        try {
+            $index = Zend_Search_Lucene::open($indexPath);
+        } catch (Zend_Search_Lucene_Exception $e) {
+            $index = Zend_Search_Lucene::create($indexPath);
+        }
+        Zend_Registry::set('paperIndex', $index);
+
+        // create person index
+        $indexPath = DATA_PATH . '/lucene/person-index';
+        try {
+            $index = Zend_Search_Lucene::open($indexPath);
+        } catch (Zend_Search_Lucene_Exception $e) {
+            $index = Zend_Search_Lucene::create($indexPath);
+        }
+        Zend_Registry::set('personIndex', $index);
+
+        // create lab index
+        $indexPath = DATA_PATH . '/lucene/lab-index';
+        try {
+            $index = Zend_Search_Lucene::open($indexPath);
+        } catch (Zend_Search_Lucene_Exception $e) {
+            $index = Zend_Search_Lucene::create($indexPath);
+        }
+        Zend_Registry::set('labIndex', $index);
 
         // create post index (index for site wide search
         $indexPath = DATA_PATH . '/lucene/site-index';
@@ -156,6 +199,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         } catch (Zend_Search_Lucene_Exception $e) {
             $index = Zend_Search_Lucene::create($indexPath);
         }
-        Zend_Registry::set('searchIndex', $index);
+        Zend_Registry::set('siteIndex', $index);
     }
 }

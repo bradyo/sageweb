@@ -1,4 +1,11 @@
-<?php $this->headTitle()->prepend($this->forum->title . ' Topics') ?>
+<?php 
+$title = 'All Discussion Topics';
+if (isset($this->forum) && $this->forum->title != '') {
+	$title = $this->forum->title . ' Topics';
+}
+?>
+<?php $this->headTitle()->prepend($title) ?>
+
 <div id="sidebar">
     <?php echo $this->partial('discussion/_actionsBlock.phtml', array('isList' => true)) ?>
 
@@ -23,14 +30,13 @@
 
 <div id="page">
     <div class="main">
-        <h1><?php echo $this->escape($this->forum->title) ?> Topics</h1>
+        <h1><?php echo $this->escape($title) ?></h1>
 
         <?php if (count($this->pager) > 0): ?>
             <table class="dataTable" style="width:100%; margin-bottom: 1em;">
                 <thead>
                     <tr>
-                        <th colspan="2">Discussion Topics</th>
-                        <th style="width:5em; text-align:center">Views</th>
+                        <th colspan="2">Topic</th>
                         <th style="width:5em; text-align:center">Replies</th>
                     </tr>
                 </thead>
@@ -53,9 +59,6 @@
                                 <?php endif ?>
                                 on <?php echo $this->formatDate($doc->getFieldValue('createdAt')) ?>
                             </div>
-                        </td>
-                        <td style="text-align:center">
-                            <?php echo $doc->getFieldValue('viewsCount') ?>
                         </td>
                         <td style="text-align:center">
                             <?php echo $doc->getFieldValue('commentsCount')  ?>

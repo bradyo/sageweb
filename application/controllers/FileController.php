@@ -10,7 +10,7 @@ class FileController extends Zend_Controller_Action
     public function showAction()
     {
         $id = $this->_getParam('id');
-        $post = Sageweb_Table_File::findOneById($id);
+        $post = Sageweb_Cms_Table_File::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
@@ -21,7 +21,7 @@ class FileController extends Zend_Controller_Action
         }
 
         // increment view counter
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         if ($post->isPublic()) {
             $post->incrementViews($viewingUser);
 
@@ -38,7 +38,7 @@ class FileController extends Zend_Controller_Action
 
     public function newAction()
     {
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         $form = new Application_Form_PostFile(array('viewingUser' => $viewingUser));
         if ($this->getRequest()->isPost()) {
             if($form->isValid($_POST)) {
@@ -46,16 +46,16 @@ class FileController extends Zend_Controller_Action
                 $uploadId = $this->_uploadFile();
 
                 $formValues = $form->getValues();
-                $formValues['tags'] = Application_Converter_Tags::getArray($formValues['tags']);
+                $formValues['tags'] = My_Converter_Tags::getArray($formValues['tags']);
 
                 // create a new article entry
-                $type = Sageweb_Entity::TYPE_FILE;
+                $type = Sageweb_Cms_Entity::TYPE_FILE;
                 $data = $this->_getRevisionData($formValues, $viewingUser);
                 $data['uploadId'] = $uploadId;
-                $post = Sageweb_Table_Entity::createPost($type, $data);
+                $post = Sageweb_Cms_Table_Entity::createPost($type, $data);
 
                 // create revision entry (pendign => public)
-                $data['status'] = Sageweb_Abstract_Post::STATUS_PUBLIC;
+                $data['status'] = Sageweb_Cms_Abstract_Post::STATUS_PUBLIC;
                 $revision = $viewingUser->createRevision($post->entity, $data);
                 if ($viewingUser->isModerator()) {
                     $comment = $formValues['reviewerComment'];
@@ -76,12 +76,12 @@ class FileController extends Zend_Controller_Action
     public function editAction()
     {
         $id = $this->getRequest()->getParam('id');
-        $post = Sageweb_Table_File::findOneById($id);
+        $post = Sageweb_Cms_Table_File::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception('Page not found', 404);
         }
 
-        $viewingUser = Application_Registry::getCurrentUser();
+        $viewingUser = Sageweb_Registry::getUser();
         if (!$viewingUser->canEdit($post)) {
             throw new Zend_Controller_Action_Exception('Permission denied.', 404);
         }
@@ -97,7 +97,7 @@ class FileController extends Zend_Controller_Action
                 $uploadId = $this->_uploadFile();
 
                 $formValues = $form->getValues();
-                $formValues['tags'] = Application_Converter_Tags::getArray($formValues['tags']);
+                $formValues['tags'] = My_Converter_Tags::getArray($formValues['tags']);
 
                 // save revision entry
                 $data = $this->_getRevisionData($formValues, $viewingUser);
@@ -133,7 +133,7 @@ class FileController extends Zend_Controller_Action
         }
 
         // insert file meta data into uploads table
-        $db =  Application_Registry::getDb();
+        $db =  Sageweb_Registry::getDb();
         $stmt = $db->prepare('
             INSERT INTO upload
             (filename, mime_type, size, user_id, is_temporary, created_at)
@@ -143,7 +143,7 @@ class FileController extends Zend_Controller_Action
             $file['name'],
             $file['type'],
             $file['size'],
-            Application_Registry::getCurrentUser()->id,
+            Sageweb_Registry::getUser()->id,
             false,
             date('Y-m-d H:i:s')
             ));
@@ -170,7 +170,7 @@ class FileController extends Zend_Controller_Action
             $revisionData['isFeatured'] = $formValues['isFeatured'];
 
             $username = $formValues['author'];
-            $author = Sageweb_Table_User::findOneByUsername($username);
+            $author = Sageweb_Cms_Table_User::findOneByUsername($username);
             $revisionData['authorId'] = $author->id;
         }
         return $revisionData;
@@ -179,12 +179,12 @@ class FileController extends Zend_Controller_Action
     public function revisionsAction()
     {
         $id = $this->_getParam('id');
-        $post = Sageweb_Table_File::findOneById($id);
+        $post = Sageweb_Cms_Table_File::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception(404, 'Post not found.');
         }
         
-        $revisions = Sageweb_Table_Revision::findByEntityId($post->entityId);
+        $revisions = Sageweb_Cms_Table_Revision::findByEntityId($post->entityId);
 
         $this->view->post = $post;
         $this->view->revisions = $revisions;
@@ -193,24 +193,24 @@ class FileController extends Zend_Controller_Action
     public function revisionAction()
     {
         $id = $this->_getParam('id');
-        $post = Sageweb_Table_File::findOneById($id);
+        $post = Sageweb_Cms_Table_File::findOneById($id);
         if (!$post) {
             throw new Zend_Controller_Action_Exception(404, 'Post not found.');
         }
 
         $revisionId = $this->_getParam('revisionId');
-        $revision = Sageweb_Table_Revision::findOneByEntityId($post->entityId, $revisionId);
+        $revision = Sageweb_Cms_Table_Revision::findOneByEntityId($post->entityId, $revisionId);
         if (!$revision) {
             throw new Zend_Controller_Action_Exception(404, 'Revision not found.');
         }
 
         if ($this->_request->isPost()) {
-            $viewingUser = Application_Registry::getCurrentUser();
+            $viewingUser = Sageweb_Registry::getUser();
             if ($viewingUser->isModerator()) {
                 // accept or reject revision
                 $comment = $this->_getParam('reviewerComment');
                 $status = $this->_getParam('status');
-                if ($status == Sageweb_EntityRevision::STATUS_ACCEPTED) {
+                if ($status == Sageweb_Cms_EntityRevision::STATUS_ACCEPTED) {
                     $viewingUser->acceptRevision($revision, $comment);
                 } else {
                     $viewingUser->rejectRevision($revision, $comment);

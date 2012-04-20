@@ -1,0 +1,36 @@
+<?php $this->headScript()->appendFile($this->baseUrl() . '/scripts/registerForm.js') ?>
+
+<form id="registerForm" name="registerForm"
+    action="<?php echo $this->element->getAction() ?>"
+    method="<?php echo $this->element->getMethod() ?>">
+
+    <?php if ($this->element->isErrors()): ?>
+        <p style="color:red; margin-bottom: 1em;">
+            The form had some errors. Please correct them below.</p>
+    <?php endif ?>
+
+    <strong><?php echo $this->element->username->getLabel() ?>:</strong>
+    <div>
+        <?php echo $this->element->username->renderViewHelper() ?>
+        <span id="usernameAvailabilty" style="margin-left:5px">
+            <?php echo $this->element->username->renderErrors() ?>
+        </span>
+        <p class="inputDetail">Enter between 3 and 32 letters or numbers.
+            Your homepage will be set to http://sageweb.org/user/username. </p>
+    </div>
+    <br />
+
+    <strong><?php echo $this->element->email->getLabel() ?>:</strong>
+    <div>
+        <?php echo $this->element->email->renderViewHelper() ?>
+        <span id="emailCheck">
+            <?php echo $this->element->email->renderErrors() ?>
+        </span>
+        <p class="inputDetail">All e-mails from the system will be sent to
+            this address. The e-mail address is not made public and will only be
+            used if you wish to receive a new password or wish to receive certain
+            news or notifications by e-mail.</p>
+    </div>
+   
+    <input type="submit" value="Register Account" />
+</form>

@@ -134,7 +134,7 @@
         </tr>
     </table>
 
-    <?php $viewingUser = Application_Registry::getCurrentUser() ?>
+    <?php $viewingUser = Sageweb_Registry::getUser() ?>
     <?php if ($viewingUser && $viewingUser->isModerator()): ?>
         <?php if ($this->revision->status == Sageweb_Cms_EntityRevision::STATUS_PENDING): ?>
             <h2>Manage Revision:</h2>

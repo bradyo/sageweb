@@ -2,7 +2,7 @@
 
 class ContentController extends Zend_Controller_Action
 {
-    const ITEMS_PER_PAGE = 5;
+    const ITEMS_PER_PAGE = 15;
 
     public function indexAction()
     {
@@ -17,7 +17,7 @@ class ContentController extends Zend_Controller_Action
         }
 
         $sort = $this->_getParam('sort');
-        $pager = Sageweb_Table_Content::getSearchPager($queryString, $sort);
+        $pager = Sageweb_Cms_Table_Content::getSearchPager($queryString, $sort);
 
         $page = $this->_getParam('page', 1);
         $pager->setItemCountPerPage(self::ITEMS_PER_PAGE);
@@ -67,7 +67,7 @@ class ContentController extends Zend_Controller_Action
 
         $category = $this->_getParam('category');
         $tag = $this->_getParam('tag');
-        $posts = Sageweb_Table_Content::findNewest($category, $tag);
+        $posts = Sageweb_Cms_Table_Content::findNewest($category, $tag);
 
         $this->view->category = $category;
         $this->view->tag = $tag;

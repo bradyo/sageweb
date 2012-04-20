@@ -16,6 +16,12 @@
     <?php endif ?>
 
     <div style="margin-bottom:1em">
+        <label><?php echo $form->type->getLabel() ?>:</label><br />
+        <?php echo $form->type->renderViewHelper() ?>
+        <?php echo $form->type->renderErrors() ?>
+    </div>
+
+    <div style="margin-bottom:1em">
         <label><?php echo $form->pubmedId->getLabel() ?></label><br />
         <?php echo $form->pubmedId->renderViewHelper() ?>
         <a id="pubmedLookupLink" href="#" onclick="return false;">Look up data</a>

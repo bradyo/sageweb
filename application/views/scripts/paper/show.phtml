@@ -20,40 +20,40 @@
 
 <div id="page">
     <div class="main">
-        <?php if ($this->post->isPublic()): ?>
-            <h1><?php echo $this->escape($this->post->title) ?></h1>
-            <hr />
-
-            <table class="fieldsTable" style="margin-bottom:1em;">
-                <tr>
-                    <th>URL:</th>
-                    <td><a href="<?php echo $this->escape($this->post->url)
-                        ?>" target="_blank"><?php echo $this->escape($this->post->url) ?></a></td>
-                </tr>
-                <tr>
-                    <th>Published:</th>
-                    <td><?php echo $this->formatDate($this->post->publishDate) ?></td>
-                </tr>
-            </table>
-
-            <h2>Importance to the Community:</h2>
-            <p><?php echo $this->cleanHtmlBasic($this->post->summary) ?></p>
-
-            <h2>Authors:</h2>
-            <p><?php echo $this->escape($this->post->authors) ?></p>
-
-            <h2>Abstract:</h2>
-            <p><?php echo $this->escape($this->post->abstract) ?></p>
-
-        <?php else: ?>
+        <?php if (!$this->post->isPublic()): ?>
             <?php if ($this->post->isHeld()): ?>
-                <h1>This content has been flagged for review.</h1>
+                <div class="infoMessage">This content has been flagged for review.</div>
             <?php elseif ($this->post->isDeleted()): ?>
-                <h1>This content has been deleted.</h1>
+                <div class="infoMessage">This content has been deleted.</div>
             <?php else: ?>
-                <h1>This content is pending moderator approval.</h1>
+                <div class="infoMessage">This content has not yet been made public.</div>
             <?php endif ?>
         <?php endif ?>
+
+        <h1><?php echo $this->escape($this->post->title) ?></h1>
+        <hr />
+
+        <table class="fieldsTable" style="margin-bottom:1em;">
+            <tr>
+                <th>URL:</th>
+                <td><a href="<?php echo $this->escape($this->post->url)
+                    ?>" target="_blank"><?php echo $this->escape($this->post->url) ?></a></td>
+            </tr>
+            <tr>
+                <th>Published:</th>
+                <td><?php echo $this->formatDate($this->post->publishDate) ?></td>
+            </tr>
+        </table>
+
+        <h2>Importance to the Community:</h2>
+        <p><?php echo $this->cleanHtmlBasic($this->post->summary) ?></p>
+
+        <h2>Authors:</h2>
+        <p><?php echo $this->escape($this->post->authors) ?></p>
+
+        <h2>Abstract:</h2>
+        <p><?php echo $this->escape($this->post->abstract) ?></p>
+
     </div>
 
     <?php if ($this->post->isPublic()): ?>

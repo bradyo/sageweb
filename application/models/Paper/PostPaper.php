@@ -20,6 +20,7 @@ class Application_Model_Paper_Paper extends Sageweb_Abstract_Post
         $this->hasColumn('source', 'clob');
         $this->hasColumn('publish_date as publishDate', 'date');
         $this->hasColumn('url as url', 'string', 255);
+        $this->hasColumn('type', 'string', 32);
         $this->hasColumn('abstract', 'clob');
         $this->hasColumn('summary', 'clob');
     }
@@ -59,6 +60,7 @@ class Application_Model_Paper_Paper extends Sageweb_Abstract_Post
             $doc->addField(Zend_Search_Lucene_Field::text('commentsCount', $this->entity->commentsCount));
             $doc->addField(Zend_Search_Lucene_Field::text('title', $this->title));
             $doc->addField(Zend_Search_Lucene_Field::text('publishDate', $this->publishDate));
+           $doc->addField(Zend_Search_Lucene_Field::text('type', $this->type));
             $doc->addField(Zend_Search_Lucene_Field::text('authors', $this->authors));
             $doc->addField(Zend_Search_Lucene_Field::text('source', $this->source));
             $doc->addField(Zend_Search_Lucene_Field::text('abstract', $this->abstract));

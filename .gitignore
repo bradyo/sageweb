@@ -9,9 +9,4 @@ data/lucene/*
 data/sql-dumps/*
 data/uploads/*
 
-# ignore developer directories
-nbproject/private/
-
-# ignore server setup info
-SERVER-README.txt
 

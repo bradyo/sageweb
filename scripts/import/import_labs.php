@@ -17,10 +17,33 @@ function importLab($rowData)
 {
     $data = array();
     $data['status'] = Sageweb_Abstract_Post::STATUS_PUBLIC;
-    $data['type'] = 'research';
-    $data['name'] = $rowData[0];
-    $data['url'] = $rowData[1];
-    $data['body'] = $rowData[2];
+    $data['type'] = 'classical';
+
+		$pubmedId = trim($rowData[0]);
+		if (!empty($pubmedId)) {
+    	$pubmedData = Application_Service_PubMed::getCitationData($pubmedId);
+      if (count($pubmedData) > 0) {
+        $data['pubmedId'] = $pubmedId;
+        $data['url'] = $pubmedData['url'];
+				$data['year'] = $pubmedData['year'];
+	      $data['authors'] = $pubmedData['authors'];
+				$data['title'] = $pubmedData['title'];
+				$data['source'] = $pubmedData['source'];
+				$data['publishDate'] = $pubmedData['publishDate'];
+				$data['abstract'] = $pubmedData['abstract'];
+      }
+		} else {
+				$data['year'] = trim($rowData[1]);
+	      $data['authors'] = trim($rowData[2]);
+				$data['title'] = trim($rowData[3]);
+				$data['source'] =  trim($rowData[4]);
+				$data['publishDate'] = $data['year'];
+		}
+		$data['summary'] = trim($rowData[5]);
+
+        $this->hasColumn('abstract', 'clob');
+        $this->hasColumn('summary', 'clob');
+
     makePost(Sageweb_Entity::TYPE_LAB, $data);
 }
 

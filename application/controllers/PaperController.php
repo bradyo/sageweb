@@ -38,6 +38,36 @@ class PaperController extends Zend_Controller_Action
         return $navigation;
     }
 
+private function _getTypeNavigation()
+    {
+        $navigation = new Zend_Navigation();
+
+        $page = new Zend_Navigation_Page_Mvc(array(
+            'label' => 'Current',
+            'route' => 'papers',
+            'module' => 'default',
+            'controller' => 'paper',
+            'action' => 'index',
+            'params' => array('type' => 'current'),
+        ));
+        if (!$this->_hasParam('sort')) {
+            $page->setActive(true);
+        }
+        $navigation->addPage($page);
+
+        $page = new Zend_Navigation_Page_Mvc(array(
+            'label' => 'Classical',
+            'route' => 'papers',
+            'module' => 'default',
+            'controller' => 'paper',
+            'action' => 'index',
+            'params' => array('type' => 'classical')
+        ));
+        $navigation->addPage($page);
+
+        return $navigation;
+    }
+
     public function indexAction()
     {
         $queryString = $this->_getParam('search');
@@ -48,6 +78,7 @@ class PaperController extends Zend_Controller_Action
         $pager->setItemCountPerPage(self::ITEMS_PER_PAGE);
         $pager->setCurrentPageNumber($page);
 
+        $this->view->typeNavigation = $this->_getTypeNavigation();
         $this->view->sortNavigation = $this->_getSortNavigation();
         $this->view->pager = $pager;
     }
@@ -165,6 +196,7 @@ class PaperController extends Zend_Controller_Action
         $revisionData['authorId'] = $viewingUser->id;
         $revisionData['pubmedId'] = $formValues['pubmedId'];
         $revisionData['title'] = $formValues['title'];
+        $revisionData['type'] = $formValues['type'];
         $revisionData['authors'] = $formValues['authors'];
         $revisionData['source'] = $formValues['source'];
         $revisionData['publishDate'] = $formValues['publishDate'];
